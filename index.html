@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="description" content="BambuCalc 3D PRO - Leitura Otimizada de Tempo e Peso">
+<meta name="description" content="BambuCalc 3D PRO - Versão Mobile Ajustada">
 <title>BambuCalc 3D PRO</title>
 
 <!-- Configuração PWA (Manifest inline) -->
@@ -69,30 +69,30 @@
 
 *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
 html, body{ min-height:100%; }
-body{ margin:0; background:var(--bg); color:var(--text); font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; padding-bottom: 75px; }
+body{ margin:0; background:var(--bg); color:var(--text); font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; padding-bottom: 85px; }
 button, input, textarea, select{ font:inherit; }
 button{ cursor:pointer; }
 
 .app{ display:flex; flex-direction:column; min-height:100vh; max-width: 600px; margin: 0 auto; box-shadow: 0 0 40px rgba(0,0,0,0.5); background: var(--bg); }
 
-/* NAVBAR INFERIOR (ESTILO APP MOBILE) COM 6 ABAS */
+/* NAVBAR INFERIOR (ESTILO APP MOBILE) COM 6 ABAS - TAMANHO CORRIGIDO */
 .sidebar{ 
-    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 65px; 
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 75px; 
     background: var(--panel); border-top: 1px solid var(--border); 
     display: flex; flex-direction: row; justify-content: space-around; align-items: center; 
-    z-index: 1000; padding: 0 2px; box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+    z-index: 1000; padding: 0 4px; box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
 }
 .nav{ display: flex; flex-direction: row; width: 100%; justify-content: space-around; }
 .nav-btn{ 
     display: flex; flex-direction: column; align-items: center; justify-content: center; 
-    gap: 2px; color: var(--soft); border: none; background: transparent; font-size: 8px; padding: 2px;
+    gap: 4px; color: var(--soft); border: none; background: transparent; font-size: 11px; font-weight: 500; padding: 4px 6px; flex: 1;
 }
-.nav-btn.active{ color: var(--accent); font-weight: 600; }
+.nav-btn.active{ color: var(--accent); font-weight: 700; }
 .nav-btn .icon{ 
-    width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-    background: transparent; font-size: 11px; border: none; 
+    width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+    background: transparent; font-size: 16px; border: none; 
 }
-.nav-btn.active .icon{ background: rgba(34,197,94,0.15); }
+.nav-btn.active .icon{ background: rgba(34,197,94,0.2); }
 
 /* HEADER SUPERIOR DO APP */
 .app-topbar {
@@ -100,8 +100,8 @@ button{ cursor:pointer; }
     padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
     position: sticky; top: 0; z-index: 900;
 }
-.app-brand { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-.app-brand-icon { width: 22px; height: 22px; border-radius: 50%; background: conic-gradient(from 180deg, var(--accent), var(--accent2), var(--accent)); }
+.app-brand { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.app-brand-icon { width: 24px; height: 24px; border-radius: 50%; background: conic-gradient(from 180deg, var(--accent), var(--accent2), var(--accent)); }
 
 /* MAIN */
 .main{ flex:1; width: 100%; padding: 14px; }
@@ -167,7 +167,7 @@ input[type="file"]{ padding: 6px; }
 .history-meta{ color: var(--soft); font-size: 10px; margin-top: 1px; }
 .empty{ color: var(--soft); font-size: 12px; text-align: center; padding: 20px 0; }
 
-.toast{ position: fixed; right: 12px; bottom: 75px; z-index: 4000; max-width: 300px; background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; box-shadow: var(--shadow); font-size: 11px; opacity: 0; transform: translateY(10px); pointer-events: none; transition: .2s ease; }
+.toast{ position: fixed; right: 12px; bottom: 85px; z-index: 4000; max-width: 300px; background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; box-shadow: var(--shadow); font-size: 11px; opacity: 0; transform: translateY(10px); pointer-events: none; transition: .2s ease; }
 .toast.show{ opacity: 1; transform: translateY(0); }
 
 .dropzone{ display: block; border: 2px dashed var(--border); border-radius: 12px; padding: 20px 10px; text-align: center; background: var(--card2); cursor: pointer; }
@@ -189,12 +189,12 @@ input[type="file"]{ padding: 6px; }
 </head>
 <body>
 
-<!-- SISTEMA DE PROTEÇÃO POR SENHA -->
+<!-- SISTEMA DE PROTEÇÃO POR SENHA (272822) -->
 <script>
   const SENHA_MESTRA = "272822";
 
   if (sessionStorage.getItem("autenticado") !== "true") {
-    let tentativa = prompt("🔒 Área Restrita - Digite a senha de acesso:");
+    let tentativa = prompt("🔒 Área Restrita - Digite a senha mestre de acesso:");
     if (tentativa === SENHA_MESTRA) {
       sessionStorage.setItem("autenticado", "true");
     } else {
@@ -518,12 +518,10 @@ function parseTempo(v){
   if(!v) return 0;
   v = String(v).trim().toLowerCase();
   
-  // Se for apenas segundos ou número de segundos bruto
   if(/^\d+$/.test(v) && parseInt(v) > 1000) {
     return parseInt(v) / 3600;
   }
 
-  // Tenta formato horas, minutos e segundos (ex: 1h 30m 15s ou 01:30:15)
   let mTime = v.match(/(?:(\d+(?:\.\d+)?)\s*h)?\s*(?:(\d+(?:\.\d+)?)\s*m)?\s*(?:(\d+(?:\.\d+)?)\s*s)?/);
   if(mTime && (mTime[1] || mTime[2] || mTime[3])) {
     return +(mTime[1]||0) + (+mTime[2]||0)/60 + (+mTime[3]||0)/3600;
@@ -657,7 +655,7 @@ function extractThumbnailFrom3MF(entries){
 async function analisarArquivoProjeto(file){
   const nomeLimpo = file.name.replace(/\.(3mf|gcode)$/i,"");
   if(file.name.toLowerCase().endsWith('.gcode')){
-    const textChunk = await file.slice(0, 1000000).text(); // Lê os primeiros 1MB para capturar o cabeçalho completo do G-code
+    const textChunk = await file.slice(0, 1000000).text();
     return {
       nome: nomeLimpo,
       peso: extractWeightFromText(textChunk),
