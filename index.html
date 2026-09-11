@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="description" content="BambuCalc 3D PRO - Design Original Otimizado">
+<meta name="description" content="BambuCalc 3D PRO - Versão Mobile Completa com Firebase Configurado">
 <title>BambuCalc 3D PRO</title>
 
 <!-- Configuração PWA (Manifest inline) -->
@@ -14,16 +14,15 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, getDocs, setDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  // ==========================================
-  // COLE SUAS CREDENCIAIS DO FIREBASE AQUI:
-  // ==========================================
+  // CREDENCIAIS DO FIREBASE DO USUÁRIO CONFIGURADAS
   const firebaseConfig = {
-    apiKey: "SUA_API_KEY_AQUI",
-    authDomain: "SEU_PROJETO.firebaseapp.com",
-    projectId: "SEU_PROJETO",
-    storageBucket: "SEU_PROJETO.appspot.com",
-    messagingSenderId: "SEU_SENDER_ID",
-    appId: "SEU_APP_ID"
+    apiKey: "AIzaSyCD0oMZ8Lkb-Tow1kPw2GPMu2IW6MEGyxY",
+    authDomain: "bambucalc3d.firebaseapp.com",
+    projectId: "bambucalc3d",
+    storageBucket: "bambucalc3d.firebasestorage.app",
+    messagingSenderId: "296605014403",
+    appId: "1:296605014403:web:54d77e49d1a02053183eb6",
+    measurementId: "G-5QLJHQVZQY"
   };
 
   const app = initializeApp(firebaseConfig);
