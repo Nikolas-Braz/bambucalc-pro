@@ -1,0 +1,1063 @@
+HTML
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="description" content="BambuCalc 3D PRO - Versão Mobile Completa com Venda Rápida">
+<title>BambuCalc 3D PRO</title>
+
+<!-- Configuração PWA (Manifest inline) -->
+<link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22BambuCalc%203D%20PRO%22%2C%22short_name%22%3A%22BambuCalc%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23090d16%22%2C%22theme_color%22%3A%22%2322c55e%22%7D">
+
+<!-- SDKs do Firebase (Firestore) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, setDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  // ==========================================
+  // COLE SUAS CREDENCIAIS DO FIREBASE AQUI:
+  // ==========================================
+  const firebaseConfig = {
+  apiKey: "AIzaSyCD0oMZ8Lkb-Tow1kPw2GPMu2IW6MEGyxY",
+  authDomain: "bambucalc3d.firebaseapp.com",
+  projectId: "bambucalc3d",
+  storageBucket: "bambucalc3d.firebasestorage.app",
+  messagingSenderId: "296605014403",
+  appId: "1:296605014403:web:54d77e49d1a02053183eb6",
+  measurementId: "G-5QLJHQVZQY",
+    appId: "SEU_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window.FB = { db, collection, getDocs, setDoc, doc, deleteDoc };
+  window.dispatchEvent(new Event('firebase-ready'));
+</script>
+
+<!-- Biblioteca de Leitura de QR Code / Código de Barras (ZXing) -->
+<script src="https://unpkg.com/@zxing/library@latest"></script>
+<!-- Biblioteca para Geração de QR Code (QRCode.js) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+:root{
+    --bg:#090d16;
+    --panel:#111827;
+    --card:#1f2937;
+    --card2:#0b1220;
+    --accent:#22c55e;
+    --accent2:#0ea5e9;
+    --text:#f3f4f6;
+    --soft:#9ca3af;
+    --border:#374151;
+    --danger:#ef4444;
+    --warning:#f59e0b;
+    --shadow:0 10px 25px rgba(0,0,0,.3);
+}
+
+:root[data-theme="light"]{
+    --bg:#f3f4f6;
+    --panel:#ffffff;
+    --card:#ffffff;
+    --card2:#f8fafc;
+    --accent:#16a34a;
+    --accent2:#0284c7;
+    --text:#020617;
+    --soft:#6b7280;
+    --border:#d1d5db;
+    --danger:#dc2626;
+    --warning:#d97706;
+    --shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+*{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+html, body{ min-height:100%; }
+body{ margin:0; background:var(--bg); color:var(--text); font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; padding-bottom: 75px; }
+button, input, textarea, select{ font:inherit; }
+button{ cursor:pointer; }
+
+.app{ display:flex; flex-direction:column; min-height:100vh; }
+
+/* NAVBAR INFERIOR (ESTILO APP MOBILE) COM 6 ABAS */
+.sidebar{ 
+    position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; 
+    background: var(--panel); border-top: 1px solid var(--border); 
+    display: flex; flex-direction: row; justify-content: space-around; align-items: center; 
+    z-index: 1000; padding: 0 2px; box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+}
+.nav{ display: flex; flex-direction: row; width: 100%; justify-content: space-around; }
+.nav-btn{ 
+    display: flex; flex-direction: column; align-items: center; justify-content: center; 
+    gap: 2px; color: var(--soft); border: none; background: transparent; font-size: 7.5px; padding: 1px;
+}
+.nav-btn.active{ color: var(--accent); font-weight: 600; }
+.nav-btn .icon{ 
+    width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+    background: transparent; font-size: 10px; border: none; 
+}
+.nav-btn.active .icon{ background: rgba(34,197,94,0.15); }
+
+/* HEADER SUPERIOR DO APP */
+.app-topbar {
+    background: var(--panel); border-bottom: 1px solid var(--border);
+    padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; z-index: 900;
+}
+.app-brand { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.app-brand-icon { width: 22px; height: 22px; border-radius: 50%; background: conic-gradient(from 180deg, var(--accent), var(--accent2), var(--accent)); }
+
+/* MAIN */
+.main{ flex:1; width: 100%; max-width: 600px; margin: 0 auto; padding: 14px; }
+.page{ display:none; }
+.page.active{ display:block; }
+.page-header{ margin-bottom: 12px; }
+.page-title{ font-size: 18px; font-weight: 700; }
+.page-subtitle{ font-size: 11px; color: var(--soft); margin-top: 2px; }
+
+.badge{ font-size: 10px; padding: 4px 8px; border-radius: 999px; border: 1px solid rgba(34,197,94,.25); color: var(--accent); background: rgba(34,197,94,.07); white-space: nowrap; }
+
+.card{ background: var(--card); border-radius: 12px; border: 1px solid var(--border); padding: 12px; box-shadow: var(--shadow); margin-bottom: 12px; }
+.card-header{ display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+.card-title{ font-size: 13px; font-weight: 600; }
+
+/* FORMULÁRIO OTIMIZADO MOBILE */
+.form-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.field.full{ grid-column: 1 / -1; }
+label{ display: block; font-size: 11px; color: var(--soft); margin: 6px 0 3px; }
+input, textarea, select{ width: 100%; background: rgba(2,6,23,.3); border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-size: 13px; color: var(--text); outline: none; }
+input:focus, textarea:focus, select:focus{ border-color: var(--accent2); box-shadow: 0 0 0 2px rgba(14,165,233,.15); }
+input[readonly]{ opacity: .8; }
+textarea{ min-height: 80px; resize: vertical; }
+input[type="file"]{ padding: 6px; }
+
+/* BOTÕES DE TOQUE RÁPIDO */
+.actions{ display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.btn{ border: none; border-radius: 999px; padding: 10px 14px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 6px; flex: 1; min-width: 120px; }
+.btn-primary{ background: var(--accent); color: #020617; }
+.btn-outline{ background: transparent; border: 1px solid var(--border); color: var(--soft); }
+.btn-danger{ background: var(--danger); color: white; flex: none; }
+.btn-sm{ padding: 6px 10px; font-size: 11px; min-width: auto; }
+
+/* RESUMO E TABELAS */
+.summary-list{ display: flex; flex-direction: column; gap: 6px; }
+.summary-row{ display: flex; justify-content: space-between; gap: 10px; font-size: 12px; color: var(--soft); }
+.summary-row strong{ color: var(--text); }
+.summary-total{ margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+.summary-total span:last-child{ color: var(--accent); font-size: 16px; font-weight: 800; }
+
+/* CATÁLOGO MOBILE GRID COM QR CODE */
+.catalog-toolbar{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.catalog-count{ color: var(--soft); font-size: 11px; }
+.catalog-grid{ display: grid; grid-template-columns: 1fr; gap: 12px; }
+.catalog-card{ background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 6px; }
+.catalog-body-grid{ display: grid; grid-template-columns: 100px 1fr; gap: 10px; align-items: center; }
+.catalog-thumb{ width: 100px; height: 100px; background: var(--card2); border: 1px solid var(--border); border-radius: 8px; display: flex; align-items:center; justify-content:center; color: var(--soft); font-size: 20px; overflow: hidden; }
+.catalog-thumb img{ width: 100%; height: 100%; object-fit: cover; }
+.catalog-qrcode-box{ width: 90px; height: 90px; background: #fff; padding: 5px; border-radius: 6px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+.catalog-title{ font-size: 14px; font-weight: 700; word-break: break-word; }
+.catalog-info{ font-size: 12px; color: var(--soft); display: flex; justify-content: space-between; }
+.catalog-info strong{ color: var(--text); }
+.catalog-actions{ display: flex; gap: 5px; flex-wrap: wrap; margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); }
+
+/* MODAL DE VENDA RÁPIDA */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 16px; }
+.modal-overlay.active { display: flex; }
+.modal-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; width: 100%; max-width: 400px; box-shadow: var(--shadow); }
+
+.history-item{ display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 11px; }
+.history-main{ min-width: 0; }
+.history-title{ font-weight: 600; }
+.history-meta{ color: var(--soft); font-size: 10px; margin-top: 1px; }
+.empty{ color: var(--soft); font-size: 12px; text-align: center; padding: 20px 0; }
+
+.toast{ position: fixed; right: 12px; bottom: 75px; z-index: 4000; max-width: 300px; background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; box-shadow: var(--shadow); font-size: 11px; opacity: 0; transform: translateY(10px); pointer-events: none; transition: .2s ease; }
+.toast.show{ opacity: 1; transform: translateY(0); }
+
+.dropzone{ display: block; border: 2px dashed var(--border); border-radius: 12px; padding: 20px 10px; text-align: center; background: var(--card2); cursor: pointer; }
+.drop-icon{ font-size: 28px; }
+.drop-title{ font-size: 14px; font-weight: 700; margin-top: 6px; }
+.drop-sub{ font-size: 10px; color: var(--soft); margin-top: 3px; }
+.dropzone input{ display: none; }
+.analysis-status{ margin-top: 10px; padding: 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 11px; color: var(--soft); }
+
+/* MARKETING & SCANNER STYLES */
+.marketing-preview { width: 100%; height: 200px; background: var(--card2); border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 10px; }
+.marketing-preview img { width: 100%; height: 100%; object-fit: contain; }
+#videoScanner { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; display: none; background: #000; margin-bottom: 10px; }
+
+/* VINTED MANAGER STYLES */
+.vinted-badge-ok { color: var(--accent); font-weight: 600; font-size: 10px; background: rgba(34,197,94,0.1); padding: 2px 6px; border-radius: 4px; }
+.vinted-badge-warn { color: var(--warning); font-weight: 600; font-size: 10px; background: rgba(245,158,11,0.1); padding: 2px 6px; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- SISTEMA DE PROTEÇÃO POR SENHA -->
+<script>
+  const SENHA_MESTRA = "272822";
+
+  if (sessionStorage.getItem("autenticado") !== "true") {
+    let tentativa = prompt("🔒 Área Restrita - Digite a senha de acesso:");
+    if (tentativa === SENHA_MESTRA) {
+      sessionStorage.setItem("autenticado", "true");
+    } else {
+      document.body.innerHTML = "<div style='display:flex;justify-content:center;align-items:center;height:100vh;background:#090d16;color:#f3f4f6;font-family:sans-serif;text-align:center;'><div><h2>Acesso Negado 🚫</h2><p>Senha incorreta.</p></div></div>";
+      throw new Error("Acesso negado.");
+    }
+  }
+</script>
+
+<div class="app">
+  <!-- TOPO DO APP -->
+  <header class="app-topbar">
+    <div class="app-brand"><div class="app-brand-icon"></div>BambuCalc 3D PRO</div>
+    <button class="btn btn-sm btn-outline" onclick="toggleTheme()" id="btnTheme" style="min-width:auto; border-radius:999px;">🌙</button>
+  </header>
+
+  <main class="main">
+    <!-- PÁGINA 1: CALCULADORA -->
+    <section id="page-calc" class="page active">
+      <div class="page-header">
+        <div class="page-title">Calculadora Automática</div>
+        <div class="page-subtitle">Envie seu arquivo .3mf ou preencha os dados (A1 Mini).</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">🚀 Enviar Arquivo 3MF</div></div>
+          <span class="badge" id="arquivoTipoBadge">Pronto</span>
+        </div>
+        <label class="dropzone" for="arquivoProjeto">
+          <div class="drop-icon">📦</div>
+          <div class="drop-title">Toque para selecionar o .3mf</div>
+          <div class="drop-sub">Extração automática de peso e tempo</div>
+          <input id="arquivoProjeto" type="file" accept=".3mf,application/vnd.ms-package.3dmanufacturing-3dmodel+xml">
+        </label>
+        <div id="analiseStatus" class="analysis-status">Nenhum arquivo enviado.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">⚙️ Parâmetros da Peça & Energia (UK)</div></div>
+        <div class="form-grid">
+          <div class="field full"><label for="nomeProduto">Nome do Produto</label><input id="nomeProduto" type="text" placeholder="Ex.: Vaso Espiral"></div>
+          <div class="field"><label for="codigoProduto">Código / Ref / Barcode</label><input id="codigoProduto" type="text" placeholder="Ex.: VAS-01"></div>
+          <div class="field"><label for="categoriaProduto">Categoria</label>
+            <select id="categoriaProduto">
+              <option value="Decoração & Casa">Decoração & Casa</option>
+              <option value="Acessórios & Suportes">Acessórios</option>
+              <option value="Miniaturas">Miniaturas</option>
+              <option value="Peças Técnicas">Técnicas</option>
+              <option value="Outros">Outros</option>
+            </select>
+          </div>
+          <div class="field"><label for="pesoPeca">Peso total (g)</label><input id="pesoPeca" type="number" min="0" step="0.01" value="0" oninput="onInputCalculadora()"></div>
+          <div class="field"><label for="tempoManual">Tempo (ex: 2h30)</label><input id="tempoManual" type="text" placeholder="Ex.: 2h30" oninput="converterTempoManual(false)"></div>
+          <div class="field" style="display:none;"><label for="horasPeca">Horas (h)</label><input id="horasPeca" type="number" value="0" readonly></div>
+          <div class="field"><label for="precoRolo">Preço Rolo (£/kg)</label><input id="precoRolo" type="number" min="0" step="0.01" value="18.00" oninput="onInputCalculadora()"></div>
+          <div class="field"><label for="pesoRolo">Peso Rolo (g)</label><input id="pesoRolo" type="number" min="1" value="1000" oninput="onInputCalculadora()"></div>
+          
+          <div class="field"><label for="potenciaWatts">Potência A1 (W)</label><input id="potenciaWatts" type="number" min="0" value="80" oninput="onInputCalculadora()"></div>
+          <div class="field"><label for="tarifaLuz">Tarifa (£/kWh)</label><input id="tarifaLuz" type="number" min="0" step="0.01" value="0.25" oninput="onInputCalculadora()"></div>
+          
+          <div class="field" style="display:none;"><label for="custoHora">Custo Maq (£/h)</label><input id="custoHora" type="number" value="0.50" oninput="onInputCalculadora()"></div>
+          <div class="field"><label for="margem">Markup (%)</label><input id="margem" type="number" min="0" value="60" oninput="onInputCalculadora()"></div>
+          <div class="field full"><label for="custosExtras">Custos Extras (£)</label><input id="custosExtras" type="number" min="0" step="0.01" value="0" oninput="onInputCalculadora()"></div>
+          
+          <div class="field full"><label for="vintedLink">Link do Anúncio na Vinted (Opcional)</label><input id="vintedLink" type="url" placeholder="https://www.vinted.co.uk/items/..."></div>
+          <div class="field"><label for="vintedData">Data da Postagem Vinted</label><input id="vintedData" type="date"></div>
+
+          <div class="field full"><label for="observacoes">Observações</label><textarea id="observacoes" placeholder="Acabamento, embalagem..."></textarea></div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" onclick="adicionarAoCatalogo()">💾 Salvar na Nuvem</button>
+          <button class="btn btn-outline" onclick="registrarHistorico()">📌 Histórico</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">📊 Resumo Financeiro (Com Energia)</div></div>
+        <div class="summary-list">
+          <div class="summary-row"><span>Material</span><strong id="custoMaterial">£ 0.00</strong></div>
+          <div class="summary-row"><span>Energia (A1 Mini)</span><strong id="custoEnergiaOut">£ 0.00</strong></div>
+          <div class="summary-row"><span>Outros Custos</span><strong id="custoExtrasOut">£ 0.00</strong></div>
+          <div class="summary-row"><span>Subtotal</span><strong id="subtotal">£ 0.00</strong></div>
+          <div class="summary-row summary-total"><span>Preço Ideal</span><span id="precoFinal">£ 0.00</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PÁGINA 2: CATÁLOGO -->
+    <section id="page-catalogo" class="page">
+      <div class="page-header">
+        <div class="page-title">Catálogo Sincronizado & QR Codes</div>
+        <div class="page-subtitle">Produtos salvos com etiquetas QR Code automáticas.</div>
+      </div>
+      <div class="catalog-toolbar"><div class="catalog-count" id="catalogoCount">0 produtos</div></div>
+      <div class="catalog-grid" id="catalogoCards"></div>
+    </section>
+
+    <!-- PÁGINA 3: MARKETING MÍDIA & GEMINI -->
+    <section id="page-marketing" class="page">
+      <div class="page-header">
+        <div class="page-title">Marketing & Mídia 📸</div>
+        <div class="page-subtitle">Fotos via Fotoroom e Scripts de Vendas via Gemini AI.</div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Chaves de API (Fotoroom & Gemini)</div></div>
+        <div class="form-grid">
+          <div class="field"><label for="fotoroomApiKey">API Key Fotoroom</label><input id="fotoroomApiKey" type="password" placeholder="Fotoroom Key"></div>
+          <div class="field"><label for="geminiApiKey">API Key Gemini</label><input id="geminiApiKey" type="password" placeholder="Gemini AI Key"></div>
+        </div>
+        <div class="actions"><button class="btn btn-outline btn-sm" onclick="salvarApiKeys()">Salvar Chaves</button></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Gerar Foto de Produto</div></div>
+        <div class="form-grid">
+          <div class="field full"><label for="marketingProdutoSelect">Selecione do Catálogo</label><select id="marketingProdutoSelect" onchange="carregarMiniaturaMarketing()"><option value="">-- Selecione um produto --</option></select></div>
+        </div>
+        <div style="margin-top:10px;">
+          <div class="marketing-preview" id="marketingPreviewContainer">📦 Miniatura não carregada</div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" onclick="gerarFotoProfissional()">✨ Gerar Foto Estúdio</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Script de Vendas com Gemini AI</div>
+          <button class="btn btn-outline btn-sm" onclick="copiarScript()">📋 Copiar</button>
+        </div>
+        <div class="form-grid" style="margin-bottom:8px;">
+          <div class="field full">
+            <label for="geminiEstilo">Estilo da Copy</label>
+            <select id="geminiEstilo">
+              <option value="persuasivo">Persuasivo / Focado em Benefícios</option>
+              <option value="descontraido">Descontraído / Redes Sociais (TikTok/Insta)</option>
+              <option value="tecnico">Técnico / Focado em Qualidade e Durabilidade</option>
+            </select>
+          </div>
+        </div>
+        <div class="actions" style="margin-bottom:8px;">
+          <button class="btn btn-primary btn-sm" onclick="gerarScriptGemini()">🤖 Gerar Copy com Gemini</button>
+        </div>
+        <textarea id="scriptVendasOutput" placeholder="O script gerado aparecerá aqui..." style="min-height:120px;"></textarea>
+      </div>
+    </section>
+
+    <!-- PÁGINA 4: VENDAS E SCANNER QR/BARCODE -->
+    <section id="page-vendas" class="page">
+      <div class="page-header">
+        <div class="page-title">Controle de Vendas</div>
+        <div class="page-subtitle">Escaneie códigos ou registre vendas na nuvem.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📷 Scanner de Produto (QR / Barcode)</div>
+          <button class="btn btn-outline btn-sm" id="btnToggleScanner" onclick="toggleScanner()">Iniciar Câmera</button>
+        </div>
+        <video id="videoScanner" autoplay playsinline></video>
+        <div id="scannerStatus" style="font-size:11px; color:var(--soft); text-align:center;">Câmera desligada.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Registrar Venda</div></div>
+        <div class="form-grid">
+          <div class="field full"><label for="vendaProdutoSelect">Produto do Catálogo</label><select id="vendaProdutoSelect" onchange="preencherDadosVenda()"><option value="">-- Venda avulsa --</option></select></div>
+          <div class="field full"><label for="vendaNome">Nome / Cliente</label><input id="vendaNome" type="text" placeholder="Nome do cliente"></div>
+          <div class="field"><label for="vendaQtd">Qtd</label><input id="vendaQtd" type="number" min="1" value="1" oninput="calcularTotalVendaForm()"></div>
+          <div class="field"><label for="vendaPrecoUnit">Preço Unit (£)</label><input id="vendaPrecoUnit" type="number" min="0" step="0.01" value="0" oninput="calcularTotalVendaForm()"></div>
+          <div class="field" style="display:none;"><label for="vendaCustoUnit">Custo</label><input id="vendaCustoUnit" type="number" value="0"></div>
+          <div class="field full"><label><strong>Total: <span id="vendaTotalPreview" style="color:var(--accent);">£ 0.00</span></strong></label></div>
+        </div>
+        <div class="actions" style="margin-top:10px;"><button class="btn btn-primary" onclick="registrarVenda()">✅ Concluir Venda</button></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Filtro por Período</div></div>
+        <div class="form-grid">
+          <div class="field"><label for="filtroPeriodo">Período</label>
+            <select id="filtroPeriodo" onchange="atualizarPainelVendas()">
+              <option value="todos">Todas as Vendas</option>
+              <option value="mes">Este Mês</option>
+              <option value="hoje">Hoje</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Resumo & Histórico</div><button class="btn btn-danger btn-sm" onclick="limparVendas()">Limpar</button></div>
+        <div class="summary-list" style="margin-bottom:10px;">
+          <div class="summary-row"><span>Faturamento</span><strong id="resumoFaturamento">£ 0.00</strong></div>
+          <div class="summary-row"><span>Lucro Líquido</span><strong id="resumoLucro" style="color:var(--accent);">£ 0.00</strong></div>
+        </div>
+        <div id="listaVendasContainer"></div>
+      </div>
+    </section>
+
+    <!-- PÁGINA 5: VINTED MANAGER -->
+    <section id="page-vinted" class="page">
+      <div class="page-header">
+        <div class="page-title">Vinted Manager 🛍️</div>
+        <div class="page-subtitle">Monitore a idade dos anúncios para Bump ou Republicação.</div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Anúncios Ativos na Vinted</div></div>
+        <div id="vintedListaContainer"></div>
+      </div>
+    </section>
+
+    <!-- PÁGINA 6: HISTÓRICO -->
+    <section id="page-historico" class="page">
+      <div class="page-header">
+        <div class="page-title">Histórico de Cálculos</div>
+        <div class="page-subtitle">Últimos cálculos feitos.</div>
+      </div>
+      <div class="card"><div id="historicoCalc"></div></div>
+    </section>
+  </main>
+
+  <!-- MODAL DE VENDA RÁPIDA -->
+  <div class="modal-overlay" id="modalVendaRapida">
+    <div class="modal-card">
+      <div class="card-header"><div class="card-title" id="modalTituloProduto">Registrar Venda Rápida</div></div>
+      <input type="hidden" id="modalProdutoIndex">
+      <div class="form-grid">
+        <div class="field full"><label for="modalCliente">Nome do Cliente</label><input id="modalCliente" type="text" placeholder="Nome do cliente"></div>
+        <div class="field"><label for="modalQtd">Qtd</label><input id="modalQtd" type="number" min="1" value="1" oninput="calcularTotalModal()"></div>
+        <div class="field"><label>Preço Unit.</label><input id="modalPrecoUnit" type="text" readonly style="background:transparent;"></div>
+        <div class="field full"><label><strong>Total: <span id="modalTotalPreview" style="color:var(--accent);">£ 0.00</span></strong></label></div>
+      </div>
+      <div class="actions" style="margin-top:12px;">
+        <button class="btn btn-primary" onclick="confirmarVendaRapida()">✅ Vender Agora</button>
+        <button class="btn btn-outline" onclick="fecharModalVenda()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVBAR INFERIOR FIXA PARA CELULAR (6 ABAS) -->
+  <aside class="sidebar">
+    <nav class="nav">
+      <button class="nav-btn active" data-page="calc" onclick="nav('calc',this)"><span class="icon">💷</span>Calc</button>
+      <button class="nav-btn" data-page="catalogo" onclick="nav('catalogo',this)" id="navBtnCatalogo"><span class="icon">📁</span>Catálogo</button>
+      <button class="nav-btn" data-page="marketing" onclick="nav('marketing',this)" id="navBtnMarketing"><span class="icon">📸</span>Market</button>
+      <button class="nav-btn" data-page="vendas" onclick="nav('vendas',this)" id="navBtnVendas"><span class="icon">🛒</span>Vendas</button>
+      <button class="nav-btn" data-page="vinted" onclick="nav('vinted',this)" id="navBtnVinted"><span class="icon">🛍️</span>Vinted</button>
+      <button class="nav-btn" data-page="historico" onclick="nav('historico',this)"><span class="icon">📜</span>Hist</button>
+    </nav>
+  </aside>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+const STORAGE={config:"config3d",theme:"theme3d",historico:"historicoCalc3d",vendas:"vendas3d",fotoroomKey:"fotoroomApiKey3d",geminiKey:"geminiApiKey3d"};
+let catalogo=[], historicoCalc=[], vendasLista=[], itemEditandoIndex=null, arquivoAtual=null, imagemMarketingBase64=null;
+let codeReader = null, isScanning = false;
+
+function $(id){return document.getElementById(id)}
+function uid(){return (crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2))}
+function dinheiro(v){v=Number(v);return Number.isFinite(v)?`£ ${v.toFixed(2)}`:"£ 0.00"}
+function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("show"),2800)}
+function safeGet(k,d=null){try{const x=localStorage.getItem(k);return x===null?d:x}catch{return d}}
+function safeSet(k,v){try{localStorage.setItem(k,v);return true}catch{return false}}
+
+function nav(page,el){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  $("page-"+page)?.classList.add("active");
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+  el?.classList.add("active");
+  if(page==='vendas'){atualizarSelectCatalogoVendas();atualizarPainelVendas();}
+  if(page==='marketing'){atualizarSelectMarketing();carregarApiKeysInput();}
+  if(page==='vinted'){renderVintedManager();}
+  if(page!=='vendas' && isScanning){ pararScanner(); }
+}
+
+function applyTheme(theme){
+  theme=theme==="light"?"light":"dark";
+  document.documentElement.setAttribute("data-theme",theme);
+  $("btnTheme").textContent=theme==="light"?"☀️":"🌙";
+}
+function toggleTheme(){
+  const n=(document.documentElement.getAttribute("data-theme")||"dark")==="dark"?"light":"dark";
+  applyTheme(n); safeSet(STORAGE.theme,n);
+}
+
+async function blobToBase64(blob){
+  return new Promise((res, rej)=>{
+    const reader = new FileReader();
+    reader.onload = () => res(reader.result);
+    reader.onerror = rej;
+    reader.readAsDataURL(blob);
+  });
+}
+
+/* Firestore Cloud */
+async function cloudGetProducts(){
+  if(!window.FB)return [];
+  const querySnapshot = await window.FB.getDocs(window.FB.collection(window.FB.db, "produtos"));
+  const arr = [];
+  querySnapshot.forEach((doc) => { arr.push(doc.data()); });
+  arr.sort((a,b)=>String(b.atualizadoEm||b.criadoEm).localeCompare(String(a.atualizadoEm||a.criadoEm)));
+  return arr;
+}
+async function cloudSaveProduct(item){
+  if(!window.FB)return;
+  await window.FB.setDoc(window.FB.doc(window.FB.db, "produtos", item.id), item);
+}
+async function cloudDeleteProduct(id){
+  if(!window.FB)return;
+  await window.FB.deleteDoc(window.FB.doc(window.FB.db, "produtos", id));
+}
+
+/* Cálculos de Custo incluindo Energia A1 Mini */
+function parseTempo(v){v=(v||"").trim().toLowerCase().replace(",",".");if(!v)return 0;let m=v.match(/^(\d+(?:\.\d+)?)\s*:\s*(\d{1,2})$/);if(m){const mm=+m[2];return mm<60?+m[1]+mm/60:0}m=v.match(/^(?:(\d+(?:\.\d+)?)\s*h)?\s*(?:(\d+(?:\.\d+)?)\s*m)?$/);if(m&&(m[1]||m[2]))return +(m[1]||0)+(+m[2]||0)/60;m=v.match(/^(\d+(?:\.\d+)?)\s*h$/);if(m)return +m[1];m=v.match(/^(\d+(?:\.\d+)?)\s*m$/);if(m)return +m[1]/60;m=v.match(/^\d+(?:\.\d+)?$/);return m?+m[0]:0}
+function formatarTempo(h){if(!Number.isFinite(h)||h<=0)return "";let total=Math.round(h*60),hh=Math.floor(total/60),mm=total%60;return hh?`${hh}h${mm?mm+"m":""}`:`${mm}m`}
+function converterTempoManual(show=false){const h=parseTempo($("tempoManual").value);$("horasPeca").value=h.toFixed(2);recalcular();return h}
+function numero(id,d=0){const n=parseFloat($(id).value);return Number.isFinite(n)?n:d}
+
+function obterDados(){
+  return {
+    pesoRolo: Math.max(1, numero("pesoRolo", 1000)),
+    pesoPeca: Math.max(0, numero("pesoPeca")),
+    precoRolo: Math.max(0, numero("precoRolo", 18.00)),
+    horas: Math.max(0, numero("horasPeca")),
+    potenciaW: Math.max(0, numero("potenciaWatts", 80)),
+    tarifaKwh: Math.max(0, numero("tarifaLuz", 0.25)),
+    margemPct: Math.max(0, numero("margem", 60)),
+    extras: Math.max(0, numero("custosExtras")),
+    vintedLink: $("vintedLink")?.value.trim() || "",
+    vintedData: $("vintedData")?.value || ""
+  };
+}
+
+function calcularValores(){
+  const d = obterDados();
+  const material = d.pesoPeca * (d.precoRolo / d.pesoRolo);
+  const custoEnergia = (d.potenciaW / 1000) * d.horas * d.tarifaKwh;
+  const subtotal = material + custoEnergia + d.extras;
+  const ideal = subtotal * (1 + d.margemPct / 100);
+  return { ...d, custoMaterial: material, custoEnergia, subtotal, precoIdeal: ideal };
+}
+
+function recalcular(){
+  const v = calcularValores();
+  $("custoMaterial").textContent = dinheiro(v.custoMaterial);
+  $("custoEnergiaOut").textContent = dinheiro(v.custoEnergia);
+  $("custoExtrasOut").textContent = dinheiro(v.extras);
+  $("subtotal").textContent = dinheiro(v.subtotal);
+  $("precoFinal").textContent = dinheiro(v.precoIdeal);
+  return v;
+}
+
+function onInputCalculadora(){ recalcular(); salvarConfig(); }
+function salvarConfig(){ safeSet(STORAGE.config, JSON.stringify({ precoRolo: $("precoRolo").value, pesoRolo: $("pesoRolo").value, potenciaWatts: $("potenciaWatts").value, tarifaLuz: $("tarifaLuz").value, margem: $("margem").value, custosExtras: $("custosExtras").value })) }
+function carregarConfig(){
+  try{
+    const c = JSON.parse(safeGet(STORAGE.config,"{}"));
+    for(const [k,id] of Object.entries({precoRolo:"precoRolo", pesoRolo:"pesoRolo", potenciaWatts:"potenciaWatts", tarifaLuz:"tarifaLuz", margem:"margem", custosExtras:"custosExtras"}))
+      if(c[k]!==undefined) $(id).value = c[k];
+  }catch{}
+}
+
+/* Leitura 3MF */
+async function lerZip3MF(file){
+  const buf=await file.arrayBuffer(),dv=new DataView(buf),u8=new Uint8Array(buf);
+  let eocd=-1;
+  for(let i=u8.length-22;i>=Math.max(0,u8.length-65558);i--){if(dv.getUint32(i,true)===0x06054b50){eocd=i;break}}
+  if(eocd<0)throw new Error("ZIP inválido");
+  const cdSize=dv.getUint32(eocd+12,true),cdOff=dv.getUint32(eocd+16,true),out={};
+  let p=cdOff;
+  while(p<cdOff+cdSize){
+    if(dv.getUint32(p,true)!==0x02014b50)break;
+    const method=dv.getUint16(p+10,true),csize=dv.getUint32(p+20,true),usize=dv.getUint32(p+24,true);
+    const nl=dv.getUint16(p+28,true),xl=dv.getUint16(p+30,true),cl=dv.getUint16(p+32,true),lo=dv.getUint32(p+42,true);
+    const name=new TextDecoder().decode(u8.slice(p+46,p+46+nl));
+    p+=46+nl+xl+cl;
+    if(dv.getUint32(lo,true)!==0x04034b50)continue;
+    const lnl=dv.getUint16(lo+26,true),lxl=dv.getUint16(lo+28,true),startData=lo+30+lnl+lxl,raw=u8.slice(startData,startData+csize);
+    let data;
+    if(method===0)data=raw;
+    else if(method===8){
+      try{
+        const ds=new DecompressionStream("deflate-raw");
+        const stream=new Blob([raw]).stream().pipeThrough(ds);
+        data=new Uint8Array(await new Response(stream).arrayBuffer());
+      }catch{continue;}
+    }else{continue;}
+    out[name]={data,size:usize};
+  }
+  return out;
+}
+function textOf(entry){return new TextDecoder("utf-8").decode(entry.data)}
+function extractTime(text){
+  if(!text)return 0;
+  for(let line of text.split(/\r?\n/)){
+    if(line.startsWith(';') && line.toLowerCase().includes('print time')){
+      const p=line.split(/[:=]/); if(p.length>1){const v=p.slice(1).join(':').trim(); return /^\d+$/.test(v)?Number(v)/3600:parseTempo(v);}
+    }
+  }
+  return 0;
+}
+function extractWeight(text){
+  if(!text)return 0;
+  for(let line of text.split(/\r?\n/)){
+    if(line.startsWith(';') && line.toLowerCase().includes('filament used') && line.toLowerCase().includes('g')){
+      const p=line.split(/[:=]/); if(p.length>1){const num=parseFloat(p[1].trim().replace(',','.')); if(Number.isFinite(num))return num;}
+    }
+  }
+  return 0;
+}
+function extractThumbnailFrom3MF(entries){
+  const thumbKeys=Object.keys(entries).filter(n=>/^Metadata\/.+\.(png|jpg|jpeg)$/i.test(n));
+  if(thumbKeys.length>0){const entry=entries[thumbKeys.find(n=>/plate_1/i.test(n))||thumbKeys[0]]; if(entry?.data)return new Blob([entry.data],{type:"image/png"});}
+  return null;
+}
+async function analisar3MF(file){
+  const entries=await lerZip3MF(file), texts=Object.keys(entries).filter(n=>/\.(config|json|xml|model|txt|gcode)$/i.test(n)).map(n=>textOf(entries[n])).join("\n");
+  return {nome:file.name.replace(/\.3mf$/i,""), peso:extractWeight(texts), horas:extractTime(texts), thumbBlob:extractThumbnailFrom3MF(entries)};
+}
+async function processarArquivo(file){
+  if(!file)return;
+  try{
+    $("analiseStatus").textContent="⏳ Lendo arquivo...";
+    const a=await analisar3MF(file);
+    arquivoAtual={file,analise:a};
+    $("nomeProduto").value=a.nome;
+    $("pesoPeca").value=Number(a.peso||0).toFixed(2);
+    if(a.horas){$("horasPeca").value=Number(a.horas).toFixed(2);$("tempoManual").value=formatarTempo(a.horas);}
+    $("analiseStatus").innerHTML=`<strong>✓ Lido com sucesso!</strong>`;
+    recalcular(); toast("Arquivo processado!");
+  }catch(e){$("analiseStatus").textContent="❌ Erro ao ler arquivo.";}
+}
+$("arquivoProjeto").addEventListener("change",e=>processarArquivo(e.target.files?.[0]));
+
+/* Catálogo com Geração Automática de QR Code */
+async function salvarProduto(){
+  const v=recalcular(), name=$("nomeProduto").value.trim()||"Produto", code=$("codigoProduto").value.trim()||uid().slice(0,8), categoria=$("categoriaProduto").value;
+  if(v.pesoPeca<=0&&v.horas<=0){toast("Informe peso ou tempo."); return;}
+  let old=null; if(itemEditandoIndex!==null)old=catalogo[itemEditandoIndex];
+  let thumbBase64=old?.thumbBase64||null;
+  if(arquivoAtual?.analise?.thumbBlob) thumbBase64=await blobToBase64(arquivoAtual.analise.thumbBlob);
+
+  const item={
+    id:old?.id||uid(), nome:name, codigo:code, categoria, peso:v.pesoPeca, horas:v.horas,
+    subtotal:v.subtotal, precoFinal:v.precoIdeal, observacoes:$("observacoes").value.trim(),
+    vintedLink:v.vintedLink, vintedData:v.vintedData,
+    thumbBase64, atualizadoEm:new Date().toISOString()
+  };
+  try{
+    toast("⏳ Sincronizando...");
+    await cloudSaveProduct(item);
+    itemEditandoIndex=null; await renderCatalogo();
+    toast("Salvo na nuvem com QR Code!"); limparFormulario(false);
+  }catch(e){toast("Erro ao salvar.");}
+}
+function adicionarAoCatalogo(){salvarProduto()}
+
+async function renderCatalogo(){
+  catalogo = await cloudGetProducts();
+  const div=$("catalogoCards"); $("catalogoCount").textContent=`${catalogo.length} produtos`;
+  div.innerHTML="";
+  if(!catalogo.length){div.innerHTML='<div class="empty">Nenhum produto cadastrado.</div>'; return;}
+  
+  catalogo.forEach((item, i)=>{
+    const card=document.createElement("article"); card.className="catalog-card";
+    card.innerHTML=`
+      <div class="catalog-body-grid">
+        <div class="catalog-thumb">${item.thumbBase64?`<img src="${item.thumbBase64}">`:'📦'}</div>
+        <div>
+          <div class="catalog-title">${esc(item.nome)}</div>
+          <div style="font-size:10px; color:var(--soft); margin-bottom:4px;">Ref: <strong>${esc(item.codigo)}</strong></div>
+          <div class="catalog-info"><span>Custo:</span> <strong>${dinheiro(item.subtotal)}</strong></div>
+          <div class="catalog-info"><span>Preço:</span> <strong style="color:var(--accent);">${dinheiro(item.precoFinal)}</strong></div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-top:6px; background:var(--card2); padding:6px; border-radius:8px;">
+        <span style="font-size:10px; color:var(--soft);">QR Code do Produto:</span>
+        <div id="qrcode-${i}" class="catalog-qrcode-box"></div>
+      </div>
+      <div class="catalog-actions">
+        <button class="btn btn-sm btn-outline" onclick="editarItem(${i})">✏️ Editar</button>
+        <button class="btn btn-sm btn-primary" onclick="abrirModalVenda(${i})">🛒 Vender Rápido</button>
+        <button class="btn btn-sm btn-danger" onclick="excluirItem(${i})">🗑️</button>
+      </div>`;
+    div.appendChild(card);
+
+    try {
+      new QRCode(document.getElementById(`qrcode-${i}`), {
+        text: String(item.codigo || item.id),
+        width: 80,
+        height: 80,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.M
+      });
+    } catch(err) {
+      console.error("Erro ao gerar QR Code para o item", i, err);
+    }
+  });
+}
+
+async function editarItem(i){
+  const item=catalogo[i]; if(!item)return;
+  itemEditandoIndex=i; nav("calc",document.querySelector('.nav-btn[data-page="calc"]'));
+  $("nomeProduto").value=item.nome||""; $("codigoProduto").value=item.codigo||""; $("categoriaProduto").value=item.categoria||"Outros";
+  $("pesoPeca").value=Number(item.peso||0).toFixed(2); $("horasPeca").value=Number(item.horas||0).toFixed(2);
+  $("tempoManual").value=formatarTempo(Number(item.horas||0)); $("observacoes").value=item.observacoes||"";
+  if($("vintedLink")) $("vintedLink").value = item.vintedLink || "";
+  if($("vintedData")) $("vintedData").value = item.vintedData || "";
+  arquivoAtual=null; recalcular(); toast("Carregado para edição.");
+}
+async function excluirItem(i){
+  const item=catalogo[i]; if(!item||!confirm("Excluir?"))return;
+  await cloudDeleteProduct(item.id); await renderCatalogo(); toast("Excluído.");
+}
+
+/* Modal de Venda Rápida direto no Catálogo */
+function abrirModalVenda(i){
+  const item = catalogo[i];
+  if(!item) return;
+  $("modalProdutoIndex").value = i;
+  $("modalTituloProduto").textContent = `Vender: ${item.nome}`;
+  $("modalCliente").value = "";
+  $("modalQtd").value = "1";
+  $("modalPrecoUnit").value = dinheiro(item.precoFinal);
+  calcularTotalModal();
+  $("modalVendaRapida").classList.add("active");
+}
+function fecharModalVenda(){
+  $("modalVendaRapida").classList.remove("active");
+}
+function calcularTotalModal(){
+  const i = $("modalProdutoIndex").value;
+  const item = catalogo[i];
+  if(!item) return;
+  const qtd = parseInt($("modalQtd").value) || 1;
+  const total = qtd * item.precoFinal;
+  $("modalTotalPreview").textContent = dinheiro(total);
+}
+function confirmarVendaRapida(){
+  const i = $("modalProdutoIndex").value;
+  const item = catalogo[i];
+  if(!item) return;
+  const qtd = parseInt($("modalQtd").value) || 1;
+  const cliente = $("modalCliente").value.trim() || "Avulso";
+  
+  vendasLista.unshift({
+    id: uid(),
+    nome: `${item.nome} (${cliente})`,
+    qtd,
+    total: qtd * item.precoFinal,
+    lucro: (qtd * item.precoFinal) - (qtd * item.subtotal),
+    dataISO: new Date().toISOString()
+  });
+
+  safeSet(STORAGE.vendas, JSON.stringify(vendasLista));
+  fecharModalVenda();
+  toast("Venda registrada com sucesso! ✅");
+}
+
+/* Vinted Manager Render */
+function renderVintedManager(){
+  const container = $("vintedListaContainer");
+  if(!container) return;
+  if(!catalogo.length){
+    container.innerHTML = '<div class="empty">Nenhum produto no catálogo para gerenciar.</div>';
+    return;
+  }
+
+  const hoje = new Date();
+  container.innerHTML = catalogo.map(item => {
+    let diasStr = "Sem data Vinted";
+    let statusBadge = '<span class="vinted-badge-ok">Sem Link</span>';
+    
+    if(item.vintedData){
+      const dataPost = new Date(item.vintedData);
+      const diffTime = hoje - dataPost;
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      
+      if(diffDays < 0) {
+        diasStr = "Data futura";
+      } else if(diffDays === 0) {
+        diasStr = "Postado hoje";
+      } else {
+        diasStr = `Postado há ${diffDays} dia(s)`;
+      }
+
+      if(diffDays >= 25){
+        statusBadge = '<span class="vinted-badge-warn">⚠️ Antigo (>25d) - Fazer Bump/Repost</span>';
+      } else {
+        statusBadge = '<span class="vinted-badge-ok">✓ Ativo recente</span>';
+      }
+    }
+
+    return `
+      <div class="history-item" style="flex-direction:column; align-items:flex-start; gap:4px;">
+        <div style="display:flex; justify-content:space-between; width:100%;">
+          <span class="history-title">${esc(item.nome)}</span>
+          ${statusBadge}
+        </div>
+        <div class="history-meta">Idade: ${diasStr} ${item.vintedData ? '('+item.vintedData.split('-').reverse().join('/')+')':''}</div>
+        <div style="display:flex; gap:8px; margin-top:4px; width:100%; align-items:center;">
+          ${item.vintedLink ? `<a href="${esc(item.vintedLink)}" target="_blank" class="btn btn-sm btn-outline" style="flex:1; text-decoration:none; text-align:center;">🔗 Abrir na Vinted</a>` : '<span style="font-size:10px; color:var(--soft);">Sem link cadastrado (edite o produto para adicionar)</span>'}
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+/* Marketing, Fotoroom & Gemini Integration */
+function salvarApiKeys(){
+  safeSet(STORAGE.fotoroomKey, $("fotoroomApiKey").value.trim());
+  safeSet(STORAGE.geminiKey, $("geminiApiKey").value.trim());
+  toast("Chaves de API salvas!");
+}
+function carregarApiKeysInput(){
+  if(safeGet(STORAGE.fotoroomKey)) $("fotoroomApiKey").value = safeGet(STORAGE.fotoroomKey);
+  if(safeGet(STORAGE.geminiKey)) $("geminiApiKey").value = safeGet(STORAGE.geminiKey);
+}
+function atualizarSelectMarketing(){
+  const sel=$("marketingProdutoSelect"); if(!sel)return;
+  sel.innerHTML='<option value="">-- Selecione um produto --</option>';
+  catalogo.forEach((p,i)=>{const opt=document.createElement("option"); opt.value=i; opt.textContent=p.nome; sel.appendChild(opt);});
+}
+function carregarMiniaturaMarketing(){
+  const idx=$("marketingProdutoSelect").value;
+  const container=$("marketingPreviewContainer");
+  if(idx==="" || !catalogo[idx]){
+    container.innerHTML="📦 Miniatura não carregada";
+    imagemMarketingBase64=null;
+    $("scriptVendasOutput").value="";
+    return;
+  }
+  const prod=catalogo[idx];
+  if(prod.thumbBase64){
+    imagemMarketingBase64=prod.thumbBase64;
+    container.innerHTML=`<img src="${prod.thumbBase64}">`;
+  } else {
+    container.innerHTML="📦 Sem miniatura disponível";
+    imagemMarketingBase64=null;
+  }
+  gerarScriptGemini();
+}
+
+async function gerarFotoProfissional(){
+  const apiKey=safeGet(STORAGE.fotoroomKey,"");
+  if(!apiKey){toast("Insira a chave da API Fotoroom!"); return;}
+  if(!imagemMarketingBase64){toast("Selecione um produto com miniatura!"); return;}
+
+  toast("⏳ Gerando foto profissional...");
+  try {
+    const res = await fetch(imagemMarketingBase64);
+    const blob = await res.blob();
+    const formData = new FormData();
+    formData.append("image_file", blob, "produto.png");
+    formData.append("background", "studio");
+
+    const response = await fetch("https://sdk.fotoroom.com/v1/segment", {
+      method: "POST",
+      headers: { "x-api-key": apiKey },
+      body: formData
+    });
+
+    if(!response.ok) throw new Error("Erro na API Fotoroom");
+
+    const resultBlob = await response.blob();
+    const reader = new FileReader();
+    reader.onload = function(e){
+      const imageUrl = e.target.result;
+      $("marketingPreviewContainer").innerHTML=`<img src="${imageUrl}">`;
+      toast("Foto gerada com sucesso! ✨");
+    }
+    reader.readAsDataURL(resultBlob);
+  } catch(e) {
+    console.error(e);
+    toast("❌ Erro ao conectar com o Fotoroom.");
+  }
+}
+
+async function gerarScriptGemini(){
+  const idx=$("marketingProdutoSelect").value;
+  if(idx==="" || !catalogo[idx]){
+    $("scriptVendasOutput").value = "Selecione um produto para gerar a copy.";
+    return;
+  }
+  const prod = catalogo[idx];
+  const estilo = $("geminiEstilo").value;
+  const apiKey = safeGet(STORAGE.geminiKey, "");
+
+  if(!apiKey){
+    let copyFallback = `Transforme seu ambiente com o incrível ${prod.nome}! Produzido em impressão 3D de alta qualidade na A1 Mini, unindo design exclusivo e resistência. Garanta já o seu por ${dinheiro(prod.precoFinal)}! 🚀`;
+    if(estilo === 'descontraido') copyFallback = `Olha que peça irada saiu da Bambu A1 Mini! 🔥 O ${prod.nome} tá disponível por apenas ${dinheiro(prod.precoFinal)}. Corre que é limitado! 📦✨`;
+    if(estilo === 'tecnico') copyFallback = `Especificações técnicas: ${prod.nome}. Categoria: ${prod.categoria}. Impresso com precisão e material otimizado. Preço: ${dinheiro(prod.precoFinal)}.`;
+    $("scriptVendasOutput").value = copyFallback;
+    return;
+  }
+
+  toast("⏳ Gemini gerando copy...");
+  try {
+    const promptText = `Escreva um texto de vendas para redes sociais/Vinted para uma peça impressa em 3D chamada "${prod.nome}", categoria ${prod.categoria}, preço ${dinheiro(prod.precoFinal)}. O estilo deve ser: ${estilo}. Use emojis adequados.`;
+    
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+    });
+
+    const data = await response.json();
+    const textoGerado = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if(textoGerado) {
+      $("scriptVendasOutput").value = textoGerado.trim();
+      toast("Copy gerada com IA! ✨");
+    } else {
+      throw new Error("Resposta inválida da API Gemini");
+    }
+  } catch(e) {
+    console.error(e);
+    toast("❌ Erro ao gerar com Gemini. Verifique a API Key.");
+  }
+}
+
+function copiarScript(){
+  const text=$("scriptVendasOutput").value;
+  if(!text)return;
+  navigator.clipboard.writeText(text);
+  toast("Script copiado! 📋");
+}
+
+/* Scanner de QR / Barcode (ZXing) */
+function toggleScanner(){
+  if(isScanning){ pararScanner(); }
+  else { iniciarScanner(); }
+}
+
+function iniciarScanner(){
+  const videoElement = $("videoScanner");
+  videoElement.style.display = "block";
+  $("btnToggleScanner").textContent = "Parar Câmera";
+  $("scannerStatus").textContent = "A apontar para o código...";
+  
+  codeReader = new ZXing.BrowserBarcodeReader();
+  codeReader.decodeFromVideoDevice(null, 'videoScanner', (result, err) => {
+    if (result) {
+      const codigoLido = result.getText();
+      pararScanner();
+      encontrarProdutoPorCodigo(codigoLido);
+    }
+  }).catch(err => {
+    console.error(err);
+    $("scannerStatus").textContent = "Erro ao acessar a câmera.";
+    pararScanner();
+  });
+  isScanning = true;
+}
+
+function pararScanner(){
+  if(codeReader){
+    codeReader.reset();
+    codeReader = null;
+  }
+  const videoElement = $("videoScanner");
+  if(videoElement) videoElement.style.display = "none";
+  if($("btnToggleScanner")) $("btnToggleScanner").textContent = "Iniciar Câmera";
+  if($("scannerStatus")) $("scannerStatus").textContent = "Câmera desligada.";
+  isScanning = false;
+}
+
+function encontrarProdutoPorCodigo(codigo){
+  const index = catalogo.findIndex(p => String(p.codigo).trim().toLowerCase() === String(codigo).trim().toLowerCase());
+  if(index !== -1){
+    abrirModalVenda(index);
+    toast(`Produto escaneado: ${catalogo[index].nome} 🎉`);
+  } else {
+    toast(`Código "${codigo}" não encontrado no catálogo ❌`);
+  }
+}
+
+/* Vendas */
+function atualizarSelectCatalogoVendas(){
+  const sel=$("vendaProdutoSelect"); if(!sel)return;
+  sel.innerHTML='<option value="">-- Venda avulsa --</option>';
+  catalogo.forEach((p,i)=>{const opt=document.createElement("option"); opt.value=i; opt.textContent=`${p.nome} (${dinheiro(p.precoFinal)}) [Ref: ${p.codigo}]`; sel.appendChild(opt);});
+}
+function preencherDadosVenda(){
+  const i=$("vendaProdutoSelect").value;
+  if(i===""){ $("vendaNome").value=""; $("vendaPrecoUnit").value="0"; $("vendaCustoUnit").value="0"; }
+  else{ const p=catalogo[Number(i)]; $("vendaNome").value=p.nome; $("vendaPrecoUnit").value=p.precoFinal.toFixed(2); $("vendaCustoUnit").value=p.subtotal.toFixed(2); }
+  calcularTotalVendaForm();
+}
+function venderItem(i){ abrirModalVenda(i); }
+function calcularTotalVendaForm(){$("vendaTotalPreview").textContent=dinheiro((parseFloat($("vendaQtd").value)||1)*(parseFloat($("vendaPrecoUnit").value)||0));}
+function registrarVenda(){
+  const nome=$("vendaNome").value.trim()||"Avulso", qtd=parseInt($("vendaQtd").value)||1, preco=parseFloat($("vendaPrecoUnit").value)||0, custo=parseFloat($("vendaCustoUnit").value)||0;
+  if(preco<=0)return toast("Informe o preço.");
+  
+  vendasLista.unshift({
+    id:uid(), nome, qtd, total:qtd*preco, lucro:(qtd*preco)-(qtd*custo), dataISO:new Date().toISOString()
+  });
+  safeSet(STORAGE.vendas, JSON.stringify(vendasLista)); 
+  atualizarPainelVendas(); 
+  toast("Venda registrada!");
+}
+function limparVendas(){vendasLista=[]; safeSet(STORAGE.vendas,"[]"); atualizarPainelVendas();}
+function atualizarPainelVendas(){
+  try{vendasLista=JSON.parse(safeGet(STORAGE.vendas,"[]"))}catch{vendasLista=[]}
+  const periodo = $("filtroPeriodo") ? $("filtroPeriodo").value : "todos";
+  const hojeStr = new Date().toISOString().slice(0, 10);
+  const mesAtualStr = new Date().toISOString().slice(0, 7);
+
+  const vendasFiltradas = vendasLista.filter(v => {
+    if(!v.dataISO) return true;
+    const dataVendaStr = v.dataISO.slice(0, 10);
+    const mesVendaStr = v.dataISO.slice(0, 7);
+    if(periodo === "hoje") return dataVendaStr === hojeStr;
+    if(periodo === "mes") return mesVendaStr === mesAtualStr;
+    return true;
+  });
+
+  let fat=0, luc=0; vendasFiltradas.forEach(v=>{fat+=v.total; luc+=v.lucro;});
+  $("resumoFaturamento").textContent=dinheiro(fat); $("resumoLucro").textContent=dinheiro(luc);
+  const c=$("listaVendasContainer");
+  if(!vendasFiltradas.length){c.innerHTML='<div class="empty">Nenhuma venda encontrada.</div>'; return;}
+  c.innerHTML=vendasFiltradas.map(v=>`<div class="history-item"><div class="history-main"><div class="history-title">${esc(v.nome)} (${v.qtd}x)</div><div class="history-meta">Lucro: ${dinheiro(v.lucro)} ${v.dataISO ? '• '+v.dataISO.slice(0,10).split('-').reverse().join('/') : ''}</div></div><strong>${dinheiro(v.total)}</strong></div>`).join("");
+}
+
+/* Histórico */
+function registrarHistorico(){
+  const v=recalcular(); if(v.pesoPeca<=0)return toast("Informe dados.");
+  historicoCalc.unshift({nome:$("nomeProduto").value.trim()||"Cálculo", subtotal:v.subtotal, precoIdeal:v.precoIdeal});
+  safeSet(STORAGE.historico, JSON.stringify(historicoCalc)); atualizarHistorico(); toast("Registrado.");
+}
+function atualizarHistorico(){
+  try{historicoCalc=JSON.parse(safeGet(STORAGE.historico,"[]"))}catch{historicoCalc=[]}
+  const c=$("historicoCalc");
+  if(!historicoCalc.length){c.innerHTML='<div class="empty">Sem histórico.</div>'; return;}
+  c.innerHTML=historicoCalc.map(x=>`<div class="history-item"><div class="history-main"><div class="history-title">${esc(x.nome)}</div><div class="history-meta">Subtotal: ${dinheiro(x.subtotal)}</div></div><strong>${dinheiro(x.precoIdeal)}</strong></div>`).join("");
+}
+
+function limparFormulario(show=true){
+  itemEditandoIndex=null; arquivoAtual=null; $("pesoPeca").value="0"; $("tempoManual").value=""; $("horasPeca").value="0";
+  $("nomeProduto").value=""; $("codigoProduto").value=""; $("observacoes").value=""; $("arquivoProjeto").value="";
+  if($("vintedLink")) $("vintedLink").value=""; if($("vintedData")) $("vintedData").value="";
+  $("analiseStatus").textContent="Nenhum arquivo enviado."; recalcular(); if(show)toast("Limpo.");
+}
+
+window.addEventListener('firebase-ready', async ()=>{
+  carregarConfig(); applyTheme(safeGet(STORAGE.theme,"dark")); recalcular();
+  try{await renderCatalogo();}catch(e){}
+  atualizarSelectCatalogoVendas(); atualizarPainelVendas(); atualizarHistorico();
+});
+</script>
+</body>
+</html>
+
+```
