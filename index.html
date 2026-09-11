@@ -453,7 +453,7 @@ input[type="file"]{ padding: 6px; }
 <script>
 "use strict";
 
-const STORAGE={config:"config3d",theme:"theme3d",historico:"historicoCalc3d",vendas:"vendas3d",fotoroomKey:"fotoroomApiKey3d",geminiKey:"geminiApiKey3d"};
+const STORAGE={config:"config3d",theme:"theme3d",historico:"historicoCalc3d",vendas:"vendas3d",fotoroomKey:"fotoroomApiKey3d",geminiKey:"geminiApiKey3d", arquivosCache:"arquivosCache3d"};
 let catalogo=[], historicoCalc=[], vendasLista=[], itemEditandoIndex=null, arquivoAtual=null, imagemMarketingBase64=null;
 let codeReader = null, isScanning = false;
 
@@ -493,6 +493,22 @@ async function blobToBase64(blob){
     reader.onerror = rej;
     reader.readAsDataURL(blob);
   });
+}
+
+/* Cache local para arquivos pesados (3MF / GCODE) */
+function salvarArquivoCache(id, base64, nome){
+  try{
+    let cache = JSON.parse(safeGet(STORAGE.arquivosCache, "{}"));
+    cache[id] = { base64, nome };
+    safeSet(STORAGE.arquivosCache, JSON.stringify(cache));
+  }catch(e){console.error("Erro ao salvar cache de arquivo", e);}
+}
+
+function recuperarArquivoCache(id){
+  try{
+    let cache = JSON.parse(safeGet(STORAGE.arquivosCache, "{}"));
+    return cache[id] || null;
+  }catch{return null;}
 }
 
 /* Firestore Cloud */
@@ -580,7 +596,7 @@ function carregarConfig(){
   try{
     const c = JSON.parse(safeGet(STORAGE.config,"{}"));
     for(const [k,id] of Object.entries({precoRolo:"precoRolo", pesoRolo:"pesoRolo", potenciaWatts:"potenciaWatts", tarifaLuz:"tarifaLuz", margem:"margem", custosExtras:"custosExtras"}))
-      if(c[k]!==undefined) $(id) = c[k];
+      if(c[k]!==undefined) $(id).value = c[k];
   }catch{}
 }
 
@@ -695,32 +711,34 @@ async function processarArquivo(file){
 }
 $("arquivoProjeto").addEventListener("change",e=>processarArquivo(e.target.files?.[0]));
 
-/* Catálogo com Geração Automática de QR Code & Arquivo Original para Bambu Studio */
+/* Catálogo com Abertura e Armazenamento Otimizado para Bambu Studio */
 async function salvarProduto(){
   const v=recalcular(), name=$("nomeProduto").value.trim()||"Produto", code=$("codigoProduto").value.trim()||uid().slice(0,8), categoria=$("categoriaProduto").value;
   if(v.pesoPeca<=0&&v.horas<=0){toast("Informe peso ou tempo."); return;}
   let old=null; if(itemEditandoIndex!==null)old=catalogo[itemEditandoIndex];
   let thumbBase64=old?.thumbBase64||null;
-  let fileBase64=old?.fileBase64||null;
-  let fileName=old?.fileName||(name+".3mf");
+  let itemId = old?.id || uid();
+  let fileName = old?.fileName || (name + ".3mf");
 
   if(arquivoAtual?.analise?.thumbBlob) thumbBase64=await blobToBase64(arquivoAtual.analise.thumbBlob);
   if(arquivoAtual?.file){
-    fileBase64=await blobToBase64(arquivoAtual.file);
-    fileName=arquivoAtual.file.name;
+    fileName = arquivoAtual.file.name;
+    const fileB64 = await blobToBase64(arquivoAtual.file);
+    salvarArquivoCache(itemId, fileB64, fileName);
   }
 
   const item={
-    id:old?.id||uid(), nome:name, codigo:code, categoria, peso:v.pesoPeca, horas:v.horas,
+    id:itemId, nome:name, codigo:code, categoria, peso:v.pesoPeca, horas:v.horas,
     subtotal:v.subtotal, precoFinal:v.precoIdeal, observacoes:$("observacoes").value.trim(),
     vintedLink:v.vintedLink, vintedData:v.vintedData,
-    thumbBase64, fileBase64, fileName, atualizadoEm:new Date().toISOString()
+    thumbBase64, fileName, temArquivoCache: !!arquivoAtual?.file || (old?.temArquivoCache || false),
+    atualizadoEm:new Date().toISOString()
   };
   try{
     toast("⏳ Sincronizando com a Nuvem...");
     await cloudSaveProduct(item);
     itemEditandoIndex=null; await renderCatalogo();
-    toast("Salvo na nuvem com sucesso! 🚀"); limparFormulario(false);
+    toast("Salvo com sucesso! 🚀"); limparFormulario(false);
   }catch(e){toast("Erro ao salvar.");}
 }
 function adicionarAoCatalogo(){salvarProduto()}
@@ -732,6 +750,7 @@ async function renderCatalogo(){
   if(!catalogo.length){div.innerHTML='<div class="empty">Nenhum produto cadastrado.</div>'; return;}
   
   catalogo.forEach((item, i)=>{
+    const cacheInfo = recuperarArquivoCache(item.id);
     const card=document.createElement("article"); card.className="catalog-card";
     card.innerHTML=`
       <div class="catalog-body-grid">
@@ -748,7 +767,7 @@ async function renderCatalogo(){
         <div id="qrcode-${i}" class="catalog-qrcode-box"></div>
       </div>
       <div class="catalog-actions">
-        ${item.fileBase64 ? `<button class="btn btn-sm btn-primary" onclick="abrirNoBambuStudio(${i})">🎨 Bambu Studio</button>` : ''}
+        ${cacheInfo ? `<button class="btn btn-sm btn-primary" onclick="abrirNoBambuStudio('${item.id}')">🎨 Bambu Studio</button>` : '<span style="font-size:10px; color:var(--warning); padding:4px;">⚠️ Envie o arquivo novamente para ativar o botão</span>'}
         <button class="btn btn-sm btn-outline" onclick="editarItem(${i})">✏️ Editar</button>
         <button class="btn btn-sm btn-primary" onclick="abrirModalVenda(${i})">🛒 Vender</button>
         <button class="btn btn-sm btn-danger" onclick="excluirItem(${i})">🗑️</button>
@@ -770,22 +789,21 @@ async function renderCatalogo(){
   });
 }
 
-function abrirNoBambuStudio(i){
-  const item = catalogo[i];
-  if(!item || !item.fileBase64) {
-    toast("Nenhum arquivo 3MF/GCODE vinculado a este produto.");
+function abrirNoBambuStudio(id){
+  const cache = recuperarArquivoCache(id);
+  if(!cache || !cache.base64) {
+    toast("Arquivo não encontrado neste dispositivo. Edite o produto e envie o 3MF/GCODE novamente.");
     return;
   }
   
-  // Cria um link temporário para baixar o arquivo original salvo na nuvem
   const a = document.createElement('a');
-  a.href = item.fileBase64;
-  a.download = item.fileName || "projeto.3mf";
+  a.href = cache.base64;
+  a.download = cache.nome || "projeto.3mf";
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   
-  toast("Arquivo baixado! Basta abrir no Bambu Studio 🎨");
+  toast("Baixando arquivo para abrir no Bambu Studio! 🎨");
 }
 
 async function editarItem(i){
