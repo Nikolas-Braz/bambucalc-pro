@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="description" content="BambuCalc 3D PRO - Versão Mobile Ajustada">
+<meta name="description" content="BambuCalc 3D PRO - Catálogo com Abertura Bambu Studio">
 <title>BambuCalc 3D PRO</title>
 
 <!-- Configuração PWA (Manifest inline) -->
@@ -75,7 +75,7 @@ button{ cursor:pointer; }
 
 .app{ display:flex; flex-direction:column; min-height:100vh; max-width: 600px; margin: 0 auto; box-shadow: 0 0 40px rgba(0,0,0,0.5); background: var(--bg); }
 
-/* NAVBAR INFERIOR (ESTILO APP MOBILE) COM 6 ABAS - TAMANHO CORRIGIDO */
+/* NAVBAR INFERIOR (ESTILO APP MOBILE) COM 6 ABAS */
 .sidebar{ 
     position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 75px; 
     background: var(--panel); border-top: 1px solid var(--border); 
@@ -580,7 +580,7 @@ function carregarConfig(){
   try{
     const c = JSON.parse(safeGet(STORAGE.config,"{}"));
     for(const [k,id] of Object.entries({precoRolo:"precoRolo", pesoRolo:"pesoRolo", potenciaWatts:"potenciaWatts", tarifaLuz:"tarifaLuz", margem:"margem", custosExtras:"custosExtras"}))
-      if(c[k]!==undefined) $(id).value = c[k];
+      if(c[k]!==undefined) $(id) = c[k];
   }catch{}
 }
 
@@ -695,25 +695,32 @@ async function processarArquivo(file){
 }
 $("arquivoProjeto").addEventListener("change",e=>processarArquivo(e.target.files?.[0]));
 
-/* Catálogo com Geração Automática de QR Code */
+/* Catálogo com Geração Automática de QR Code & Arquivo Original para Bambu Studio */
 async function salvarProduto(){
   const v=recalcular(), name=$("nomeProduto").value.trim()||"Produto", code=$("codigoProduto").value.trim()||uid().slice(0,8), categoria=$("categoriaProduto").value;
   if(v.pesoPeca<=0&&v.horas<=0){toast("Informe peso ou tempo."); return;}
   let old=null; if(itemEditandoIndex!==null)old=catalogo[itemEditandoIndex];
   let thumbBase64=old?.thumbBase64||null;
+  let fileBase64=old?.fileBase64||null;
+  let fileName=old?.fileName||(name+".3mf");
+
   if(arquivoAtual?.analise?.thumbBlob) thumbBase64=await blobToBase64(arquivoAtual.analise.thumbBlob);
+  if(arquivoAtual?.file){
+    fileBase64=await blobToBase64(arquivoAtual.file);
+    fileName=arquivoAtual.file.name;
+  }
 
   const item={
     id:old?.id||uid(), nome:name, codigo:code, categoria, peso:v.pesoPeca, horas:v.horas,
     subtotal:v.subtotal, precoFinal:v.precoIdeal, observacoes:$("observacoes").value.trim(),
     vintedLink:v.vintedLink, vintedData:v.vintedData,
-    thumbBase64, atualizadoEm:new Date().toISOString()
+    thumbBase64, fileBase64, fileName, atualizadoEm:new Date().toISOString()
   };
   try{
-    toast("⏳ Sincronizando...");
+    toast("⏳ Sincronizando com a Nuvem...");
     await cloudSaveProduct(item);
     itemEditandoIndex=null; await renderCatalogo();
-    toast("Salvo na nuvem com QR Code!"); limparFormulario(false);
+    toast("Salvo na nuvem com sucesso! 🚀"); limparFormulario(false);
   }catch(e){toast("Erro ao salvar.");}
 }
 function adicionarAoCatalogo(){salvarProduto()}
@@ -741,8 +748,9 @@ async function renderCatalogo(){
         <div id="qrcode-${i}" class="catalog-qrcode-box"></div>
       </div>
       <div class="catalog-actions">
+        ${item.fileBase64 ? `<button class="btn btn-sm btn-primary" onclick="abrirNoBambuStudio(${i})">🎨 Bambu Studio</button>` : ''}
         <button class="btn btn-sm btn-outline" onclick="editarItem(${i})">✏️ Editar</button>
-        <button class="btn btn-sm btn-primary" onclick="abrirModalVenda(${i})">🛒 Vender Rápido</button>
+        <button class="btn btn-sm btn-primary" onclick="abrirModalVenda(${i})">🛒 Vender</button>
         <button class="btn btn-sm btn-danger" onclick="excluirItem(${i})">🗑️</button>
       </div>`;
     div.appendChild(card);
@@ -760,6 +768,24 @@ async function renderCatalogo(){
       console.error("Erro ao gerar QR Code para o item", i, err);
     }
   });
+}
+
+function abrirNoBambuStudio(i){
+  const item = catalogo[i];
+  if(!item || !item.fileBase64) {
+    toast("Nenhum arquivo 3MF/GCODE vinculado a este produto.");
+    return;
+  }
+  
+  // Cria um link temporário para baixar o arquivo original salvo na nuvem
+  const a = document.createElement('a');
+  a.href = item.fileBase64;
+  a.download = item.fileName || "projeto.3mf";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  
+  toast("Arquivo baixado! Basta abrir no Bambu Studio 🎨");
 }
 
 async function editarItem(i){
