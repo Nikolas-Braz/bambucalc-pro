@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="description" content="BambuCalc 3D PRO - Versão Mobile Completa com Suporte a 3MF e GCode">
+<meta name="description" content="BambuCalc 3D PRO - Leitura Otimizada de Tempo e Peso">
 <title>BambuCalc 3D PRO</title>
 
 <!-- Configuração PWA (Manifest inline) -->
@@ -514,7 +514,30 @@ async function cloudDeleteProduct(id){
 }
 
 /* Cálculos de Custo incluindo Energia A1 Mini */
-function parseTempo(v){v=(v||"").trim().toLowerCase().replace(",",".");if(!v)return 0;let m=v.match(/^(\d+(?:\.\d+)?)\s*:\s*(\d{1,2})$/);if(m){const mm=+m[2];return mm<60?+m[1]+mm/60:0}m=v.match(/^(?:(\d+(?:\.\d+)?)\s*h)?\s*(?:(\d+(?:\.\d+)?)\s*m)?$/);if(m&&(m[1]||m[2]))return +(m[1]||0)+(+m[2]||0)/60;m=v.match(/^(\d+(?:\.\d+)?)\s*h$/);if(m)return +m[1];m=v.match(/^(\d+(?:\.\d+)?)\s*m$/);if(m)return +m[1]/60;m=v.match(/^\d+(?:\.\d+)?$/);return m?+m[0]:0}
+function parseTempo(v){
+  if(!v) return 0;
+  v = String(v).trim().toLowerCase();
+  
+  // Se for apenas segundos ou número de segundos bruto
+  if(/^\d+$/.test(v) && parseInt(v) > 1000) {
+    return parseInt(v) / 3600;
+  }
+
+  // Tenta formato horas, minutos e segundos (ex: 1h 30m 15s ou 01:30:15)
+  let mTime = v.match(/(?:(\d+(?:\.\d+)?)\s*h)?\s*(?:(\d+(?:\.\d+)?)\s*m)?\s*(?:(\d+(?:\.\d+)?)\s*s)?/);
+  if(mTime && (mTime[1] || mTime[2] || mTime[3])) {
+    return +(mTime[1]||0) + (+mTime[2]||0)/60 + (+mTime[3]||0)/3600;
+  }
+
+  let m = v.match(/^(\d+(?:\.\d+)?)\s*:\s*(\d{1,2})(?:\s*:\s*(\d{1,2}))?$/);
+  if(m){
+    const h = +m[1], mm = +m[2], ss = m[3] ? +m[3] : 0;
+    return h + mm/60 + ss/3600;
+  }
+  
+  return parseFloat(v) || 0;
+}
+
 function formatarTempo(h){if(!Number.isFinite(h)||h<=0)return "";let total=Math.round(h*60),hh=Math.floor(total/60),mm=total%60;return hh?`${hh}h${mm?mm+"m":""}`:`${mm}m`}
 function converterTempoManual(show=false){const h=parseTempo($("tempoManual").value);$("horasPeca").value=h.toFixed(2);recalcular();return h}
 function numero(id,d=0){const n=parseFloat($(id).value);return Number.isFinite(n)?n:d}
@@ -598,11 +621,12 @@ function extractTimeFromText(text){
   if(!text)return 0;
   for(let line of text.split(/\r?\n/)){
     let lower = line.toLowerCase();
-    if(line.startsWith(';') && (lower.includes('print time') || lower.includes('estimated printing time') || lower.includes('total time'))){
-      const p=line.split(/[:=]/); 
-      if(p.length>1){
-        const v=p.slice(1).join(':').trim(); 
-        return /^\d+$/.test(v)?Number(v)/3600:parseTempo(v);
+    if(line.startsWith(';') && (lower.includes('print time') || lower.includes('estimated printing time') || lower.includes('total time') || lower.includes('time:'))){
+      const p = line.split(/[:=]/); 
+      if(p.length > 1){
+        const v = p.slice(1).join(':').trim();
+        const parsed = parseTempo(v);
+        if(parsed > 0) return parsed;
       }
     }
   }
@@ -633,8 +657,7 @@ function extractThumbnailFrom3MF(entries){
 async function analisarArquivoProjeto(file){
   const nomeLimpo = file.name.replace(/\.(3mf|gcode)$/i,"");
   if(file.name.toLowerCase().endsWith('.gcode')){
-    // Leitura otimizada para arquivos .gcode (lê o cabeçalho)
-    const textChunk = await file.slice(0, 500000).text(); // Lê os primeiros 500KB onde ficam os metadados do Bambu
+    const textChunk = await file.slice(0, 1000000).text(); // Lê os primeiros 1MB para capturar o cabeçalho completo do G-code
     return {
       nome: nomeLimpo,
       peso: extractWeightFromText(textChunk),
@@ -642,7 +665,6 @@ async function analisarArquivoProjeto(file){
       thumbBlob: null
     };
   } else {
-    // Leitura para .3mf
     const entries = await lerZip3MF(file);
     const texts = Object.keys(entries).filter(n=>/\.(config|json|xml|model|txt|gcode)$/i.test(n)).map(n=>textOf(entries[n])).join("\n");
     return {
@@ -662,7 +684,10 @@ async function processarArquivo(file){
     arquivoAtual={file,analise:a};
     $("nomeProduto").value=a.nome;
     $("pesoPeca").value=Number(a.peso||0).toFixed(2);
-    if(a.horas){$("horasPeca").value=Number(a.horas).toFixed(2);$("tempoManual").value=formatarTempo(a.horas);}
+    if(a.horas){
+      $("horasPeca").value=Number(a.horas).toFixed(2);
+      $("tempoManual").value=formatarTempo(a.horas);
+    }
     $("analiseStatus").innerHTML=`<strong>✓ Lido com sucesso! (${a.peso}g | ${formatarTempo(a.horas)})</strong>`;
     recalcular(); toast("Arquivo processado!");
   }catch(e){
