@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="description" content="BambuCalc 3D PRO - Versão Mobile Completa com Firebase Configurado">
+<meta name="description" content="BambuCalc 3D PRO - Versão Mobile Completa com Suporte a 3MF e GCode">
 <title>BambuCalc 3D PRO</title>
 
 <!-- Configuração PWA (Manifest inline) -->
@@ -14,7 +14,6 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, getDocs, setDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  // CREDENCIAIS DO FIREBASE DO USUÁRIO CONFIGURADAS
   const firebaseConfig = {
     apiKey: "AIzaSyCD0oMZ8Lkb-Tow1kPw2GPMu2IW6MEGyxY",
     authDomain: "bambucalc3d.firebaseapp.com",
@@ -217,19 +216,19 @@ input[type="file"]{ padding: 6px; }
     <section id="page-calc" class="page active">
       <div class="page-header">
         <div class="page-title">Calculadora Automática</div>
-        <div class="page-subtitle">Envie seu arquivo .3mf ou preencha os dados (A1 Mini).</div>
+        <div class="page-subtitle">Envie seu arquivo .3mf ou .gcode (A1 Mini).</div>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <div><div class="card-title">🚀 Enviar Arquivo 3MF</div></div>
+          <div><div class="card-title">🚀 Enviar Arquivo 3MF ou GCODE</div></div>
           <span class="badge" id="arquivoTipoBadge">Pronto</span>
         </div>
         <label class="dropzone" for="arquivoProjeto">
           <div class="drop-icon">📦</div>
-          <div class="drop-title">Toque para selecionar o .3mf</div>
+          <div class="drop-title">Toque para selecionar o arquivo</div>
           <div class="drop-sub">Extração automática de peso e tempo</div>
-          <input id="arquivoProjeto" type="file" accept=".3mf,application/vnd.ms-package.3dmanufacturing-3dmodel+xml">
+          <input id="arquivoProjeto" type="file" accept=".3mf,.gcode,application/vnd.ms-package.3dmanufacturing-3dmodel+xml">
         </label>
         <div id="analiseStatus" class="analysis-status">Nenhum arquivo enviado.</div>
       </div>
@@ -564,7 +563,7 @@ function carregarConfig(){
   }catch{}
 }
 
-/* Leitura 3MF */
+/* Leitura de Arquivo 3MF ou GCODE */
 async function lerZip3MF(file){
   const buf=await file.arrayBuffer(),dv=new DataView(buf),u8=new Uint8Array(buf);
   let eocd=-1;
@@ -594,45 +593,82 @@ async function lerZip3MF(file){
   return out;
 }
 function textOf(entry){return new TextDecoder("utf-8").decode(entry.data)}
-function extractTime(text){
+
+function extractTimeFromText(text){
   if(!text)return 0;
   for(let line of text.split(/\r?\n/)){
-    if(line.startsWith(';') && line.toLowerCase().includes('print time')){
-      const p=line.split(/[:=]/); if(p.length>1){const v=p.slice(1).join(':').trim(); return /^\d+$/.test(v)?Number(v)/3600:parseTempo(v);}
+    let lower = line.toLowerCase();
+    if(line.startsWith(';') && (lower.includes('print time') || lower.includes('estimated printing time') || lower.includes('total time'))){
+      const p=line.split(/[:=]/); 
+      if(p.length>1){
+        const v=p.slice(1).join(':').trim(); 
+        return /^\d+$/.test(v)?Number(v)/3600:parseTempo(v);
+      }
     }
   }
   return 0;
 }
-function extractWeight(text){
+
+function extractWeightFromText(text){
   if(!text)return 0;
   for(let line of text.split(/\r?\n/)){
-    if(line.startsWith(';') && line.toLowerCase().includes('filament used') && line.toLowerCase().includes('g')){
-      const p=line.split(/[:=]/); if(p.length>1){const num=parseFloat(p[1].trim().replace(',','.')); if(Number.isFinite(num))return num;}
+    let lower = line.toLowerCase();
+    if(line.startsWith(';') && (lower.includes('filament used') || lower.includes('filament weight')) && lower.includes('g')){
+      const p=line.split(/[:=]/); 
+      if(p.length>1){
+        const num=parseFloat(p[1].trim().replace(',','.').replace(/[^\d.]/g,'')); 
+        if(Number.isFinite(num) && num > 0) return num;
+      }
     }
   }
   return 0;
 }
+
 function extractThumbnailFrom3MF(entries){
   const thumbKeys=Object.keys(entries).filter(n=>/^Metadata\/.+\.(png|jpg|jpeg)$/i.test(n));
   if(thumbKeys.length>0){const entry=entries[thumbKeys.find(n=>/plate_1/i.test(n))||thumbKeys[0]]; if(entry?.data)return new Blob([entry.data],{type:"image/png"});}
   return null;
 }
-async function analisar3MF(file){
-  const entries=await lerZip3MF(file), texts=Object.keys(entries).filter(n=>/\.(config|json|xml|model|txt|gcode)$/i.test(n)).map(n=>textOf(entries[n])).join("\n");
-  return {nome:file.name.replace(/\.3mf$/i,""), peso:extractWeight(texts), horas:extractTime(texts), thumbBlob:extractThumbnailFrom3MF(entries)};
+
+async function analisarArquivoProjeto(file){
+  const nomeLimpo = file.name.replace(/\.(3mf|gcode)$/i,"");
+  if(file.name.toLowerCase().endsWith('.gcode')){
+    // Leitura otimizada para arquivos .gcode (lê o cabeçalho)
+    const textChunk = await file.slice(0, 500000).text(); // Lê os primeiros 500KB onde ficam os metadados do Bambu
+    return {
+      nome: nomeLimpo,
+      peso: extractWeightFromText(textChunk),
+      horas: extractTimeFromText(textChunk),
+      thumbBlob: null
+    };
+  } else {
+    // Leitura para .3mf
+    const entries = await lerZip3MF(file);
+    const texts = Object.keys(entries).filter(n=>/\.(config|json|xml|model|txt|gcode)$/i.test(n)).map(n=>textOf(entries[n])).join("\n");
+    return {
+      nome: nomeLimpo,
+      peso: extractWeightFromText(texts),
+      horas: extractTimeFromText(texts),
+      thumbBlob: extractThumbnailFrom3MF(entries)
+    };
+  }
 }
+
 async function processarArquivo(file){
   if(!file)return;
   try{
     $("analiseStatus").textContent="⏳ Lendo arquivo...";
-    const a=await analisar3MF(file);
+    const a = await analisarArquivoProjeto(file);
     arquivoAtual={file,analise:a};
     $("nomeProduto").value=a.nome;
     $("pesoPeca").value=Number(a.peso||0).toFixed(2);
     if(a.horas){$("horasPeca").value=Number(a.horas).toFixed(2);$("tempoManual").value=formatarTempo(a.horas);}
-    $("analiseStatus").innerHTML=`<strong>✓ Lido com sucesso!</strong>`;
+    $("analiseStatus").innerHTML=`<strong>✓ Lido com sucesso! (${a.peso}g | ${formatarTempo(a.horas)})</strong>`;
     recalcular(); toast("Arquivo processado!");
-  }catch(e){$("analiseStatus").textContent="❌ Erro ao ler arquivo.";}
+  }catch(e){
+    console.error(e);
+    $("analiseStatus").textContent="❌ Erro ao ler arquivo.";
+  }
 }
 $("arquivoProjeto").addEventListener("change",e=>processarArquivo(e.target.files?.[0]));
 
