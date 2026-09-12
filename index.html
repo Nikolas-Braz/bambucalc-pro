@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="description" content="BambuCalc 3D PRO - Versão Definitiva">
+<meta name="description" content="BambuCalc 3D PRO - Versão Atualizada">
 <title>BambuCalc 3D PRO</title>
 
 <!-- Configuração PWA (Manifest inline) -->
@@ -782,7 +782,7 @@ async function vincularArquivoDiretoCatalogo(input){
   try {
     const base64 = await blobToBase64(file);
     salvarArquivoCache(idProdutoAlvoCache, base64, file.name);
-    toast("Arquivo anexado com sucesso! Botão liberado 🎨");
+    toast("Arquivo anexado e botão liberado! 🎨");
     idProdutoAlvoCache = null;
     input.value = "";
     await renderCatalogo();
