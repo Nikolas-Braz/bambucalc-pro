@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="description" content="BambuCalc 3D PRO - Versão Atualizada">
+<meta name="description" content="BambuCalc 3D PRO - Versão Definitiva">
 <title>BambuCalc 3D PRO</title>
 
 <!-- Configuração PWA (Manifest inline) -->
@@ -397,6 +397,9 @@ input[type="file"]{ padding: 6px; }
     </div>
   </div>
 
+  <!-- INPUT OCULTO PARA ANEXAR ARQUIVO DIRETO NO CATÁLOGO -->
+  <input type="file" id="inputArquivoCatalogo" style="display:none;" accept=".3mf,.gcode" onchange="vincularArquivoDiretoCatalogo(this)">
+
   <!-- NAVBAR INFERIOR FIXA PARA CELULAR (5 ABAS) -->
   <aside class="sidebar">
     <nav class="nav">
@@ -415,7 +418,7 @@ input[type="file"]{ padding: 6px; }
 "use strict";
 
 const STORAGE={config:"config3d",theme:"theme3d",historico:"historicoCalc3d",vendas:"vendas3d",arquivosCache:"arquivosCache3d"};
-let catalogo=[], historicoCalc=[], vendasLista=[], itemEditandoIndex=null, arquivoGlobalMemoria=null;
+let catalogo=[], historicoCalc=[], vendasLista=[], itemEditandoIndex=null, arquivoGlobalMemoria=null, idProdutoAlvoCache=null;
 let codeReader = null, isScanning = false;
 
 function $(id){return document.getElementById(id)}
@@ -697,7 +700,7 @@ async function salvarProduto(){
   try{
     toast("⏳ Sincronizando com a Nuvem...");
     await cloudSaveProduct(item);
-    itemEditandoIndex=null; await renderCatalogo();
+    itemEditandoIndex=null; arquivoGlobalMemoria=null; await renderCatalogo();
     toast("Salvo com sucesso! 🚀"); limparFormulario(false);
   }catch(e){toast("Erro ao salvar.");}
 }
@@ -727,7 +730,10 @@ async function renderCatalogo(){
         <div id="qrcode-${i}" class="catalog-qrcode-box"></div>
       </div>
       <div class="catalog-actions">
-        <button class="btn btn-sm ${cacheInfo ? 'btn-primary' : 'btn-outline'}" onclick="acaoBambuStudio('${item.id}', ${i})">🎨 Bambu Studio</button>
+        ${cacheInfo ? 
+          `<button class="btn btn-sm btn-primary" onclick="baixarArquivoBambu('${item.id}')">🎨 Bambu Studio</button>` : 
+          `<button class="btn btn-sm btn-outline" style="border-color:var(--accent); color:var(--accent);" onclick="pedirArquivoCatalogo('${item.id}')">📁 Anexar Arquivo</button>`
+        }
         <button class="btn btn-sm btn-outline" onclick="editarItem(${i})">✏️ Editar</button>
         <button class="btn btn-sm btn-primary" onclick="abrirModalVenda(${i})">🛒 Vender</button>
         <button class="btn btn-sm btn-danger" onclick="excluirItem(${i})">🗑️</button>
@@ -749,20 +755,39 @@ async function renderCatalogo(){
   });
 }
 
-function acaoBambuStudio(id, i){
+function baixarArquivoBambu(id){
   const cache = recuperarArquivoCache(id);
-  if(cache && cache.base64){
-    const a = document.createElement('a');
-    a.href = cache.base64;
-    a.download = cache.nome || "projeto.3mf";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    toast("Baixando arquivo para o Bambu Studio! 🎨");
-  } else {
-    // Se não tiver arquivo, carrega o item na aba Calc para facilitar o envio rápido
-    editarItem(i);
-    toast("Envie o arquivo .gcode/.3mf na aba Calc e clique em 'Salvar na Nuvem' para ativar o botão!");
+  if(!cache || !cache.base64) {
+    toast("Arquivo não encontrado.");
+    return;
+  }
+  const a = document.createElement('a');
+  a.href = cache.base64;
+  a.download = cache.nome || "projeto.3mf";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  toast("Baixando arquivo para o Bambu Studio! 🎨");
+}
+
+function pedirArquivoCatalogo(id){
+  idProdutoAlvoCache = id;
+  $("inputArquivoCatalogo").click();
+}
+
+async function vincularArquivoDiretoCatalogo(input){
+  const file = input.files?.[0];
+  if(!file || !idProdutoAlvoCache) return;
+  
+  try {
+    const base64 = await blobToBase64(file);
+    salvarArquivoCache(idProdutoAlvoCache, base64, file.name);
+    toast("Arquivo anexado com sucesso! Botão liberado 🎨");
+    idProdutoAlvoCache = null;
+    input.value = "";
+    await renderCatalogo();
+  } catch(e) {
+    toast("Erro ao anexar arquivo.");
   }
 }
 
