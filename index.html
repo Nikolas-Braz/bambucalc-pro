@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="description" content="BambuCalc 3D PRO - Versão Atualizada">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="BambuCalc 3D PRO - Painel Completo Desktop & Mobile">
 <title>BambuCalc 3D PRO</title>
 
 <!-- Configuração PWA (Manifest inline) -->
@@ -31,9 +31,8 @@
   window.dispatchEvent(new Event('firebase-ready'));
 </script>
 
-<!-- Biblioteca de Leitura de QR Code / Código de Barras (ZXing) -->
+<!-- Bibliotecas QR Code -->
 <script src="https://unpkg.com/@zxing/library@latest"></script>
-<!-- Biblioteca para Geração de QR Code (QRCode.js) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <style>
@@ -69,117 +68,211 @@
 
 *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
 html, body{ min-height:100%; }
-body{ margin:0; background:var(--bg); color:var(--text); font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; padding-bottom: 85px; }
+body{ margin:0; background:var(--bg); color:var(--text); font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
 button, input, textarea, select{ font:inherit; }
 button{ cursor:pointer; }
 
-.app{ display:flex; flex-direction:column; min-height:100vh; max-width: 600px; margin: 0 auto; box-shadow: 0 0 40px rgba(0,0,0,0.5); background: var(--bg); }
+/* LAYOUT GERAL RESPONSIVO (DESKTOP FIRST PARA ESTRUTURA) */
+.app-wrapper {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
 
-/* NAVBAR INFERIOR (ESTILO APP MOBILE) COM 5 ABAS */
-.sidebar{ 
-    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 75px; 
-    background: var(--panel); border-top: 1px solid var(--border); 
-    display: flex; flex-direction: row; justify-content: space-around; align-items: center; 
-    z-index: 1000; padding: 0 4px; box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+/* SIDEBAR PARA DESKTOP (ESQUERDA) */
+.desktop-sidebar {
+    width: 260px;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1000;
+    transition: width 0.3s ease;
 }
-.nav{ display: flex; flex-direction: row; width: 100%; justify-content: space-around; }
-.nav-btn{ 
-    display: flex; flex-direction: column; align-items: center; justify-content: center; 
-    gap: 4px; color: var(--soft); border: none; background: transparent; font-size: 11px; font-weight: 500; padding: 4px 6px; flex: 1;
-}
-.nav-btn.active{ color: var(--accent); font-weight: 700; }
-.nav-btn .icon{ 
-    width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-    background: transparent; font-size: 16px; border: none; 
-}
-.nav-btn.active .icon{ background: rgba(34,197,94,0.2); }
 
-/* HEADER SUPERIOR DO APP */
-.app-topbar {
-    background: var(--panel); border-bottom: 1px solid var(--border);
-    padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
-    position: sticky; top: 0; z-index: 900;
+.sidebar-brand {
+    padding: 20px;
+    font-size: 18px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
 }
-.app-brand { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-.app-brand-icon { width: 24px; height: 24px; border-radius: 50%; background: conic-gradient(from 180deg, var(--accent), var(--accent2), var(--accent)); }
+.app-brand-icon { width: 28px; height: 28px; border-radius: 50%; background: conic-gradient(from 180deg, var(--accent), var(--accent2), var(--accent)); }
 
-/* MAIN */
-.main{ flex:1; width: 100%; padding: 14px; }
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px 12px;
+    flex: 1;
+}
+
+.sidebar-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: transparent;
+    border: none;
+    color: var(--soft);
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+    transition: 0.2s;
+}
+.sidebar-btn:hover { background: rgba(255,255,255,0.03); color: var(--text); }
+.sidebar-btn.active { background: rgba(34,197,94,0.15); color: var(--accent); }
+.sidebar-btn .icon { font-size: 18px; }
+
+.sidebar-footer {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* CONTEÚDO PRINCIPAL (DIREITA) */
+.main-content {
+    margin-left: 260px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: var(--bg);
+}
+
+.topbar-mobile {
+    display: none; /* Apenas visível em celulares */
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 16px;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 900;
+}
+
+.container-fluid {
+    padding: 24px;
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    flex: 1;
+}
+
 .page{ display:none; }
 .page.active{ display:block; }
-.page-header{ margin-bottom: 12px; }
-.page-title{ font-size: 18px; font-weight: 700; }
-.page-subtitle{ font-size: 11px; color: var(--soft); margin-top: 2px; }
+.page-header{ margin-bottom: 20px; }
+.page-title{ font-size: 24px; font-weight: 800; }
+.page-subtitle{ font-size: 13px; color: var(--soft); margin-top: 4px; }
 
-.badge{ font-size: 10px; padding: 4px 8px; border-radius: 999px; border: 1px solid rgba(34,197,94,.25); color: var(--accent); background: rgba(34,197,94,.07); white-space: nowrap; }
+.badge{ font-size: 11px; padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(34,197,94,.25); color: var(--accent); background: rgba(34,197,94,.07); white-space: nowrap; }
 
-.card{ background: var(--card); border-radius: 12px; border: 1px solid var(--border); padding: 12px; box-shadow: var(--shadow); margin-bottom: 12px; }
-.card-header{ display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
-.card-title{ font-size: 13px; font-weight: 600; }
+/* CARDS E GRIDS ADAPTATIVOS PARA DESKTOP */
+.card{ background: var(--card); border-radius: 16px; border: 1px solid var(--border); padding: 20px; box-shadow: var(--shadow); margin-bottom: 20px; }
+.card-header{ display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+.card-title{ font-size: 15px; font-weight: 700; }
 
-/* FORMULÁRIO OTIMIZADO MOBILE */
-.form-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.form-grid{ display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
 .field.full{ grid-column: 1 / -1; }
-label{ display: block; font-size: 11px; color: var(--soft); margin: 6px 0 3px; }
-input, textarea, select{ width: 100%; background: rgba(2,6,23,.3); border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-size: 13px; color: var(--text); outline: none; }
-input:focus, textarea:focus, select:focus{ border-color: var(--accent2); box-shadow: 0 0 0 2px rgba(14,165,233,.15); }
+label{ display: block; font-size: 12px; color: var(--soft); margin-bottom: 6px; font-weight: 500; }
+input, textarea, select{ width: 100%; background: rgba(2,6,23,.3); border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-size: 14px; color: var(--text); outline: none; transition: border-color 0.2s; }
+input:focus, textarea:focus, select:focus{ border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(14,165,233,.15); }
 input[readonly]{ opacity: .8; }
-textarea{ min-height: 80px; resize: vertical; }
-input[type="file"]{ padding: 6px; }
+textarea{ min-height: 100px; resize: vertical; }
+input[type="file"]{ padding: 8px; }
 
-/* BOTÕES DE TOQUE RÁPIDO */
-.actions{ display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
-.btn{ border: none; border-radius: 999px; padding: 10px 14px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 6px; flex: 1; min-width: 120px; }
+/* BOTÕES */
+.actions{ display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+.btn{ border: none; border-radius: 999px; padding: 12px 20px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: transform 0.1s; }
+.btn:active{ transform: scale(0.98); }
 .btn-primary{ background: var(--accent); color: #020617; }
 .btn-outline{ background: transparent; border: 1px solid var(--border); color: var(--soft); }
+.btn-outline:hover{ color: var(--text); border-color: var(--text); }
 .btn-danger{ background: var(--danger); color: white; flex: none; }
-.btn-sm{ padding: 6px 10px; font-size: 11px; min-width: auto; }
+.btn-sm{ padding: 8px 14px; font-size: 12px; min-width: auto; }
 
-/* RESUMO E TABELAS */
-.summary-list{ display: flex; flex-direction: column; gap: 6px; }
-.summary-row{ display: flex; justify-content: space-between; gap: 10px; font-size: 12px; color: var(--soft); }
+/* RESUMO */
+.summary-list{ display: flex; flex-direction: column; gap: 10px; }
+.summary-row{ display: flex; justify-content: space-between; gap: 10px; font-size: 14px; color: var(--soft); }
 .summary-row strong{ color: var(--text); }
-.summary-total{ margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
-.summary-total span:last-child{ color: var(--accent); font-size: 16px; font-weight: 800; }
+.summary-total{ margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.summary-total span:last-child{ color: var(--accent); font-size: 20px; font-weight: 800; }
 
-/* CATÁLOGO MOBILE GRID COM QR CODE */
-.catalog-toolbar{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.catalog-count{ color: var(--soft); font-size: 11px; }
-.catalog-grid{ display: grid; grid-template-columns: 1fr; gap: 12px; }
-.catalog-card{ background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 6px; }
-.catalog-body-grid{ display: grid; grid-template-columns: 90px 1fr; gap: 10px; align-items: center; }
-.catalog-thumb{ width: 90px; height: 90px; background: var(--card2); border: 1px solid var(--border); border-radius: 8px; display: flex; align-items:center; justify-content:center; color: var(--soft); font-size: 20px; overflow: hidden; }
+/* CATÁLOGO GRID ADAPTATIVO PARA TELA CHEIA */
+.catalog-toolbar{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.catalog-count{ color: var(--soft); font-size: 13px; }
+.catalog-grid{ display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+.catalog-card{ background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px; }
+.catalog-body-grid{ display: grid; grid-template-columns: 100px 1fr; gap: 14px; align-items: center; }
+.catalog-thumb{ width: 100px; height: 100px; background: var(--card2); border: 1px solid var(--border); border-radius: 12px; display: flex; align-items:center; justify-content:center; color: var(--soft); font-size: 24px; overflow: hidden; }
 .catalog-thumb img{ width: 100%; height: 100%; object-fit: cover; }
-.catalog-qrcode-box{ width: 80px; height: 80px; background: #fff; padding: 4px; border-radius: 6px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
-.catalog-title{ font-size: 14px; font-weight: 700; word-break: break-word; }
-.catalog-info{ font-size: 12px; color: var(--soft); display: flex; justify-content: space-between; }
+.catalog-qrcode-box{ width: 90px; height: 90px; background: #fff; padding: 6px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+.catalog-title{ font-size: 16px; font-weight: 700; word-break: break-word; }
+.catalog-info{ font-size: 13px; color: var(--soft); display: flex; justify-content: space-between; }
 .catalog-info strong{ color: var(--text); }
-.catalog-actions{ display: flex; gap: 5px; flex-wrap: wrap; margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); }
+.catalog-actions{ display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--border); }
 
 /* MODAIS */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 16px; }
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
 .modal-overlay.active { display: flex; }
-.modal-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; width: 100%; max-width: 380px; box-shadow: var(--shadow); }
+.modal-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; width: 100%; max-width: 420px; box-shadow: var(--shadow); }
 
-.history-item{ display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 11px; }
+.history-item{ display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
 .history-main{ min-width: 0; }
-.history-title{ font-weight: 600; }
-.history-meta{ color: var(--soft); font-size: 10px; margin-top: 1px; }
-.empty{ color: var(--soft); font-size: 12px; text-align: center; padding: 20px 0; }
+.history-title{ font-weight: 600; font-size: 14px; }
+.history-meta{ color: var(--soft); font-size: 12px; margin-top: 2px; }
+.empty{ color: var(--soft); font-size: 14px; text-align: center; padding: 40px 0; }
 
-.toast{ position: fixed; right: 12px; bottom: 85px; z-index: 4000; max-width: 300px; background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; box-shadow: var(--shadow); font-size: 11px; opacity: 0; transform: translateY(10px); pointer-events: none; transition: .2s ease; }
+.toast{ position: fixed; right: 24px; bottom: 24px; z-index: 4000; max-width: 350px; background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; box-shadow: var(--shadow); font-size: 13px; opacity: 0; transform: translateY(15px); pointer-events: none; transition: .25s ease; }
 .toast.show{ opacity: 1; transform: translateY(0); }
 
-.dropzone{ display: block; border: 2px dashed var(--border); border-radius: 12px; padding: 20px 10px; text-align: center; background: var(--card2); cursor: pointer; }
-.drop-icon{ font-size: 28px; }
-.drop-title{ font-size: 14px; font-weight: 700; margin-top: 6px; }
-.drop-sub{ font-size: 10px; color: var(--soft); margin-top: 3px; }
+.dropzone{ display: block; border: 2px dashed var(--border); border-radius: 16px; padding: 30px 20px; text-align: center; background: var(--card2); cursor: pointer; transition: border-color 0.2s; }
+.dropzone:hover{ border-color: var(--accent); }
+.drop-icon{ font-size: 36px; }
+.drop-title{ font-size: 16px; font-weight: 700; margin-top: 8px; }
+.drop-sub{ font-size: 12px; color: var(--soft); margin-top: 4px; }
 .dropzone input{ display: none; }
-.analysis-status{ margin-top: 10px; padding: 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 11px; color: var(--soft); }
+.analysis-status{ margin-top: 12px; padding: 10px; border: 1px solid var(--border); border-radius: 10px; font-size: 12px; color: var(--soft); }
 
-#videoScanner { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; display: none; background: #000; margin-bottom: 10px; }
-.vinted-badge-ok { color: var(--accent); font-weight: 600; font-size: 10px; background: rgba(34,197,94,0.1); padding: 2px 6px; border-radius: 4px; }
-.vinted-badge-warn { color: var(--warning); font-weight: 600; font-size: 10px; background: rgba(245,158,11,0.1); padding: 2px 6px; border-radius: 4px; }
+#videoScanner { width: 100%; max-height: 250px; object-fit: cover; border-radius: 12px; display: none; background: #000; margin-bottom: 12px; }
+.vinted-badge-ok { color: var(--accent); font-weight: 600; font-size: 11px; background: rgba(34,197,94,0.1); padding: 3px 8px; border-radius: 6px; }
+.vinted-badge-warn { color: var(--warning); font-weight: 600; font-size: 11px; background: rgba(245,158,11,0.1); padding: 3px 8px; border-radius: 6px; }
+
+/* RESPONSIVIDADE MOBILE (TELAS ABAIXO DE 868PX) */
+@media (max-width: 868px) {
+    .desktop-sidebar { display: none; }
+    .main-content { margin-left: 0; padding-bottom: 90px; }
+    .topbar-mobile { display: flex; }
+    .container-fluid { padding: 14px; }
+    
+    /* Barra inferior estilo aplicativo para celular */
+    .mobile-bottom-nav {
+        position: fixed; bottom: 0; left: 0; right: 0; height: 75px;
+        background: var(--panel); border-top: 1px solid var(--border);
+        display: flex; justify-content: space-around; align-items: center;
+        z-index: 1000; padding: 0 4px; box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+    }
+    .mobile-nav-btn {
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        gap: 4px; color: var(--soft); border: none; background: transparent; font-size: 11px; font-weight: 500; padding: 4px; flex: 1;
+    }
+    .mobile-nav-btn.active { color: var(--accent); font-weight: 700; }
+    .mobile-nav-btn .icon { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+    .mobile-nav-btn.active .icon { background: rgba(34,197,94,0.2); }
+}
+@media (min-width: 869px) {
+    .mobile-bottom-nav { display: none; }
+}
 </style>
 </head>
 <body>
@@ -187,7 +280,6 @@ input[type="file"]{ padding: 6px; }
 <!-- SISTEMA DE PROTEÇÃO POR SENHA (272822) -->
 <script>
   const SENHA_MESTRA = "272822";
-
   if (sessionStorage.getItem("autenticado") !== "true") {
     let tentativa = prompt("🔒 Área Restrita - Digite a senha mestre de acesso:");
     if (tentativa === SENHA_MESTRA) {
@@ -199,218 +291,244 @@ input[type="file"]{ padding: 6px; }
   }
 </script>
 
-<div class="app">
-  <!-- TOPO DO APP -->
-  <header class="app-topbar">
-    <div class="app-brand"><div class="app-brand-icon"></div>BambuCalc 3D PRO</div>
-    <button class="btn btn-sm btn-outline" onclick="toggleTheme()" id="btnTheme" style="min-width:auto; border-radius:999px;">🌙</button>
-  </header>
-
-  <main class="main">
-    <!-- PÁGINA 1: CALCULADORA -->
-    <section id="page-calc" class="page active">
-      <div class="page-header">
-        <div class="page-title">Calculadora Automática</div>
-        <div class="page-subtitle">Envie seu arquivo .3mf ou .gcode (A1 Mini).</div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div><div class="card-title">🚀 Enviar Arquivo 3MF ou GCODE</div></div>
-          <span class="badge" id="arquivoTipoBadge">Pronto</span>
-        </div>
-        <label class="dropzone" for="arquivoProjeto">
-          <div class="drop-icon">📦</div>
-          <div class="drop-title">Toque para selecionar o arquivo</div>
-          <div class="drop-sub">Extração automática de peso e tempo</div>
-          <input id="arquivoProjeto" type="file" accept=".3mf,.gcode,application/vnd.ms-package.3dmanufacturing-3dmodel+xml">
-        </label>
-        <div id="analiseStatus" class="analysis-status">Nenhum arquivo enviado.</div>
-      </div>
-
-      <div class="card">
-        <div class="card-header"><div class="card-title">⚙️ Parâmetros da Peça & Energia (UK)</div></div>
-        <div class="form-grid">
-          <div class="field full"><label for="nomeProduto">Nome do Produto</label><input id="nomeProduto" type="text" placeholder="Ex.: Vaso Espiral"></div>
-          <div class="field"><label for="codigoProduto">Código / Ref / Barcode</label><input id="codigoProduto" type="text" placeholder="Ex.: VAS-01"></div>
-          <div class="field"><label for="categoriaProduto">Categoria</label>
-            <select id="categoriaProduto">
-              <option value="Decoração & Casa">Decoração & Casa</option>
-              <option value="Acessórios & Suportes">Acessórios</option>
-              <option value="Miniaturas">Miniaturas</option>
-              <option value="Peças Técnicas">Técnicas</option>
-              <option value="Outros">Outros</option>
-            </select>
-          </div>
-          <div class="field"><label for="pesoPeca">Peso total (g)</label><input id="pesoPeca" type="number" min="0" step="0.01" value="0" oninput="onInputCalculadora()"></div>
-          <div class="field"><label for="tempoManual">Tempo (ex: 2h30)</label><input id="tempoManual" type="text" placeholder="Ex.: 2h30" oninput="converterTempoManual(false)"></div>
-          <div class="field" style="display:none;"><label for="horasPeca">Horas (h)</label><input id="horasPeca" type="number" value="0" readonly></div>
-          <div class="field"><label for="precoRolo">Preço Rolo (£/kg)</label><input id="precoRolo" type="number" min="0" step="0.01" value="18.00" oninput="onInputCalculadora()"></div>
-          <div class="field"><label for="pesoRolo">Peso Rolo (g)</label><input id="pesoRolo" type="number" min="1" value="1000" oninput="onInputCalculadora()"></div>
-          
-          <div class="field"><label for="potenciaWatts">Potência A1 (W)</label><input id="potenciaWatts" type="number" min="0" value="80" oninput="onInputCalculadora()"></div>
-          <div class="field"><label for="tarifaLuz">Tarifa (£/kWh)</label><input id="tarifaLuz" type="number" min="0" step="0.01" value="0.25" oninput="onInputCalculadora()"></div>
-          
-          <div class="field" style="display:none;"><label for="custoHora">Custo Maq (£/h)</label><input id="custoHora" type="number" value="0.50" oninput="onInputCalculadora()"></div>
-          <div class="field"><label for="margem">Markup (%)</label><input id="margem" type="number" min="0" value="60" oninput="onInputCalculadora()"></div>
-          <div class="field full"><label for="custosExtras">Custos Extras (£)</label><input id="custosExtras" type="number" min="0" step="0.01" value="0" oninput="onInputCalculadora()"></div>
-          
-          <div class="field full"><label for="vintedLink">Link do Anúncio na Vinted (Opcional)</label><input id="vintedLink" type="url" placeholder="https://www.vinted.co.uk/items/..."></div>
-          <div class="field"><label for="vintedData">Data da Postagem Vinted</label><input id="vintedData" type="date"></div>
-
-          <div class="field full"><label for="observacoes">Observações</label><textarea id="observacoes" placeholder="Acabamento, embalagem..."></textarea></div>
-        </div>
-        <div class="actions">
-          <button class="btn btn-primary" onclick="adicionarAoCatalogo()">💾 Salvar na Nuvem</button>
-          <button class="btn btn-outline" onclick="registrarHistorico()">📌 Histórico</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header"><div class="card-title">📊 Resumo Financeiro (Com Energia)</div></div>
-        <div class="summary-list">
-          <div class="summary-row"><span>Material</span><strong id="custoMaterial">£ 0.00</strong></div>
-          <div class="summary-row"><span>Energia (A1 Mini)</span><strong id="custoEnergiaOut">£ 0.00</strong></div>
-          <div class="summary-row"><span>Outros Custos</span><strong id="custoExtrasOut">£ 0.00</strong></div>
-          <div class="summary-row"><span>Subtotal</span><strong id="subtotal">£ 0.00</strong></div>
-          <div class="summary-row summary-total"><span>Preço Ideal</span><span id="precoFinal">£ 0.00</span></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PÁGINA 2: CATÁLOGO -->
-    <section id="page-catalogo" class="page">
-      <div class="page-header">
-        <div class="page-title">Catálogo Sincronizado & QR Codes</div>
-        <div class="page-subtitle">Produtos salvos com etiquetas QR Code automáticas.</div>
-      </div>
-      <div class="catalog-toolbar"><div class="catalog-count" id="catalogoCount">0 produtos</div></div>
-      <div class="catalog-grid" id="catalogoCards"></div>
-    </section>
-
-    <!-- PÁGINA 3: VENDAS E SCANNER QR/BARCODE -->
-    <section id="page-vendas" class="page">
-      <div class="page-header">
-        <div class="page-title">Controle de Vendas</div>
-        <div class="page-subtitle">Escaneie códigos ou registre vendas na nuvem.</div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">📷 Scanner de Produto (QR / Barcode)</div>
-          <button class="btn btn-outline btn-sm" id="btnToggleScanner" onclick="toggleScanner()">Iniciar Câmera</button>
-        </div>
-        <video id="videoScanner" autoplay playsinline></video>
-        <div id="scannerStatus" style="font-size:11px; color:var(--soft); text-align:center;">Câmera desligada.</div>
-      </div>
-
-      <div class="card">
-        <div class="card-header"><div class="card-title">Registrar Venda</div></div>
-        <div class="form-grid">
-          <div class="field full"><label for="vendaProdutoSelect">Produto do Catálogo</label><select id="vendaProdutoSelect" onchange="preencherDadosVenda()"><option value="">-- Venda avulsa --</option></select></div>
-          <div class="field full"><label for="vendaNome">Nome / Cliente</label><input id="vendaNome" type="text" placeholder="Nome do cliente"></div>
-          <div class="field"><label for="vendaQtd">Qtd</label><input id="vendaQtd" type="number" min="1" value="1" oninput="calcularTotalVendaForm()"></div>
-          <div class="field"><label for="vendaPrecoUnit">Preço Unit (£)</label><input id="vendaPrecoUnit" type="number" min="0" step="0.01" value="0" oninput="calcularTotalVendaForm()"></div>
-          <div class="field" style="display:none;"><label for="vendaCustoUnit">Custo</label><input id="vendaCustoUnit" type="number" value="0"></div>
-          <div class="field full"><label><strong>Total: <span id="vendaTotalPreview" style="color:var(--accent);">£ 0.00</span></strong></label></div>
-        </div>
-        <div class="actions" style="margin-top:10px;"><button class="btn btn-primary" onclick="registrarVenda()">✅ Concluir Venda</button></div>
-      </div>
-
-      <div class="card">
-        <div class="card-header"><div class="card-title">Filtro por Período</div></div>
-        <div class="form-grid">
-          <div class="field"><label for="filtroPeriodo">Período</label>
-            <select id="filtroPeriodo" onchange="atualizarPainelVendas()">
-              <option value="todos">Todas as Vendas</option>
-              <option value="mes">Este Mês</option>
-              <option value="hoje">Hoje</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header"><div class="card-title">Resumo & Histórico de Vendas</div><button class="btn btn-danger btn-sm" onclick="limparVendas()">Limpar</button></div>
-        <div class="summary-list" style="margin-bottom:10px;">
-          <div class="summary-row"><span>Faturamento</span><strong id="resumoFaturamento">£ 0.00</strong></div>
-          <div class="summary-row"><span>Lucro Líquido</span><strong id="resumoLucro" style="color:var(--accent);">£ 0.00</strong></div>
-        </div>
-        <div id="listaVendasContainer"></div>
-      </div>
-    </section>
-
-    <!-- PÁGINA 4: VINTED MANAGER -->
-    <section id="page-vinted" class="page">
-      <div class="page-header">
-        <div class="page-title">Vinted Manager 🛍️</div>
-        <div class="page-subtitle">Monitore a idade dos anúncios para Bump ou Republicação.</div>
-      </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title">Anúncios Ativos na Vinted</div></div>
-        <div id="vintedListaContainer"></div>
-      </div>
-    </section>
-
-    <!-- PÁGINA 5: HISTÓRICO -->
-    <section id="page-historico" class="page">
-      <div class="page-header">
-        <div class="page-title">Histórico de Cálculos</div>
-        <div class="page-subtitle">Últimos cálculos feitos.</div>
-      </div>
-      <div class="card"><div id="historicoCalc"></div></div>
-    </section>
-  </main>
-
-  <!-- MODAL DE VENDA RÁPIDA -->
-  <div class="modal-overlay" id="modalVendaRapida">
-    <div class="modal-card">
-      <div class="card-header"><div class="card-title" id="modalTituloProduto">Registrar Venda Rápida</div></div>
-      <input type="hidden" id="modalProdutoIndex">
-      <div class="form-grid">
-        <div class="field full"><label for="modalCliente">Nome do Cliente</label><input id="modalCliente" type="text" placeholder="Nome do cliente"></div>
-        <div class="field"><label for="modalQtd">Qtd</label><input id="modalQtd" type="number" min="1" value="1" oninput="calcularTotalModal()"></div>
-        <div class="field"><label>Preço Unit.</label><input id="modalPrecoUnit" type="text" readonly style="background:transparent;"></div>
-        <div class="field full"><label><strong>Total: <span id="modalTotalPreview" style="color:var(--accent);">£ 0.00</span></strong></label></div>
-      </div>
-      <div class="actions" style="margin-top:12px;">
-        <button class="btn btn-primary" onclick="confirmarVendaRapida()">✅ Vender Agora</button>
-        <button class="btn btn-outline" onclick="fecharModalVenda()">Cancelar</button>
-      </div>
+<div class="app-wrapper">
+  
+  <!-- SIDEBAR DESKTOP (ESQUERDA) -->
+  <aside class="desktop-sidebar">
+    <div class="sidebar-brand">
+      <div class="app-brand-icon"></div> BambuCalc 3D
     </div>
-  </div>
-
-  <!-- MODAL DE EDITAR VENDA -->
-  <div class="modal-overlay" id="modalEditarVenda">
-    <div class="modal-card">
-      <div class="card-header"><div class="card-title">✏️ Editar Venda Registrada</div></div>
-      <input type="hidden" id="editVendaId">
-      <div class="form-grid">
-        <div class="field full"><label for="editVendaNome">Descrição / Cliente</label><input id="editVendaNome" type="text"></div>
-        <div class="field"><label for="editVendaQtd">Qtd</label><input id="editVendaQtd" type="number" min="1"></div>
-        <div class="field"><label for="editVendaTotal">Total (£)</label><input id="editVendaTotal" type="number" min="0" step="0.01"></div>
-      </div>
-      <div class="actions" style="margin-top:12px;">
-        <button class="btn btn-primary" onclick="salvarEdicaoVenda()">💾 Salvar Alterações</button>
-        <button class="btn btn-outline" onclick="fecharModalEdicaoVenda()">Cancelar</button>
-      </div>
+    <div class="sidebar-nav">
+      <button class="sidebar-btn active" data-page="calc" onclick="nav('calc',this)"><span class="icon">💷</span> Calculadora</button>
+      <button class="sidebar-btn" data-page="catalogo" onclick="nav('catalogo',this)"><span class="icon">📁</span> Catálogo</button>
+      <button class="sidebar-btn" data-page="vendas" onclick="nav('vendas',this)"><span class="icon">🛒</span> Controle de Vendas</button>
+      <button class="sidebar-btn" data-page="vinted" onclick="nav('vinted',this)"><span class="icon">🛍️</span> Vinted Manager</button>
+      <button class="sidebar-btn" data-page="historico" onclick="nav('historico',this)"><span class="icon">📜</span> Histórico</button>
     </div>
-  </div>
-
-  <!-- INPUT OCULTO PARA ANEXAR ARQUIVO DIRETO NO CATÁLOGO -->
-  <input type="file" id="inputArquivoCatalogo" style="display:none;" accept=".3mf,.gcode" onchange="vincularArquivoDiretoCatalogo(this)">
-
-  <!-- NAVBAR INFERIOR FIXA PARA CELULAR (5 ABAS) -->
-  <aside class="sidebar">
-    <nav class="nav">
-      <button class="nav-btn active" data-page="calc" onclick="nav('calc',this)"><span class="icon">💷</span>Calc</button>
-      <button class="nav-btn" data-page="catalogo" onclick="nav('catalogo',this)" id="navBtnCatalogo"><span class="icon">📁</span>Catálogo</button>
-      <button class="nav-btn" data-page="vendas" onclick="nav('vendas',this)" id="navBtnVendas"><span class="icon">🛒</span>Vendas</button>
-      <button class="nav-btn" data-page="vinted" onclick="nav('vinted',this)" id="navBtnVinted"><span class="icon">🛍️</span>Vinted</button>
-      <button class="nav-btn" data-page="historico" onclick="nav('historico',this)"><span class="icon">📜</span>Hist</button>
-    </nav>
+    <div class="sidebar-footer">
+      <span style="font-size: 12px; color: var(--soft);">Tema do Sistema</span>
+      <button class="btn btn-sm btn-outline" onclick="toggleTheme()" id="btnThemeDesktop" style="border-radius:999px;">🌙</button>
+    </div>
   </aside>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <div class="main-content">
+    
+    <!-- TOPBAR MOBILE (APARECE SÓ NO CELULAR) -->
+    <header class="topbar-mobile">
+      <div style="font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+        <div class="app-brand-icon"></div> BambuCalc 3D
+      </div>
+      <button class="btn btn-sm btn-outline" onclick="toggleTheme()" id="btnThemeMobile" style="border-radius:999px;">🌙</button>
+    </header>
+
+    <div class="container-fluid">
+      
+      <!-- PÁGINA 1: CALCULADORA -->
+      <section id="page-calc" class="page active">
+        <div class="page-header">
+          <div class="page-title">Calculadora Automática</div>
+          <div class="page-subtitle">Envie seu arquivo .3mf ou .gcode (A1 Mini).</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">🚀 Enviar Arquivo 3MF ou GCODE</div></div>
+            <span class="badge" id="arquivoTipoBadge">Pronto</span>
+          </div>
+          <label class="dropzone" for="arquivoProjeto">
+            <div class="drop-icon">📦</div>
+            <div class="drop-title">Toque ou arraste o arquivo aqui</div>
+            <div class="drop-sub">Extração automática de peso e tempo de impressão</div>
+            <input id="arquivoProjeto" type="file" accept=".3mf,.gcode,application/vnd.ms-package.3dmanufacturing-3dmodel+xml">
+          </label>
+          <div id="analiseStatus" class="analysis-status">Nenhum arquivo enviado.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">⚙️ Parâmetros da Peça & Energia (UK)</div></div>
+          <div class="form-grid">
+            <div class="field full"><label for="nomeProduto">Nome do Produto</label><input id="nomeProduto" type="text" placeholder="Ex.: Vaso Espiral"></div>
+            <div class="field"><label for="codigoProduto">Código / Ref / Barcode</label><input id="codigoProduto" type="text" placeholder="Ex.: VAS-01"></div>
+            <div class="field"><label for="categoriaProduto">Categoria</label>
+              <select id="categoriaProduto">
+                <option value="Decoração & Casa">Decoração & Casa</option>
+                <option value="Acessórios & Suportes">Acessórios</option>
+                <option value="Miniaturas">Miniaturas</option>
+                <option value="Peças Técnicas">Técnicas</option>
+                <option value="Outros">Outros</option>
+              </select>
+            </div>
+            <div class="field"><label for="pesoPeca">Peso total (g)</label><input id="pesoPeca" type="number" min="0" step="0.01" value="0" oninput="onInputCalculadora()"></div>
+            <div class="field"><label for="tempoManual">Tempo (ex: 2h30)</label><input id="tempoManual" type="text" placeholder="Ex.: 2h30" oninput="converterTempoManual(false)"></div>
+            <div class="field" style="display:none;"><label for="horasPeca">Horas (h)</label><input id="horasPeca" type="number" value="0" readonly></div>
+            <div class="field"><label for="precoRolo">Preço Rolo (£/kg)</label><input id="precoRolo" type="number" min="0" step="0.01" value="18.00" oninput="onInputCalculadora()"></div>
+            <div class="field"><label for="pesoRolo">Peso Rolo (g)</label><input id="pesoRolo" type="number" min="1" value="1000" oninput="onInputCalculadora()"></div>
+            
+            <div class="field"><label for="potenciaWatts">Potência A1 (W)</label><input id="potenciaWatts" type="number" min="0" value="80" oninput="onInputCalculadora()"></div>
+            <div class="field"><label for="tarifaLuz">Tarifa (£/kWh)</label><input id="tarifaLuz" type="number" min="0" step="0.01" value="0.25" oninput="onInputCalculadora()"></div>
+            
+            <div class="field" style="display:none;"><label for="custoHora">Custo Maq (£/h)</label><input id="custoHora" type="number" value="0.50" oninput="onInputCalculadora()"></div>
+            <div class="field"><label for="margem">Markup (%)</label><input id="margem" type="number" min="0" value="60" oninput="onInputCalculadora()"></div>
+            <div class="field full"><label for="custosExtras">Custos Extras (£)</label><input id="custosExtras" type="number" min="0" step="0.01" value="0" oninput="onInputCalculadora()"></div>
+            
+            <div class="field full"><label for="vintedLink">Link do Anúncio na Vinted (Opcional)</label><input id="vintedLink" type="url" placeholder="https://www.vinted.co.uk/items/..."></div>
+            <div class="field"><label for="vintedData">Data da Postagem Vinted</label><input id="vintedData" type="date"></div>
+
+            <div class="field full"><label for="observacoes">Observações</label><textarea id="observacoes" placeholder="Acabamento, embalagem..."></textarea></div>
+          </div>
+          <div class="actions">
+            <button class="btn btn-primary" onclick="adicionarAoCatalogo()">💾 Salvar na Nuvem</button>
+            <button class="btn btn-outline" onclick="registrarHistorico()">📌 Histórico</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">📊 Resumo Financeiro (Com Energia)</div></div>
+          <div class="summary-list">
+            <div class="summary-row"><span>Material</span><strong id="custoMaterial">£ 0.00</strong></div>
+            <div class="summary-row"><span>Energia (A1 Mini)</span><strong id="custoEnergiaOut">£ 0.00</strong></div>
+            <div class="summary-row"><span>Outros Custos</span><strong id="custoExtrasOut">£ 0.00</strong></div>
+            <div class="summary-row"><span>Subtotal</span><strong id="subtotal">£ 0.00</strong></div>
+            <div class="summary-row summary-total"><span>Preço Ideal</span><span id="precoFinal">£ 0.00</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PÁGINA 2: CATÁLOGO -->
+      <section id="page-catalogo" class="page">
+        <div class="page-header">
+          <div class="page-title">Catálogo Sincronizado & QR Codes</div>
+          <div class="page-subtitle">Produtos salvos com etiquetas QR Code automáticas.</div>
+        </div>
+        <div class="catalog-toolbar"><div class="catalog-count" id="catalogoCount">0 produtos</div></div>
+        <div class="catalog-grid" id="catalogoCards"></div>
+      </section>
+
+      <!-- PÁGINA 3: VENDAS E SCANNER QR/BARCODE -->
+      <section id="page-vendas" class="page">
+        <div class="page-header">
+          <div class="page-title">Controle de Vendas</div>
+          <div class="page-subtitle">Escaneie códigos ou registre vendas na nuvem.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📷 Scanner de Produto (QR / Barcode)</div>
+            <button class="btn btn-outline btn-sm" id="btnToggleScanner" onclick="toggleScanner()">Iniciar Câmera</button>
+          </div>
+          <video id="videoScanner" autoplay playsinline></video>
+          <div id="scannerStatus" style="font-size:12px; color:var(--soft); text-align:center;">Câmera desligada.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Registrar Venda</div></div>
+          <div class="form-grid">
+            <div class="field full"><label for="vendaProdutoSelect">Produto do Catálogo</label><select id="vendaProdutoSelect" onchange="preencherDadosVenda()"><option value="">-- Venda avulsa --</option></select></div>
+            <div class="field full"><label for="vendaNome">Nome / Cliente</label><input id="vendaNome" type="text" placeholder="Nome do cliente"></div>
+            <div class="field"><label for="vendaQtd">Qtd</label><input id="vendaQtd" type="number" min="1" value="1" oninput="calcularTotalVendaForm()"></div>
+            <div class="field"><label for="vendaPrecoUnit">Preço Unit (£)</label><input id="vendaPrecoUnit" type="number" min="0" step="0.01" value="0" oninput="calcularTotalVendaForm()"></div>
+            <div class="field" style="display:none;"><label for="vendaCustoUnit">Custo</label><input id="vendaCustoUnit" type="number" value="0"></div>
+            <div class="field full"><label><strong>Total: <span id="vendaTotalPreview" style="color:var(--accent);">£ 0.00</span></strong></label></div>
+          </div>
+          <div class="actions" style="margin-top:10px;"><button class="btn btn-primary" onclick="registrarVenda()">✅ Concluir Venda</button></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Filtro por Período</div></div>
+          <div class="form-grid">
+            <div class="field"><label for="filtroPeriodo">Período</label>
+              <select id="filtroPeriodo" onchange="atualizarPainelVendas()">
+                <option value="todos">Todas as Vendas</option>
+                <option value="mes">Este Mês</option>
+                <option value="hoje">Hoje</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Resumo & Histórico de Vendas</div><button class="btn btn-danger btn-sm" onclick="limparVendas()">Limpar</button></div>
+          <div class="summary-list" style="margin-bottom:12px;">
+            <div class="summary-row"><span>Faturamento</span><strong id="resumoFaturamento">£ 0.00</strong></div>
+            <div class="summary-row"><span>Lucro Líquido</span><strong id="resumoLucro" style="color:var(--accent);">£ 0.00</strong></div>
+          </div>
+          <div id="listaVendasContainer"></div>
+        </div>
+      </section>
+
+      <!-- PÁGINA 4: VINTED MANAGER -->
+      <section id="page-vinted" class="page">
+        <div class="page-header">
+          <div class="page-title">Vinted Manager 🛍️</div>
+          <div class="page-subtitle">Monitore a idade dos anúncios para Bump ou Republicação.</div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Anúncios Ativos na Vinted</div></div>
+          <div id="vintedListaContainer"></div>
+        </div>
+      </section>
+
+      <!-- PÁGINA 5: HISTÓRICO -->
+      <section id="page-historico" class="page">
+        <div class="page-header">
+          <div class="page-title">Histórico de Cálculos</div>
+          <div class="page-subtitle">Últimos cálculos feitos.</div>
+        </div>
+        <div class="card"><div id="historicoCalc"></div></div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- NAVBAR INFERIOR PARA CELULAR -->
+  <aside class="mobile-bottom-nav">
+    <button class="mobile-nav-btn active" data-page="calc" onclick="nav('calc',this)"><span class="icon">💷</span>Calc</button>
+    <button class="mobile-nav-btn" data-page="catalogo" onclick="nav('catalogo',this)"><span class="icon">📁</span>Catálogo</button>
+    <button class="mobile-nav-btn" data-page="vendas" onclick="nav('vendas',this)"><span class="icon">🛒</span>Vendas</button>
+    <button class="mobile-nav-btn" data-page="vinted" onclick="nav('vinted',this)"><span class="icon">🛍️</span>Vinted</button>
+    <button class="mobile-nav-btn" data-page="historico" onclick="nav('historico',this)"><span class="icon">📜</span>Hist</button>
+  </aside>
+
 </div>
+
+<!-- MODAL DE VENDA RÁPIDA -->
+<div class="modal-overlay" id="modalVendaRapida">
+  <div class="modal-card">
+    <div class="card-header"><div class="card-title" id="modalTituloProduto">Registrar Venda Rápida</div></div>
+    <input type="hidden" id="modalProdutoIndex">
+    <div class="form-grid">
+      <div class="field full"><label for="modalCliente">Nome do Cliente</label><input id="modalCliente" type="text" placeholder="Nome do cliente"></div>
+      <div class="field"><label for="modalQtd">Qtd</label><input id="modalQtd" type="number" min="1" value="1" oninput="calcularTotalModal()"></div>
+      <div class="field"><label>Preço Unit.</label><input id="modalPrecoUnit" type="text" readonly style="background:transparent;"></div>
+      <div class="field full"><label><strong>Total: <span id="modalTotalPreview" style="color:var(--accent);">£ 0.00</span></strong></label></div>
+    </div>
+    <div class="actions" style="margin-top:16px;">
+      <button class="btn btn-primary" onclick="confirmarVendaRapida()">✅ Vender Agora</button>
+      <button class="btn btn-outline" onclick="fecharModalVenda()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DE EDITAR VENDA -->
+<div class="modal-overlay" id="modalEditarVenda">
+  <div class="modal-card">
+    <div class="card-header"><div class="card-title">✏️ Editar Venda Registrada</div></div>
+    <input type="hidden" id="editVendaId">
+    <div class="form-grid">
+      <div class="field full"><label for="editVendaNome">Descrição / Cliente</label><input id="editVendaNome" type="text"></div>
+      <div class="field"><label for="editVendaQtd">Qtd</label><input id="editVendaQtd" type="number" min="1"></div>
+      <div class="field"><label for="editVendaTotal">Total (£)</label><input id="editVendaTotal" type="number" min="0" step="0.01"></div>
+    </div>
+    <div class="actions" style="margin-top:16px;">
+      <button class="btn btn-primary" onclick="salvarEdicaoVenda()">💾 Salvar Alterações</button>
+      <button class="btn btn-outline" onclick="fecharModalEdicaoVenda()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- INPUT OCULTO PARA ANEXAR ARQUIVO NO CATÁLOGO -->
+<input type="file" id="inputArquivoCatalogo" style="display:none;" accept=".3mf,.gcode" onchange="vincularArquivoDiretoCatalogo(this)">
 
 <div class="toast" id="toast"></div>
 
@@ -432,8 +550,15 @@ function safeSet(k,v){try{localStorage.setItem(k,v);return true}catch{false}}
 function nav(page,el){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   $("page-"+page)?.classList.add("active");
-  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
-  el?.classList.add("active");
+  
+  // Atualiza sidebar desktop
+  document.querySelectorAll(".sidebar-btn").forEach(b=>b.classList.remove("active"));
+  document.querySelector(`.sidebar-btn[data-page="${page}"]`)?.classList.add("active");
+
+  // Atualiza nav mobile
+  document.querySelectorAll(".mobile-nav-btn").forEach(b=>b.classList.remove("active"));
+  document.querySelector(`.mobile-nav-btn[data-page="${page}"]`)?.classList.add("active");
+
   if(page==='vendas'){atualizarSelectCatalogoVendas();atualizarPainelVendas();}
   if(page==='vinted'){renderVintedManager();}
   if(page!=='vendas' && isScanning){ pararScanner(); }
@@ -442,7 +567,9 @@ function nav(page,el){
 function applyTheme(theme){
   theme=theme==="light"?"light":"dark";
   document.documentElement.setAttribute("data-theme",theme);
-  $("btnTheme").textContent=theme==="light"?"☀️":"🌙";
+  const icon = theme==="light"?"☀️":"🌙";
+  $("btnThemeDesktop").textContent = icon;
+  $("btnThemeMobile").textContent = icon;
 }
 function toggleTheme(){
   const n=(document.documentElement.getAttribute("data-theme")||"dark")==="dark"?"light":"dark";
@@ -458,13 +585,12 @@ async function blobToBase64(blob){
   });
 }
 
-/* Cache local para arquivos 3MF / GCODE */
 function salvarArquivoCache(id, base64, nome){
   try{
     let cache = JSON.parse(safeGet(STORAGE.arquivosCache, "{}"));
     cache[id] = { base64, nome };
     safeSet(STORAGE.arquivosCache, JSON.stringify(cache));
-  }catch(e){console.error("Erro ao salvar cache", e);}
+  }catch(e){console.error(e);}
 }
 
 function recuperarArquivoCache(id){
@@ -474,7 +600,6 @@ function recuperarArquivoCache(id){
   }catch{return null;}
 }
 
-/* Firestore Cloud */
 async function cloudGetProducts(){
   if(!window.FB)return [];
   const querySnapshot = await window.FB.getDocs(window.FB.collection(window.FB.db, "produtos"));
@@ -492,31 +617,19 @@ async function cloudDeleteProduct(id){
   await window.FB.deleteDoc(window.FB.doc(window.FB.db, "produtos", id));
 }
 
-/* Cálculos de Custo incluindo Energia A1 Mini */
 function parseTempo(v){
   if(!v) return 0;
   v = String(v).trim().toLowerCase();
-  
-  if(/^\d+$/.test(v) && parseInt(v) > 1000) {
-    return parseInt(v) / 3600;
-  }
-
+  if(/^\d+$/.test(v) && parseInt(v) > 1000) return parseInt(v) / 3600;
   let mTime = v.match(/(?:(\d+(?:\.\d+)?)\s*h)?\s*(?:(\d+(?:\.\d+)?)\s*m)?\s*(?:(\d+(?:\.\d+)?)\s*s)?/);
-  if(mTime && (mTime[1] || mTime[2] || mTime[3])) {
-    return +(mTime[1]||0) + (+mTime[2]||0)/60 + (+mTime[3]||0)/3600;
-  }
-
+  if(mTime && (mTime[1] || mTime[2] || mTime[3])) return +(mTime[1]||0) + (+mTime[2]||0)/60 + (+mTime[3]||0)/3600;
   let m = v.match(/^(\d+(?:\.\d+)?)\s*:\s*(\d{1,2})(?:\s*:\s*(\d{1,2}))?$/);
-  if(m){
-    const h = +m[1], mm = +m[2], ss = m[3] ? +m[3] : 0;
-    return h + mm/60 + ss/3600;
-  }
-  
+  if(m) return +m[1] + +m[2]/60 + (m[3]?+m[3]:0)/3600;
   return parseFloat(v) || 0;
 }
 
 function formatarTempo(h){if(!Number.isFinite(h)||h<=0)return "";let total=Math.round(h*60),hh=Math.floor(total/60),mm=total%60;return hh?`${hh}h${mm?mm+"m":""}`:`${mm}m`}
-function converterTempoManual(show=false){const h=parseTempo($("tempoManual").value);$("horasPeca").value=h.toFixed(2);recalcular();return h}
+function converterTempoManual(){const h=parseTempo($("tempoManual").value);$("horasPeca").value=h.toFixed(2);recalcular();return h}
 function numero(id,d=0){const n=parseFloat($(id).value);return Number.isFinite(n)?n:d}
 
 function obterDados(){
@@ -563,7 +676,6 @@ function carregarConfig(){
   }catch{}
 }
 
-/* Leitura de Arquivo 3MF ou GCODE */
 async function lerZip3MF(file){
   const buf=await file.arrayBuffer(),dv=new DataView(buf),u8=new Uint8Array(buf);
   let eocd=-1;
@@ -659,7 +771,6 @@ async function processarArquivo(file){
     $("analiseStatus").textContent="⏳ Lendo arquivo...";
     const a = await analisarArquivoProjeto(file);
     const base64Content = await blobToBase64(file);
-    
     arquivoGlobalMemoria = { file, base64: base64Content, name: file.name };
 
     $("nomeProduto").value=a.nome;
@@ -677,7 +788,6 @@ async function processarArquivo(file){
 }
 $("arquivoProjeto").addEventListener("change",e=>processarArquivo(e.target.files?.[0]));
 
-/* Catálogo */
 async function salvarProduto(){
   const v=recalcular(), name=$("nomeProduto").value.trim()||"Produto", code=$("codigoProduto").value.trim()||uid().slice(0,8), categoria=$("categoriaProduto").value;
   if(v.pesoPeca<=0&&v.horas<=0){toast("Informe peso ou tempo."); return;}
@@ -720,13 +830,13 @@ async function renderCatalogo(){
         <div class="catalog-thumb">${item.thumbBase64?`<img src="${item.thumbBase64}">`:'📦'}</div>
         <div>
           <div class="catalog-title">${esc(item.nome)}</div>
-          <div style="font-size:10px; color:var(--soft); margin-bottom:4px;">Ref: <strong>${esc(item.codigo)}</strong></div>
+          <div style="font-size:11px; color:var(--soft); margin-bottom:4px;">Ref: <strong>${esc(item.codigo)}</strong></div>
           <div class="catalog-info"><span>Custo:</span> <strong>${dinheiro(item.subtotal)}</strong></div>
           <div class="catalog-info"><span>Preço:</span> <strong style="color:var(--accent);">${dinheiro(item.precoFinal)}</strong></div>
         </div>
       </div>
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-top:6px; background:var(--card2); padding:6px; border-radius:8px;">
-        <span style="font-size:10px; color:var(--soft);">QR Code do Produto:</span>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-top:8px; background:var(--card2); padding:6px; border-radius:10px;">
+        <span style="font-size:11px; color:var(--soft);">QR Code:</span>
         <div id="qrcode-${i}" class="catalog-qrcode-box"></div>
       </div>
       <div class="catalog-actions">
@@ -743,24 +853,17 @@ async function renderCatalogo(){
     try {
       new QRCode(document.getElementById(`qrcode-${i}`), {
         text: String(item.codigo || item.id),
-        width: 80,
-        height: 80,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
+        width: 90, height: 90,
+        colorDark : "#000000", colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.M
       });
-    } catch(err) {
-      console.error(err);
-    }
+    } catch(err) {}
   });
 }
 
 function baixarArquivoBambu(id){
   const cache = recuperarArquivoCache(id);
-  if(!cache || !cache.base64) {
-    toast("Arquivo não encontrado.");
-    return;
-  }
+  if(!cache || !cache.base64) { toast("Arquivo não encontrado."); return; }
   const a = document.createElement('a');
   a.href = cache.base64;
   a.download = cache.nome || "projeto.3mf";
@@ -770,30 +873,23 @@ function baixarArquivoBambu(id){
   toast("Baixando arquivo para o Bambu Studio! 🎨");
 }
 
-function pedirArquivoCatalogo(id){
-  idProdutoAlvoCache = id;
-  $("inputArquivoCatalogo").click();
-}
+function pedirArquivoCatalogo(id){ idProdutoAlvoCache = id; $("inputArquivoCatalogo").click(); }
 
 async function vincularArquivoDiretoCatalogo(input){
   const file = input.files?.[0];
   if(!file || !idProdutoAlvoCache) return;
-  
   try {
     const base64 = await blobToBase64(file);
     salvarArquivoCache(idProdutoAlvoCache, base64, file.name);
     toast("Arquivo anexado e botão liberado! 🎨");
-    idProdutoAlvoCache = null;
-    input.value = "";
+    idProdutoAlvoCache = null; input.value = "";
     await renderCatalogo();
-  } catch(e) {
-    toast("Erro ao anexar arquivo.");
-  }
+  } catch(e) { toast("Erro ao anexar arquivo."); }
 }
 
 async function editarItem(i){
   const item=catalogo[i]; if(!item)return;
-  itemEditandoIndex=i; nav("calc",document.querySelector('.nav-btn[data-page="calc"]'));
+  itemEditandoIndex=i; nav("calc",document.querySelector('.sidebar-btn[data-page="calc"]'));
   $("nomeProduto").value=item.nome||""; $("codigoProduto").value=item.codigo||""; $("categoriaProduto").value=item.categoria||"Outros";
   $("pesoPeca").value=Number(item.peso||0).toFixed(2); $("horasPeca").value=Number(item.horas||0).toFixed(2);
   $("tempoManual").value=formatarTempo(Number(item.horas||0)); $("observacoes").value=item.observacoes||"";
@@ -806,14 +902,12 @@ async function excluirItem(i){
   await cloudDeleteProduct(item.id); await renderCatalogo(); toast("Excluído.");
 }
 
-/* Modal de Venda Rápida */
 function abrirModalVenda(i){
   const item = catalogo[i];
   if(!item) return;
   $("modalProdutoIndex").value = i;
   $("modalTituloProduto").textContent = `Vender: ${item.nome}`;
-  $("modalCliente").value = "";
-  $("modalQtd").value = "1";
+  $("modalCliente").value = ""; $("modalQtd").value = "1";
   $("modalPrecoUnit").value = dinheiro(item.precoFinal);
   calcularTotalModal();
   $("modalVendaRapida").classList.add("active");
@@ -834,21 +928,15 @@ function confirmarVendaRapida(){
   const cliente = $("modalCliente").value.trim() || "Avulso";
   
   vendasLista.unshift({
-    id: uid(),
-    nome: `${item.nome} (${cliente})`,
-    qtd,
-    total: qtd * item.precoFinal,
-    lucro: (qtd * item.precoFinal) - (qtd * item.subtotal),
+    id: uid(), nome: `${item.nome} (${cliente})`, qtd,
+    total: qtd * item.precoFinal, lucro: (qtd * item.precoFinal) - (qtd * item.subtotal),
     dataISO: new Date().toISOString()
   });
 
   safeSet(STORAGE.vendas, JSON.stringify(vendasLista));
-  fecharModalVenda();
-  atualizarPainelVendas();
-  toast("Venda registrada com sucesso! ✅");
+  fecharModalVenda(); atualizarPainelVendas(); toast("Venda registrada com sucesso! ✅");
 }
 
-/* Editar Venda Registrada */
 function abrirModalEdicaoVenda(id){
   const v = vendasLista.find(x => x.id === id);
   if(!v) return;
@@ -863,106 +951,64 @@ function salvarEdicaoVenda(){
   const id = $("editVendaId").value;
   const idx = vendasLista.findIndex(x => x.id === id);
   if(idx === -1) return;
-
   vendasLista[idx].nome = $("editVendaNome").value.trim() || "Venda";
   vendasLista[idx].qtd = parseInt($("editVendaQtd").value) || 1;
   vendasLista[idx].total = parseFloat($("editVendaTotal").value) || 0;
-
   safeSet(STORAGE.vendas, JSON.stringify(vendasLista));
-  fecharModalEdicaoVenda();
-  atualizarPainelVendas();
-  toast("Venda atualizada com sucesso! ✏️");
+  fecharModalEdicaoVenda(); atualizarPainelVendas(); toast("Venda atualizada! ✏️");
 }
 
-/* Vinted Manager */
 function renderVintedManager(){
   const container = $("vintedListaContainer");
   if(!container) return;
-  if(!catalogo.length){
-    container.innerHTML = '<div class="empty">Nenhum produto no catálogo para gerenciar.</div>';
-    return;
-  }
-
+  if(!catalogo.length){ container.innerHTML = '<div class="empty">Nenhum produto no catálogo.</div>'; return; }
   const hoje = new Date();
   container.innerHTML = catalogo.map(item => {
-    let diasStr = "Sem data Vinted";
-    let statusBadge = '<span class="vinted-badge-ok">Sem Link</span>';
-    
+    let diasStr = "Sem data Vinted", statusBadge = '<span class="vinted-badge-ok">Sem Link</span>';
     if(item.vintedData){
-      const dataPost = new Date(item.vintedData);
-      const diffTime = hoje - dataPost;
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-      
-      if(diffDays < 0) diasStr = "Data futura";
-      else if(diffDays === 0) diasStr = "Postado hoje";
-      else diasStr = `Postado há ${diffDays} dia(s)`;
-
-      if(diffDays >= 25) statusBadge = '<span class="vinted-badge-warn">⚠️ Antigo (>25d) - Fazer Bump/Repost</span>';
-      else statusBadge = '<span class="vinted-badge-ok">✓ Ativo recente</span>';
+      const diffDays = Math.floor((hoje - new Date(item.vintedData)) / (1000 * 60 * 60 * 24));
+      diasStr = diffDays < 0 ? "Data futura" : diffDays === 0 ? "Postado hoje" : `Postado há ${diffDays} dia(s)`;
+      statusBadge = diffDays >= 25 ? '<span class="vinted-badge-warn">⚠️ Antigo (>25d) - Fazer Bump/Repost</span>' : '<span class="vinted-badge-ok">✓ Ativo recente</span>';
     }
-
     return `
-      <div class="history-item" style="flex-direction:column; align-items:flex-start; gap:4px;">
+      <div class="history-item" style="flex-direction:column; align-items:flex-start; gap:6px;">
         <div style="display:flex; justify-content:space-between; width:100%;">
-          <span class="history-title">${esc(item.nome)}</span>
-          ${statusBadge}
+          <span class="history-title">${esc(item.nome)}</span> ${statusBadge}
         </div>
         <div class="history-meta">Idade: ${diasStr}</div>
-        <div style="display:flex; gap:8px; margin-top:4px; width:100%; align-items:center;">
-          ${item.vintedLink ? `<a href="${esc(item.vintedLink)}" target="_blank" class="btn btn-sm btn-outline" style="flex:1; text-decoration:none; text-align:center;">🔗 Abrir na Vinted</a>` : '<span style="font-size:10px; color:var(--soft);">Sem link cadastrado</span>'}
-        </div>
-      </div>
-    `;
+        ${item.vintedLink ? `<a href="${esc(item.vintedLink)}" target="_blank" class="btn btn-sm btn-outline" style="text-decoration:none; width:100%; text-align:center;">🔗 Abrir na Vinted</a>` : ''}
+      </div>`;
   }).join("");
 }
 
-/* Scanner de QR / Barcode */
-function toggleScanner(){
-  if(isScanning) pararScanner();
-  else iniciarScanner();
-}
+function toggleScanner(){ if(isScanning) pararScanner(); else iniciarScanner(); }
 function iniciarScanner(){
-  const videoElement = $("videoScanner");
-  videoElement.style.display = "block";
+  $("videoScanner").style.display = "block";
   $("btnToggleScanner").textContent = "Parar Câmera";
-  $("scannerStatus").textContent = "A apontar para o código...";
-  
+  $("scannerStatus").textContent = "Aponte para o código...";
   codeReader = new ZXing.BrowserBarcodeReader();
-  codeReader.decodeFromVideoDevice(null, 'videoScanner', (result, err) => {
-    if (result) {
-      const codigoLido = result.getText();
-      pararScanner();
-      encontrarProdutoPorCodigo(codigoLido);
-    }
-  }).catch(err => {
-    $("scannerStatus").textContent = "Erro ao acessar a câmera.";
-    pararScanner();
-  });
+  codeReader.decodeFromVideoDevice(null, 'videoScanner', (result) => {
+    if (result) { pararScanner(); encontrarProdutoPorCodigo(result.getText()); }
+  }).catch(() => { $("scannerStatus").textContent = "Erro na câmera."; pararScanner(); });
   isScanning = true;
 }
 function pararScanner(){
   if(codeReader){ codeReader.reset(); codeReader = null; }
-  const videoElement = $("videoScanner");
-  if(videoElement) videoElement.style.display = "none";
-  if($("btnToggleScanner")) $("btnToggleScanner").textContent = "Iniciar Câmera";
-  if($("scannerStatus")) $("scannerStatus").textContent = "Câmera desligada.";
+  $("videoScanner").style.display = "none";
+  $("btnToggleScanner").textContent = "Iniciar Câmera";
+  $("scannerStatus").textContent = "Câmera desligada.";
   isScanning = false;
 }
 function encontrarProdutoPorCodigo(codigo){
   const index = catalogo.findIndex(p => String(p.codigo).trim().toLowerCase() === String(codigo).trim().toLowerCase());
-  if(index !== -1){
-    abrirModalVenda(index);
-    toast(`Produto escaneado: ${catalogo[index].nome} 🎉`);
-  } else {
-    toast(`Código "${codigo}" não encontrado ❌`);
-  }
+  if(index !== -1){ abrirModalVenda(index); toast(`Encontrado: ${catalogo[index].nome}`); }
+  else { toast(`Código "${codigo}" não encontrado ❌`); }
 }
 
-/* Vendas Panel */
 function atualizarSelectCatalogoVendas(){
   const sel=$("vendaProdutoSelect"); if(!sel)return;
   sel.innerHTML='<option value="">-- Venda avulsa --</option>';
-  catalogo.forEach((p,i)=>{const opt=document.createElement("option"); opt.value=i; opt.textContent=`${p.nome} (${dinheiro(p.precoFinal)}) [Ref: ${p.codigo}]`; sel.appendChild(opt);});
+  catalogo.forEach((p,i)=>{ const opt=document.createElement("option"); opt.value=i; opt.textContent=`${p.nome} (${dinheiro(p.precoFinal)})`; sel.appendChild(opt); });
 }
 function preencherDadosVenda(){
   const i=$("vendaProdutoSelect").value;
@@ -974,27 +1020,20 @@ function calcularTotalVendaForm(){$("vendaTotalPreview").textContent=dinheiro((p
 function registrarVenda(){
   const nome=$("vendaNome").value.trim()||"Avulso", qtd=parseInt($("vendaQtd").value)||1, preco=parseFloat($("vendaPrecoUnit").value)||0, custo=parseFloat($("vendaCustoUnit").value)||0;
   if(preco<=0)return toast("Informe o preço.");
-  
-  vendasLista.unshift({
-    id:uid(), nome, qtd, total:qtd*preco, lucro:(qtd*preco)-(qtd*custo), dataISO:new Date().toISOString()
-  });
-  safeSet(STORAGE.vendas, JSON.stringify(vendasLista)); 
-  atualizarPainelVendas(); 
-  toast("Venda registrada!");
+  vendasLista.unshift({ id:uid(), nome, qtd, total:qtd*preco, lucro:(qtd*preco)-(qtd*custo), dataISO:new Date().toISOString() });
+  safeSet(STORAGE.vendas, JSON.stringify(vendasLista)); atualizarPainelVendas(); toast("Venda registrada!");
 }
-function limparVendas(){vendasLista=[]; safeSet(STORAGE.vendas,"[]"); atualizarPainelVendas();}
+function limparVendas(){ vendasLista=[]; safeSet(STORAGE.vendas,"[]"); atualizarPainelVendas(); }
 function atualizarPainelVendas(){
   try{vendasLista=JSON.parse(safeGet(STORAGE.vendas,"[]"))}catch{vendasLista=[]}
-  const periodo = $("filtroPeriodo") ? $("filtroPeriodo").value : "todos";
+  const periodo = $("filtroPeriodo")?.value || "todos";
   const hojeStr = new Date().toISOString().slice(0, 10);
   const mesAtualStr = new Date().toISOString().slice(0, 7);
 
   const vendasFiltradas = vendasLista.filter(v => {
     if(!v.dataISO) return true;
-    const dataVendaStr = v.dataISO.slice(0, 10);
-    const mesVendaStr = v.dataISO.slice(0, 7);
-    if(periodo === "hoje") return dataVendaStr === hojeStr;
-    if(periodo === "mes") return mesVendaStr === mesAtualStr;
+    if(periodo === "hoje") return v.dataISO.slice(0, 10) === hojeStr;
+    if(periodo === "mes") return v.dataISO.slice(0, 7) === mesAtualStr;
     return true;
   });
 
@@ -1010,12 +1049,11 @@ function atualizarPainelVendas(){
       </div>
       <div style="display:flex; align-items:center; gap:8px;">
         <strong>${dinheiro(v.total)}</strong>
-        <button class="btn btn-sm btn-outline" style="padding:4px 8px;" onclick="abrirModalEdicaoVenda('${v.id}')">✏️</button>
+        <button class="btn btn-sm btn-outline" style="padding:6px 10px;" onclick="abrirModalEdicaoVenda('${v.id}')">✏️</button>
       </div>
     </div>`).join("");
 }
 
-/* Histórico */
 function registrarHistorico(){
   const v=recalcular(); if(v.pesoPeca<=0)return toast("Informe dados.");
   historicoCalc.unshift({nome:$("nomeProduto").value.trim()||"Cálculo", subtotal:v.subtotal, precoIdeal:v.precoIdeal});
