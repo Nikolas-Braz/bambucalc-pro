@@ -415,7 +415,7 @@ input[type="file"]{ padding: 6px; }
 "use strict";
 
 const STORAGE={config:"config3d",theme:"theme3d",historico:"historicoCalc3d",vendas:"vendas3d",arquivosCache:"arquivosCache3d"};
-let catalogo=[], historicoCalc=[], vendasLista=[], itemEditandoIndex=null, arquivoAtual=null;
+let catalogo=[], historicoCalc=[], vendasLista=[], itemEditandoIndex=null, arquivoGlobalMemoria=null;
 let codeReader = null, isScanning = false;
 
 function $(id){return document.getElementById(id)}
@@ -655,15 +655,18 @@ async function processarArquivo(file){
   try{
     $("analiseStatus").textContent="⏳ Lendo arquivo...";
     const a = await analisarArquivoProjeto(file);
-    arquivoAtual={file,analise:a};
+    const base64Content = await blobToBase64(file);
+    
+    arquivoGlobalMemoria = { file, base64: base64Content, name: file.name };
+
     $("nomeProduto").value=a.nome;
     $("pesoPeca").value=Number(a.peso||0).toFixed(2);
     if(a.horas){
       $("horasPeca").value=Number(a.horas).toFixed(2);
       $("tempoManual").value=formatarTempo(a.horas);
     }
-    $("analiseStatus").innerHTML=`<strong>✓ Lido com sucesso! (${a.peso}g | ${formatarTempo(a.horas)})</strong>`;
-    recalcular(); toast("Arquivo processado!");
+    $("analiseStatus").innerHTML=`<strong>✓ Arquivo carregado na memória (${a.peso}g | ${formatarTempo(a.horas)})!</strong>`;
+    recalcular(); toast("Arquivo pronto para vincular!");
   }catch(e){
     console.error(e);
     $("analiseStatus").textContent="❌ Erro ao ler arquivo.";
@@ -680,11 +683,9 @@ async function salvarProduto(){
   let itemId = old?.id || uid();
   let fileName = old?.fileName || (name + ".3mf");
 
-  if(arquivoAtual?.analise?.thumbBlob) thumbBase64=await blobToBase64(arquivoAtual.analise.thumbBlob);
-  if(arquivoAtual?.file){
-    fileName = arquivoAtual.file.name;
-    const fileB64 = await blobToBase64(arquivoAtual.file);
-    salvarArquivoCache(itemId, fileB64, fileName);
+  if(arquivoGlobalMemoria?.base64){
+    fileName = arquivoGlobalMemoria.name;
+    salvarArquivoCache(itemId, arquivoGlobalMemoria.base64, fileName);
   }
 
   const item={
@@ -726,7 +727,7 @@ async function renderCatalogo(){
         <div id="qrcode-${i}" class="catalog-qrcode-box"></div>
       </div>
       <div class="catalog-actions">
-        ${cacheInfo ? `<button class="btn btn-sm btn-primary" onclick="abrirNoBambuStudio('${item.id}')">🎨 Bambu Studio</button>` : '<button class="btn btn-sm btn-outline" style="opacity:0.6;" onclick="toast(\'Envie o arquivo na aba Calc para ativar\')">🎨 Bambu Studio</button>'}
+        <button class="btn btn-sm ${cacheInfo ? 'btn-primary' : 'btn-outline'}" onclick="acaoBambuStudio('${item.id}', ${i})">🎨 Bambu Studio</button>
         <button class="btn btn-sm btn-outline" onclick="editarItem(${i})">✏️ Editar</button>
         <button class="btn btn-sm btn-primary" onclick="abrirModalVenda(${i})">🛒 Vender</button>
         <button class="btn btn-sm btn-danger" onclick="excluirItem(${i})">🗑️</button>
@@ -748,21 +749,21 @@ async function renderCatalogo(){
   });
 }
 
-function abrirNoBambuStudio(id){
+function acaoBambuStudio(id, i){
   const cache = recuperarArquivoCache(id);
-  if(!cache || !cache.base64) {
-    toast("Arquivo não encontrado neste dispositivo. Envie o arquivo novamente na aba Calc.");
-    return;
+  if(cache && cache.base64){
+    const a = document.createElement('a');
+    a.href = cache.base64;
+    a.download = cache.nome || "projeto.3mf";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    toast("Baixando arquivo para o Bambu Studio! 🎨");
+  } else {
+    // Se não tiver arquivo, carrega o item na aba Calc para facilitar o envio rápido
+    editarItem(i);
+    toast("Envie o arquivo .gcode/.3mf na aba Calc e clique em 'Salvar na Nuvem' para ativar o botão!");
   }
-  
-  const a = document.createElement('a');
-  a.href = cache.base64;
-  a.download = cache.nome || "projeto.3mf";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  
-  toast("Baixando arquivo para o Bambu Studio! 🎨");
 }
 
 async function editarItem(i){
@@ -773,7 +774,7 @@ async function editarItem(i){
   $("tempoManual").value=formatarTempo(Number(item.horas||0)); $("observacoes").value=item.observacoes||"";
   if($("vintedLink")) $("vintedLink").value = item.vintedLink || "";
   if($("vintedData")) $("vintedData").value = item.vintedData || "";
-  arquivoAtual=null; recalcular(); toast("Carregado para edição.");
+  recalcular(); toast("Carregado para edição.");
 }
 async function excluirItem(i){
   const item=catalogo[i]; if(!item||!confirm("Excluir?"))return;
@@ -1003,7 +1004,7 @@ function atualizarHistorico(){
 }
 
 function limparFormulario(show=true){
-  itemEditandoIndex=null; arquivoAtual=null; $("pesoPeca").value="0"; $("tempoManual").value=""; $("horasPeca").value="0";
+  itemEditandoIndex=null; arquivoGlobalMemoria=null; $("pesoPeca").value="0"; $("tempoManual").value=""; $("horasPeca").value="0";
   $("nomeProduto").value=""; $("codigoProduto").value=""; $("observacoes").value=""; $("arquivoProjeto").value="";
   if($("vintedLink")) $("vintedLink").value=""; if($("vintedData")) $("vintedData").value="";
   $("analiseStatus").textContent="Nenhum arquivo enviado."; recalcular(); if(show)toast("Limpo.");
