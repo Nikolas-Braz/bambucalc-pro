@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="BambuCalc 3D PRO - Solução de Download Direto">
+<meta name="description" content="BambuCalc 3D PRO - Download em Nuvem Integrado">
 <title>BambuCalc 3D PRO</title>
 
 <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22BambuCalc%203D%20PRO%22%2C%22short_name%22%3A%22BambuCalc%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23090d16%22%2C%22theme_color%22%3A%22%2322c55e%22%7D">
@@ -458,7 +458,7 @@ input[type="file"]{ padding: 8px; }
 <script>
 "use strict";
 
-const STORAGE={config:"config3d",theme:"theme3d",historico:"historicoCalc3d",vendas:"vendas3d",arquivosCache:"arquivosCache3d"};
+const STORAGE={config:"config3d",theme:"theme3d",historico:"historicoCalc3d",vendas:"vendas3d"};
 let catalogo=[], historicoCalc=[], vendasLista=[], itemEditandoIndex=null, arquivoGlobalMemoria=null, idProdutoAlvoCache=null;
 let categoriaAtivaFiltro = "todos";
 let codeReader = null, isScanning = false;
@@ -504,21 +504,6 @@ async function blobToBase64(blob){
     reader.onerror = rej;
     reader.readAsDataURL(blob);
   });
-}
-
-function salvarArquivoCache(id, base64, nome){
-  try{
-    let cache = JSON.parse(safeGet(STORAGE.arquivosCache, "{}"));
-    cache[id] = { base64, nome };
-    safeSet(STORAGE.arquivosCache, JSON.stringify(cache));
-  }catch(e){console.error(e);}
-}
-
-function recuperarArquivoCache(id){
-  try{
-    let cache = JSON.parse(safeGet(STORAGE.arquivosCache, "{}"));
-    return cache[id] || null;
-  }catch{return null;}
 }
 
 async function cloudGetProducts(){
@@ -705,7 +690,7 @@ async function processarArquivo(file){
       $("tempoManual").value=formatarTempo(a.horas);
     }
     $("analiseStatus").innerHTML=`<strong>✓ Arquivo carregado na memória (${a.peso}g | ${formatarTempo(a.horas)})!</strong>`;
-    recalcular(); toast("Arquivo pronto para vincular!");
+    recalcular(); toast("Arquivo pronto para salvar!");
   }catch(e){
     console.error(e);
     $("analiseStatus").textContent="❌ Erro ao ler arquivo.";
@@ -720,23 +705,24 @@ async function salvarProduto(){
   let thumbBase64=old?.thumbBase64||null;
   let itemId = old?.id || uid();
   let fileName = old?.fileName || (name + ".3mf");
+  let fileBase64 = old?.fileBase64 || null;
 
   if(arquivoGlobalMemoria?.base64){
     fileName = arquivoGlobalMemoria.name;
-    salvarArquivoCache(itemId, arquivoGlobalMemoria.base64, fileName);
+    fileBase64 = arquivoGlobalMemoria.base64;
   }
 
   const item={
     id:itemId, nome:name, codigo:code, categoria, peso:v.pesoPeca, horas:v.horas,
     subtotal:v.subtotal, precoFinal:v.precoIdeal, observacoes:$("observacoes").value.trim(),
     vintedLink:v.vintedLink, vintedData:v.vintedData,
-    thumbBase64, fileName, atualizadoEm:new Date().toISOString()
+    thumbBase64, fileBase64, fileName, atualizadoEm:new Date().toISOString()
   };
   try{
-    toast("⏳ Sincronizando com a Nuvem...");
+    toast("⏳ Salvando produto e arquivo na Nuvem...");
     await cloudSaveProduct(item);
     itemEditandoIndex=null; arquivoGlobalMemoria=null; await renderCatalogo();
-    toast("Salvo com sucesso! 🚀"); limparFormulario(false);
+    toast("Salvo com sucesso na nuvem! 🚀"); limparFormulario(false);
   }catch(e){toast("Erro ao salvar.");}
 }
 function adicionarAoCatalogo(){salvarProduto()}
@@ -779,7 +765,6 @@ function filtrarCatalogo(){
   }
   
   filtrados.forEach((item)=>{
-    const cacheInfo = recuperarArquivoCache(item.id);
     const iOriginal = catalogo.findIndex(x => x.id === item.id);
     const card=document.createElement("article"); card.className="catalog-card";
     
@@ -808,10 +793,10 @@ function filtrarCatalogo(){
       </div>
 
       <div class="catalog-actions">
-        <!-- SOLUÇÃO DEFINITIVA: SE TIVER NO CACHE, MOSTRA O BOTÃO DE DOWNLOAD. SE NÃO TIVER, MOSTRA "BAIXAR ARQUIVO DIRETO" QUE ABRE DIRETO O EXPLORADOR DE ARQUIVOS PARA VINCULAR E BAIXAR EM UM SÓ CLIQUE -->
-        <button class="btn btn-sm ${cacheInfo ? 'btn-primary' : 'btn-outline'}" style="${!cacheInfo ? 'border-color:var(--accent); color:var(--accent);' : ''}" onclick="${cacheInfo ? `baixarArquivoBambu('${item.id}')` : `pedirArquivoCatalogo('${item.id}')`}">
-          ${cacheInfo ? '🎨 Bambu Studio' : '📁 Anexar e Baixar'}
-        </button>
+        ${item.fileBase64 ? 
+          `<button class="btn btn-sm btn-primary" onclick="baixarArquivoCloud('${item.id}')">🎨 Bambu Studio</button>` : 
+          `<button class="btn btn-sm btn-outline" style="border-color:var(--accent); color:var(--accent);" onclick="pedirArquivoCatalogo('${item.id}')">📁 Anexar Arquivo</button>`
+        }
         <button class="btn btn-sm btn-outline" onclick="editarItem(${iOriginal})">✏️ Editar</button>
         <button class="btn btn-sm btn-primary" onclick="abrirModalVenda(${iOriginal})">🛒 Vender</button>
         <button class="btn btn-sm btn-danger" onclick="excluirItem(${iOriginal})">🗑️</button>
@@ -829,12 +814,12 @@ function filtrarCatalogo(){
   });
 }
 
-function baixarArquivoBambu(id){
-  const cache = recuperarArquivoCache(id);
-  if(!cache || !cache.base64) { toast("Arquivo não encontrado."); return; }
+function baixarArquivoCloud(id){
+  const item = catalogo.find(x => x.id === id);
+  if(!item || !item.fileBase64) { toast("Arquivo não encontrado."); return; }
   const a = document.createElement('a');
-  a.href = cache.base64;
-  a.download = cache.nome || "projeto.3mf";
+  a.href = item.fileBase64;
+  a.download = item.fileName || "projeto.3mf";
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -851,14 +836,15 @@ async function vincularArquivoDiretoCatalogo(input){
   if(!file || !idProdutoAlvoCache) return;
   try {
     const base64 = await blobToBase64(file);
-    salvarArquivoCache(idProdutoAlvoCache, base64, file.name);
-    
-    // Dispara o download imediatamente após selecionar o arquivo para facilitar a vida!
-    baixarArquivoBambu(idProdutoAlvoCache);
-
-    toast("Arquivo anexado e baixado com sucesso! 🎨");
+    const idx = catalogo.findIndex(x => x.id === idProdutoAlvoCache);
+    if(idx !== -1){
+      catalogo[idx].fileBase64 = base64;
+      catalogo[idx].fileName = file.name;
+      await cloudSaveProduct(catalogo[idx]);
+      baixarArquivoCloud(idProdutoAlvoCache);
+      toast("Arquivo salvo na nuvem e baixado! 🎨");
+    }
     idProdutoAlvoCache = null; input.value = "";
-    catalogo = await cloudGetProducts();
     filtrarCatalogo();
   } catch(e) { toast("Erro ao anexar arquivo."); }
 }
