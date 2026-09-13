@@ -3,13 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="BambuCalc 3D PRO - Lucro Real Detalhado">
+<meta name="description" content="BambuCalc 3D PRO - Solução de Download Direto">
 <title>BambuCalc 3D PRO</title>
 
-<!-- Configuração PWA (Manifest inline) -->
 <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22BambuCalc%203D%20PRO%22%2C%22short_name%22%3A%22BambuCalc%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23090d16%22%2C%22theme_color%22%3A%22%2322c55e%22%7D">
 
-<!-- SDKs do Firebase (Firestore) -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, getDocs, setDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -31,7 +29,6 @@
   window.dispatchEvent(new Event('firebase-ready'));
 </script>
 
-<!-- Bibliotecas QR Code -->
 <script src="https://unpkg.com/@zxing/library@latest"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
@@ -74,7 +71,6 @@ button{ cursor:pointer; }
 
 .app-wrapper { display: flex; min-height: 100vh; width: 100%; }
 
-/* SIDEBAR DESKTOP */
 .desktop-sidebar {
     width: 260px; background: var(--panel); border-right: 1px solid var(--border);
     display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 1000;
@@ -91,7 +87,6 @@ button{ cursor:pointer; }
 .sidebar-btn .icon { font-size: 18px; }
 .sidebar-footer { padding: 16px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 
-/* CONTEÚDO */
 .main-content { margin-left: 260px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; background: var(--bg); }
 .topbar-mobile { display: none; background: var(--panel); border-bottom: 1px solid var(--border); padding: 12px 16px; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 900; }
 .container-fluid { padding: 24px; max-width: 1400px; width: 100%; margin: 0 auto; flex: 1; }
@@ -131,7 +126,6 @@ input[type="file"]{ padding: 8px; }
 .summary-total{ margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
 .summary-total span:last-child{ color: var(--accent); font-size: 20px; font-weight: 800; }
 
-/* FILTROS E BUSCA DO CATÁLOGO */
 .catalog-filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
 .filter-chip { background: var(--card); border: 1px solid var(--border); color: var(--soft); padding: 8px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
 .filter-chip:hover { border-color: var(--accent); color: var(--text); }
@@ -149,7 +143,6 @@ input[type="file"]{ padding: 8px; }
 .catalog-details-row strong{ color: var(--text); }
 .catalog-actions{ display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--border); }
 
-/* MODAIS */
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
 .modal-overlay.active { display: flex; }
 .modal-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; width: 100%; max-width: 420px; box-shadow: var(--shadow); }
@@ -175,7 +168,6 @@ input[type="file"]{ padding: 8px; }
 .vinted-badge-ok { color: var(--accent); font-weight: 600; font-size: 11px; background: rgba(34,197,94,0.1); padding: 3px 8px; border-radius: 6px; }
 .vinted-badge-warn { color: var(--warning); font-weight: 600; font-size: 11px; background: rgba(245,158,11,0.1); padding: 3px 8px; border-radius: 6px; }
 
-/* MOBILE RESPONSIVO */
 @media (max-width: 868px) {
     .desktop-sidebar { display: none; }
     .main-content { margin-left: 0; padding-bottom: 90px; }
@@ -202,7 +194,6 @@ input[type="file"]{ padding: 8px; }
 </head>
 <body>
 
-<!-- SISTEMA DE PROTEÇÃO POR SENHA (272822) -->
 <script>
   const SENHA_MESTRA = "272822";
   if (sessionStorage.getItem("autenticado") !== "true") {
@@ -218,7 +209,6 @@ input[type="file"]{ padding: 8px; }
 
 <div class="app-wrapper">
   
-  <!-- SIDEBAR DESKTOP -->
   <aside class="desktop-sidebar">
     <div class="sidebar-brand">
       <div class="app-brand-icon"></div> BambuCalc 3D
@@ -236,10 +226,8 @@ input[type="file"]{ padding: 8px; }
     </div>
   </aside>
 
-  <!-- CONTEÚDO PRINCIPAL -->
   <div class="main-content">
     
-    <!-- TOPBAR MOBILE -->
     <header class="topbar-mobile">
       <div style="font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
         <div class="app-brand-icon"></div> BambuCalc 3D
@@ -249,7 +237,6 @@ input[type="file"]{ padding: 8px; }
 
     <div class="container-fluid">
       
-      <!-- PÁGINA 1: CALCULADORA -->
       <section id="page-calc" class="page active">
         <div class="page-header">
           <div class="page-title">Calculadora Automática</div>
@@ -322,14 +309,12 @@ input[type="file"]{ padding: 8px; }
         </div>
       </section>
 
-      <!-- PÁGINA 2: CATÁLOGO / CATEGORIAS DETALHADAS -->
       <section id="page-catalogo" class="page">
         <div class="page-header">
           <div class="page-title">Catálogo & Categorias Detalhadas</div>
           <div class="page-subtitle">Busque, filtre e gerencie todos os detalhes dos seus produtos impressos em 3D.</div>
         </div>
 
-        <!-- BARRA DE BUSCA E FILTROS -->
         <div class="card" style="padding: 14px; margin-bottom: 16px;">
           <div class="form-grid" style="grid-template-columns: 1fr; margin-bottom: 10px;">
             <div class="field full" style="margin:0;">
@@ -350,7 +335,6 @@ input[type="file"]{ padding: 8px; }
         <div class="catalog-grid" id="catalogoCards"></div>
       </section>
 
-      <!-- PÁGINA 3: VENDAS E SCANNER QR/BARCODE -->
       <section id="page-vendas" class="page">
         <div class="page-header">
           <div class="page-title">Controle de Vendas</div>
@@ -402,7 +386,6 @@ input[type="file"]{ padding: 8px; }
         </div>
       </section>
 
-      <!-- PÁGINA 4: VINTED MANAGER -->
       <section id="page-vinted" class="page">
         <div class="page-header">
           <div class="page-title">Vinted Manager 🛍️</div>
@@ -414,7 +397,6 @@ input[type="file"]{ padding: 8px; }
         </div>
       </section>
 
-      <!-- PÁGINA 5: HISTÓRICO -->
       <section id="page-historico" class="page">
         <div class="page-header">
           <div class="page-title">Histórico de Cálculos</div>
@@ -426,7 +408,6 @@ input[type="file"]{ padding: 8px; }
     </div>
   </div>
 
-  <!-- NAVBAR MOBILE -->
   <aside class="mobile-bottom-nav">
     <button class="mobile-nav-btn active" data-page="calc" onclick="nav('calc',this)"><span class="icon">💷</span>Calc</button>
     <button class="mobile-nav-btn" data-page="catalogo" onclick="nav('catalogo',this)"><span class="icon">📁</span>Catálogo</button>
@@ -437,7 +418,6 @@ input[type="file"]{ padding: 8px; }
 
 </div>
 
-<!-- MODAL DE VENDA RÁPIDA -->
 <div class="modal-overlay" id="modalVendaRapida">
   <div class="modal-card">
     <div class="card-header"><div class="card-title" id="modalTituloProduto">Registrar Venda Rápida</div></div>
@@ -455,7 +435,6 @@ input[type="file"]{ padding: 8px; }
   </div>
 </div>
 
-<!-- MODAL DE EDITAR VENDA -->
 <div class="modal-overlay" id="modalEditarVenda">
   <div class="modal-card">
     <div class="card-header"><div class="card-title">✏️ Editar Venda Registrada</div></div>
@@ -472,7 +451,6 @@ input[type="file"]{ padding: 8px; }
   </div>
 </div>
 
-<!-- INPUT OCULTO PARA ANEXAR ARQUIVO NO CATÁLOGO -->
 <input type="file" id="inputArquivoCatalogo" style="display:none;" accept=".3mf,.gcode" onchange="vincularArquivoDiretoCatalogo(this)">
 
 <div class="toast" id="toast"></div>
@@ -815,7 +793,6 @@ function filtrarCatalogo(){
         </div>
       </div>
 
-      <!-- DETALHES COMPLETOS DO PRODUTO -->
       <div class="catalog-details">
         <div class="catalog-details-row"><span>Peso da Peça:</span> <strong>${Number(item.peso||0).toFixed(1)}g</strong></div>
         <div class="catalog-details-row"><span>Tempo Estimado:</span> <strong>${formatarTempo(Number(item.horas||0))}</strong></div>
@@ -831,10 +808,10 @@ function filtrarCatalogo(){
       </div>
 
       <div class="catalog-actions">
-        ${cacheInfo ? 
-          `<button class="btn btn-sm btn-primary" onclick="baixarArquivoBambu('${item.id}')">🎨 Bambu Studio</button>` : 
-          `<button class="btn btn-sm btn-outline" style="border-color:var(--accent); color:var(--accent);" onclick="pedirArquivoCatalogo('${item.id}')">📁 Anexar Arquivo</button>`
-        }
+        <!-- SOLUÇÃO DEFINITIVA: SE TIVER NO CACHE, MOSTRA O BOTÃO DE DOWNLOAD. SE NÃO TIVER, MOSTRA "BAIXAR ARQUIVO DIRETO" QUE ABRE DIRETO O EXPLORADOR DE ARQUIVOS PARA VINCULAR E BAIXAR EM UM SÓ CLIQUE -->
+        <button class="btn btn-sm ${cacheInfo ? 'btn-primary' : 'btn-outline'}" style="${!cacheInfo ? 'border-color:var(--accent); color:var(--accent);' : ''}" onclick="${cacheInfo ? `baixarArquivoBambu('${item.id}')` : `pedirArquivoCatalogo('${item.id}')`}">
+          ${cacheInfo ? '🎨 Bambu Studio' : '📁 Anexar e Baixar'}
+        </button>
         <button class="btn btn-sm btn-outline" onclick="editarItem(${iOriginal})">✏️ Editar</button>
         <button class="btn btn-sm btn-primary" onclick="abrirModalVenda(${iOriginal})">🛒 Vender</button>
         <button class="btn btn-sm btn-danger" onclick="excluirItem(${iOriginal})">🗑️</button>
@@ -864,7 +841,10 @@ function baixarArquivoBambu(id){
   toast("Baixando arquivo para o Bambu Studio! 🎨");
 }
 
-function pedirArquivoCatalogo(id){ idProdutoAlvoCache = id; $("inputArquivoCatalogo").click(); }
+function pedirArquivoCatalogo(id){ 
+  idProdutoAlvoCache = id; 
+  $("inputArquivoCatalogo").click(); 
+}
 
 async function vincularArquivoDiretoCatalogo(input){
   const file = input.files?.[0];
@@ -872,7 +852,11 @@ async function vincularArquivoDiretoCatalogo(input){
   try {
     const base64 = await blobToBase64(file);
     salvarArquivoCache(idProdutoAlvoCache, base64, file.name);
-    toast("Arquivo anexado e botão liberado! 🎨");
+    
+    // Dispara o download imediatamente após selecionar o arquivo para facilitar a vida!
+    baixarArquivoBambu(idProdutoAlvoCache);
+
+    toast("Arquivo anexado e baixado com sucesso! 🎨");
     idProdutoAlvoCache = null; input.value = "";
     catalogo = await cloudGetProducts();
     filtrarCatalogo();
