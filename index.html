@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="BambuCalc 3D PRO - Painel Completo Desktop & Mobile">
+<meta name="description" content="BambuCalc 3D PRO - Lucro Real Detalhado">
 <title>BambuCalc 3D PRO</title>
 
 <!-- Configuração PWA (Manifest inline) -->
@@ -72,102 +72,29 @@ body{ margin:0; background:var(--bg); color:var(--text); font-family: system-ui,
 button, input, textarea, select{ font:inherit; }
 button{ cursor:pointer; }
 
-/* LAYOUT GERAL RESPONSIVO (DESKTOP FIRST PARA ESTRUTURA) */
-.app-wrapper {
-    display: flex;
-    min-height: 100vh;
-    width: 100%;
-}
+.app-wrapper { display: flex; min-height: 100vh; width: 100%; }
 
-/* SIDEBAR PARA DESKTOP (ESQUERDA) */
+/* SIDEBAR DESKTOP */
 .desktop-sidebar {
-    width: 260px;
-    background: var(--panel);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    z-index: 1000;
-    transition: width 0.3s ease;
+    width: 260px; background: var(--panel); border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 1000;
 }
-
-.sidebar-brand {
-    padding: 20px;
-    font-size: 18px;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-bottom: 1px solid var(--border);
-}
+.sidebar-brand { padding: 20px; font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); }
 .app-brand-icon { width: 28px; height: 28px; border-radius: 50%; background: conic-gradient(from 180deg, var(--accent), var(--accent2), var(--accent)); }
-
-.sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 16px 12px;
-    flex: 1;
-}
-
+.sidebar-nav { display: flex; flex-direction: column; gap: 6px; padding: 16px 12px; flex: 1; }
 .sidebar-btn {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: transparent;
-    border: none;
-    color: var(--soft);
-    padding: 12px 16px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    text-align: left;
-    transition: 0.2s;
+    display: flex; align-items: center; gap: 12px; background: transparent; border: none;
+    color: var(--soft); padding: 12px 16px; border-radius: 10px; font-size: 14px; font-weight: 600; text-align: left; transition: 0.2s;
 }
 .sidebar-btn:hover { background: rgba(255,255,255,0.03); color: var(--text); }
 .sidebar-btn.active { background: rgba(34,197,94,0.15); color: var(--accent); }
 .sidebar-btn .icon { font-size: 18px; }
+.sidebar-footer { padding: 16px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 
-.sidebar-footer {
-    padding: 16px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* CONTEÚDO PRINCIPAL (DIREITA) */
-.main-content {
-    margin-left: 260px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background: var(--bg);
-}
-
-.topbar-mobile {
-    display: none; /* Apenas visível em celulares */
-    background: var(--panel);
-    border-bottom: 1px solid var(--border);
-    padding: 12px 16px;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 900;
-}
-
-.container-fluid {
-    padding: 24px;
-    max-width: 1400px;
-    width: 100%;
-    margin: 0 auto;
-    flex: 1;
-}
+/* CONTEÚDO */
+.main-content { margin-left: 260px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; background: var(--bg); }
+.topbar-mobile { display: none; background: var(--panel); border-bottom: 1px solid var(--border); padding: 12px 16px; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 900; }
+.container-fluid { padding: 24px; max-width: 1400px; width: 100%; margin: 0 auto; flex: 1; }
 
 .page{ display:none; }
 .page.active{ display:block; }
@@ -177,7 +104,6 @@ button{ cursor:pointer; }
 
 .badge{ font-size: 11px; padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(34,197,94,.25); color: var(--accent); background: rgba(34,197,94,.07); white-space: nowrap; }
 
-/* CARDS E GRIDS ADAPTATIVOS PARA DESKTOP */
 .card{ background: var(--card); border-radius: 16px; border: 1px solid var(--border); padding: 20px; box-shadow: var(--shadow); margin-bottom: 20px; }
 .card-header{ display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
 .card-title{ font-size: 15px; font-weight: 700; }
@@ -185,42 +111,43 @@ button{ cursor:pointer; }
 .form-grid{ display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
 .field.full{ grid-column: 1 / -1; }
 label{ display: block; font-size: 12px; color: var(--soft); margin-bottom: 6px; font-weight: 500; }
-input, textarea, select{ width: 100%; background: rgba(2,6,23,.3); border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-size: 14px; color: var(--text); outline: none; transition: border-color 0.2s; }
+input, textarea, select{ width: 100%; background: rgba(2,6,23,.3); border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-size: 14px; color: var(--text); outline: none; }
 input:focus, textarea:focus, select:focus{ border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(14,165,233,.15); }
 input[readonly]{ opacity: .8; }
 textarea{ min-height: 100px; resize: vertical; }
 input[type="file"]{ padding: 8px; }
 
-/* BOTÕES */
 .actions{ display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
-.btn{ border: none; border-radius: 999px; padding: 12px 20px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: transform 0.1s; }
-.btn:active{ transform: scale(0.98); }
+.btn{ border: none; border-radius: 999px; padding: 12px 20px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; }
 .btn-primary{ background: var(--accent); color: #020617; }
 .btn-outline{ background: transparent; border: 1px solid var(--border); color: var(--soft); }
 .btn-outline:hover{ color: var(--text); border-color: var(--text); }
 .btn-danger{ background: var(--danger); color: white; flex: none; }
 .btn-sm{ padding: 8px 14px; font-size: 12px; min-width: auto; }
 
-/* RESUMO */
 .summary-list{ display: flex; flex-direction: column; gap: 10px; }
 .summary-row{ display: flex; justify-content: space-between; gap: 10px; font-size: 14px; color: var(--soft); }
 .summary-row strong{ color: var(--text); }
 .summary-total{ margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
 .summary-total span:last-child{ color: var(--accent); font-size: 20px; font-weight: 800; }
 
-/* CATÁLOGO GRID ADAPTATIVO PARA TELA CHEIA */
-.catalog-toolbar{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-.catalog-count{ color: var(--soft); font-size: 13px; }
-.catalog-grid{ display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-.catalog-card{ background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px; }
+/* FILTROS E BUSCA DO CATÁLOGO */
+.catalog-filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
+.filter-chip { background: var(--card); border: 1px solid var(--border); color: var(--soft); padding: 8px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+.filter-chip:hover { border-color: var(--accent); color: var(--text); }
+.filter-chip.active { background: var(--accent); color: #020617; border-color: var(--accent); }
+
+.catalog-grid{ display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+.catalog-card{ background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 10px; }
 .catalog-body-grid{ display: grid; grid-template-columns: 100px 1fr; gap: 14px; align-items: center; }
 .catalog-thumb{ width: 100px; height: 100px; background: var(--card2); border: 1px solid var(--border); border-radius: 12px; display: flex; align-items:center; justify-content:center; color: var(--soft); font-size: 24px; overflow: hidden; }
 .catalog-thumb img{ width: 100%; height: 100%; object-fit: cover; }
-.catalog-qrcode-box{ width: 90px; height: 90px; background: #fff; padding: 6px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+.catalog-qrcode-box{ width: 80px; height: 80px; background: #fff; padding: 4px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
 .catalog-title{ font-size: 16px; font-weight: 700; word-break: break-word; }
-.catalog-info{ font-size: 13px; color: var(--soft); display: flex; justify-content: space-between; }
-.catalog-info strong{ color: var(--text); }
-.catalog-actions{ display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--border); }
+.catalog-details{ background: var(--card2); border-radius: 10px; padding: 10px; font-size: 12px; display: flex; flex-direction: column; gap: 4px; border: 1px solid var(--border); }
+.catalog-details-row{ display: flex; justify-content: space-between; color: var(--soft); }
+.catalog-details-row strong{ color: var(--text); }
+.catalog-actions{ display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--border); }
 
 /* MODAIS */
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
@@ -248,14 +175,12 @@ input[type="file"]{ padding: 8px; }
 .vinted-badge-ok { color: var(--accent); font-weight: 600; font-size: 11px; background: rgba(34,197,94,0.1); padding: 3px 8px; border-radius: 6px; }
 .vinted-badge-warn { color: var(--warning); font-weight: 600; font-size: 11px; background: rgba(245,158,11,0.1); padding: 3px 8px; border-radius: 6px; }
 
-/* RESPONSIVIDADE MOBILE (TELAS ABAIXO DE 868PX) */
+/* MOBILE RESPONSIVO */
 @media (max-width: 868px) {
     .desktop-sidebar { display: none; }
     .main-content { margin-left: 0; padding-bottom: 90px; }
     .topbar-mobile { display: flex; }
     .container-fluid { padding: 14px; }
-    
-    /* Barra inferior estilo aplicativo para celular */
     .mobile-bottom-nav {
         position: fixed; bottom: 0; left: 0; right: 0; height: 75px;
         background: var(--panel); border-top: 1px solid var(--border);
@@ -293,7 +218,7 @@ input[type="file"]{ padding: 8px; }
 
 <div class="app-wrapper">
   
-  <!-- SIDEBAR DESKTOP (ESQUERDA) -->
+  <!-- SIDEBAR DESKTOP -->
   <aside class="desktop-sidebar">
     <div class="sidebar-brand">
       <div class="app-brand-icon"></div> BambuCalc 3D
@@ -306,7 +231,7 @@ input[type="file"]{ padding: 8px; }
       <button class="sidebar-btn" data-page="historico" onclick="nav('historico',this)"><span class="icon">📜</span> Histórico</button>
     </div>
     <div class="sidebar-footer">
-      <span style="font-size: 12px; color: var(--soft);">Tema do Sistema</span>
+      <span style="font-size: 12px; color: var(--soft);">Tema</span>
       <button class="btn btn-sm btn-outline" onclick="toggleTheme()" id="btnThemeDesktop" style="border-radius:999px;">🌙</button>
     </div>
   </aside>
@@ -314,7 +239,7 @@ input[type="file"]{ padding: 8px; }
   <!-- CONTEÚDO PRINCIPAL -->
   <div class="main-content">
     
-    <!-- TOPBAR MOBILE (APARECE SÓ NO CELULAR) -->
+    <!-- TOPBAR MOBILE -->
     <header class="topbar-mobile">
       <div style="font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
         <div class="app-brand-icon"></div> BambuCalc 3D
@@ -353,9 +278,9 @@ input[type="file"]{ padding: 8px; }
             <div class="field"><label for="categoriaProduto">Categoria</label>
               <select id="categoriaProduto">
                 <option value="Decoração & Casa">Decoração & Casa</option>
-                <option value="Acessórios & Suportes">Acessórios</option>
+                <option value="Acessórios & Suportes">Acessórios & Suportes</option>
                 <option value="Miniaturas">Miniaturas</option>
-                <option value="Peças Técnicas">Técnicas</option>
+                <option value="Peças Técnicas">Peças Técnicas</option>
                 <option value="Outros">Outros</option>
               </select>
             </div>
@@ -384,24 +309,44 @@ input[type="file"]{ padding: 8px; }
         </div>
 
         <div class="card">
-          <div class="card-header"><div class="card-title">📊 Resumo Financeiro (Com Energia)</div></div>
+          <div class="card-header"><div class="card-title">📊 Resumo Financeiro & Lucro Real</div></div>
           <div class="summary-list">
             <div class="summary-row"><span>Material</span><strong id="custoMaterial">£ 0.00</strong></div>
             <div class="summary-row"><span>Energia (A1 Mini)</span><strong id="custoEnergiaOut">£ 0.00</strong></div>
             <div class="summary-row"><span>Outros Custos</span><strong id="custoExtrasOut">£ 0.00</strong></div>
-            <div class="summary-row"><span>Subtotal</span><strong id="subtotal">£ 0.00</strong></div>
-            <div class="summary-row summary-total"><span>Preço Ideal</span><span id="precoFinal">£ 0.00</span></div>
+            <div class="summary-row"><span>Subtotal (Custo Total)</span><strong id="subtotal">£ 0.00</strong></div>
+            <div class="summary-row"><span>Preço Ideal de Venda</span><strong id="precoFinal" style="color:var(--accent2);">£ 0.00</strong></div>
+            <div class="summary-row summary-total"><span>Lucro Real Estimado</span><span id="lucroRealOut">£ 0.00</span></div>
+            <div class="summary-row"><span>Margem de Lucro Efetiva</span><strong id="margemEfetivaOut" style="color:var(--accent);">0.0%</strong></div>
           </div>
         </div>
       </section>
 
-      <!-- PÁGINA 2: CATÁLOGO -->
+      <!-- PÁGINA 2: CATÁLOGO / CATEGORIAS DETALHADAS -->
       <section id="page-catalogo" class="page">
         <div class="page-header">
-          <div class="page-title">Catálogo Sincronizado & QR Codes</div>
-          <div class="page-subtitle">Produtos salvos com etiquetas QR Code automáticas.</div>
+          <div class="page-title">Catálogo & Categorias Detalhadas</div>
+          <div class="page-subtitle">Busque, filtre e gerencie todos os detalhes dos seus produtos impressos em 3D.</div>
         </div>
-        <div class="catalog-toolbar"><div class="catalog-count" id="catalogoCount">0 produtos</div></div>
+
+        <!-- BARRA DE BUSCA E FILTROS -->
+        <div class="card" style="padding: 14px; margin-bottom: 16px;">
+          <div class="form-grid" style="grid-template-columns: 1fr; margin-bottom: 10px;">
+            <div class="field full" style="margin:0;">
+              <input type="text" id="inputBuscaCatalogo" placeholder="🔍 Buscar por nome, código ou observação..." oninput="filtrarCatalogo()">
+            </div>
+          </div>
+          <div class="catalog-filter-bar" id="filtroCategoriasContainer">
+            <button class="filter-chip active" data-cat="todos" onclick="selecionarFiltroCategoria('todos', this)">📂 Todas</button>
+            <button class="filter-chip" data-cat="Decoração & Casa" onclick="selecionarFiltroCategoria('Decoração & Casa', this)">🏡 Decoração & Casa</button>
+            <button class="filter-chip" data-cat="Acessórios & Suportes" onclick="selecionarFiltroCategoria('Acessórios & Suportes', this)">🔌 Acessórios</button>
+            <button class="filter-chip" data-cat="Miniaturas" onclick="selecionarFiltroCategoria('Miniaturas', this)">👾 Miniaturas</button>
+            <button class="filter-chip" data-cat="Peças Técnicas" onclick="selecionarFiltroCategoria('Peças Técnicas', this)">⚙️ Técnicas</button>
+            <button class="filter-chip" data-cat="Outros" onclick="selecionarFiltroCategoria('Outros', this)">📦 Outros</button>
+          </div>
+        </div>
+
+        <div class="catalog-toolbar"><div class="catalog-count" id="catalogoCount">0 produtos encontrados</div></div>
         <div class="catalog-grid" id="catalogoCards"></div>
       </section>
 
@@ -481,7 +426,7 @@ input[type="file"]{ padding: 8px; }
     </div>
   </div>
 
-  <!-- NAVBAR INFERIOR PARA CELULAR -->
+  <!-- NAVBAR MOBILE -->
   <aside class="mobile-bottom-nav">
     <button class="mobile-nav-btn active" data-page="calc" onclick="nav('calc',this)"><span class="icon">💷</span>Calc</button>
     <button class="mobile-nav-btn" data-page="catalogo" onclick="nav('catalogo',this)"><span class="icon">📁</span>Catálogo</button>
@@ -537,6 +482,7 @@ input[type="file"]{ padding: 8px; }
 
 const STORAGE={config:"config3d",theme:"theme3d",historico:"historicoCalc3d",vendas:"vendas3d",arquivosCache:"arquivosCache3d"};
 let catalogo=[], historicoCalc=[], vendasLista=[], itemEditandoIndex=null, arquivoGlobalMemoria=null, idProdutoAlvoCache=null;
+let categoriaAtivaFiltro = "todos";
 let codeReader = null, isScanning = false;
 
 function $(id){return document.getElementById(id)}
@@ -550,17 +496,14 @@ function safeSet(k,v){try{localStorage.setItem(k,v);return true}catch{false}}
 function nav(page,el){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   $("page-"+page)?.classList.add("active");
-  
-  // Atualiza sidebar desktop
   document.querySelectorAll(".sidebar-btn").forEach(b=>b.classList.remove("active"));
   document.querySelector(`.sidebar-btn[data-page="${page}"]`)?.classList.add("active");
-
-  // Atualiza nav mobile
   document.querySelectorAll(".mobile-nav-btn").forEach(b=>b.classList.remove("active"));
   document.querySelector(`.mobile-nav-btn[data-page="${page}"]`)?.classList.add("active");
 
   if(page==='vendas'){atualizarSelectCatalogoVendas();atualizarPainelVendas();}
   if(page==='vinted'){renderVintedManager();}
+  if(page==='catalogo'){renderCatalogo();}
   if(page!=='vendas' && isScanning){ pararScanner(); }
 }
 
@@ -628,7 +571,7 @@ function parseTempo(v){
   return parseFloat(v) || 0;
 }
 
-function formatarTempo(h){if(!Number.isFinite(h)||h<=0)return "";let total=Math.round(h*60),hh=Math.floor(total/60),mm=total%60;return hh?`${hh}h${mm?mm+"m":""}`:`${mm}m`}
+function formatarTempo(h){if(!Number.isFinite(h)||h<=0)return "0m";let total=Math.round(h*60),hh=Math.floor(total/60),mm=total%60;return hh?`${hh}h${mm?mm+"m":""}`:`${mm}m`}
 function converterTempoManual(){const h=parseTempo($("tempoManual").value);$("horasPeca").value=h.toFixed(2);recalcular();return h}
 function numero(id,d=0){const n=parseFloat($(id).value);return Number.isFinite(n)?n:d}
 
@@ -653,7 +596,9 @@ function calcularValores(){
   const custoEnergia = (d.potenciaW / 1000) * d.horas * d.tarifaKwh;
   const subtotal = material + custoEnergia + d.extras;
   const ideal = subtotal * (1 + d.margemPct / 100);
-  return { ...d, custoMaterial: material, custoEnergia, subtotal, precoIdeal: ideal };
+  const lucroReal = ideal - subtotal;
+  const margemEfetiva = ideal > 0 ? (lucroReal / ideal) * 100 : 0;
+  return { ...d, custoMaterial: material, custoEnergia, subtotal, precoIdeal: ideal, lucroReal, margemEfetiva };
 }
 
 function recalcular(){
@@ -663,6 +608,8 @@ function recalcular(){
   $("custoExtrasOut").textContent = dinheiro(v.extras);
   $("subtotal").textContent = dinheiro(v.subtotal);
   $("precoFinal").textContent = dinheiro(v.precoIdeal);
+  $("lucroRealOut").textContent = dinheiro(v.lucroReal);
+  $("margemEfetivaOut").textContent = `${v.margemEfetiva.toFixed(1)}%`;
   return v;
 }
 
@@ -817,43 +764,87 @@ async function salvarProduto(){
 function adicionarAoCatalogo(){salvarProduto()}
 
 async function renderCatalogo(){
-  catalogo = await cloudGetProducts();
-  const div=$("catalogoCards"); $("catalogoCount").textContent=`${catalogo.length} produtos`;
-  div.innerHTML="";
-  if(!catalogo.length){div.innerHTML='<div class="empty">Nenhum produto cadastrado.</div>'; return;}
+  if(!catalogo.length){
+    catalogo = await cloudGetProducts();
+  }
+  filtrarCatalogo();
+}
+
+function selecionarFiltroCategoria(cat, btn){
+  categoriaAtivaFiltro = cat;
+  document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
+  btn.classList.add("active");
+  filtrarCatalogo();
+}
+
+function filtrarCatalogo(){
+  const termoBusca = ($("inputBuscaCatalogo")?.value || "").toLowerCase().trim();
+  const div = $("catalogoCards");
+  if(!div) return;
+
+  let filtrados = catalogo.filter(item => {
+    const matchCat = (categoriaAtivaFiltro === "todos" || item.categoria === categoriaAtivaFiltro);
+    const matchBusca = !termoBusca || 
+      String(item.nome||"").toLowerCase().includes(termoBusca) ||
+      String(item.codigo||"").toLowerCase().includes(termoBusca) ||
+      String(item.observacoes||"").toLowerCase().includes(termoBusca) ||
+      String(item.categoria||"").toLowerCase().includes(termoBusca);
+    return matchCat && matchBusca;
+  });
+
+  $("catalogoCount").textContent = `${filtrados.length} produto(s) encontrado(s)`;
+  div.innerHTML = "";
+
+  if(!filtrados.length){
+    div.innerHTML = '<div class="empty">Nenhum produto encontrado com esses filtros.</div>';
+    return;
+  }
   
-  catalogo.forEach((item, i)=>{
+  filtrados.forEach((item)=>{
     const cacheInfo = recuperarArquivoCache(item.id);
+    const iOriginal = catalogo.findIndex(x => x.id === item.id);
     const card=document.createElement("article"); card.className="catalog-card";
+    
     card.innerHTML=`
       <div class="catalog-body-grid">
         <div class="catalog-thumb">${item.thumbBase64?`<img src="${item.thumbBase64}">`:'📦'}</div>
         <div>
           <div class="catalog-title">${esc(item.nome)}</div>
-          <div style="font-size:11px; color:var(--soft); margin-bottom:4px;">Ref: <strong>${esc(item.codigo)}</strong></div>
-          <div class="catalog-info"><span>Custo:</span> <strong>${dinheiro(item.subtotal)}</strong></div>
-          <div class="catalog-info"><span>Preço:</span> <strong style="color:var(--accent);">${dinheiro(item.precoFinal)}</strong></div>
+          <div style="font-size:11px; color:var(--accent2); margin-top:2px;">📁 ${esc(item.categoria || 'Outros')}</div>
+          <div style="font-size:11px; color:var(--soft); margin-top:2px;">Ref: <strong>${esc(item.codigo)}</strong></div>
         </div>
       </div>
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-top:8px; background:var(--card2); padding:6px; border-radius:10px;">
-        <span style="font-size:11px; color:var(--soft);">QR Code:</span>
-        <div id="qrcode-${i}" class="catalog-qrcode-box"></div>
+
+      <!-- DETALHES COMPLETOS DO PRODUTO -->
+      <div class="catalog-details">
+        <div class="catalog-details-row"><span>Peso da Peça:</span> <strong>${Number(item.peso||0).toFixed(1)}g</strong></div>
+        <div class="catalog-details-row"><span>Tempo Estimado:</span> <strong>${formatarTempo(Number(item.horas||0))}</strong></div>
+        <div class="catalog-details-row"><span>Custo Total:</span> <strong>${dinheiro(item.subtotal)}</strong></div>
+        <div class="catalog-details-row"><span>Preço de Venda:</span> <strong style="color:var(--accent);">${dinheiro(item.precoFinal)}</strong></div>
+        ${item.vintedLink ? `<div class="catalog-details-row"><span>Vinted:</span> <a href="${esc(item.vintedLink)}" target="_blank" style="color:var(--accent2); text-decoration:underline;">Ver Anúncio</a></div>` : ''}
+        ${item.observacoes ? `<div style="margin-top:4px; font-size:11px; color:var(--soft); border-top:1px solid var(--border); pt:4px;">Obs: ${esc(item.observacoes)}</div>` : ''}
       </div>
+
+      <div style="display:flex; align-items:center; justify-content:space-between; background:var(--card2); padding:6px; border-radius:10px;">
+        <span style="font-size:11px; color:var(--soft);">QR Code:</span>
+        <div id="qrcode-${item.id}" class="catalog-qrcode-box"></div>
+      </div>
+
       <div class="catalog-actions">
         ${cacheInfo ? 
           `<button class="btn btn-sm btn-primary" onclick="baixarArquivoBambu('${item.id}')">🎨 Bambu Studio</button>` : 
           `<button class="btn btn-sm btn-outline" style="border-color:var(--accent); color:var(--accent);" onclick="pedirArquivoCatalogo('${item.id}')">📁 Anexar Arquivo</button>`
         }
-        <button class="btn btn-sm btn-outline" onclick="editarItem(${i})">✏️ Editar</button>
-        <button class="btn btn-sm btn-primary" onclick="abrirModalVenda(${i})">🛒 Vender</button>
-        <button class="btn btn-sm btn-danger" onclick="excluirItem(${i})">🗑️</button>
+        <button class="btn btn-sm btn-outline" onclick="editarItem(${iOriginal})">✏️ Editar</button>
+        <button class="btn btn-sm btn-primary" onclick="abrirModalVenda(${iOriginal})">🛒 Vender</button>
+        <button class="btn btn-sm btn-danger" onclick="excluirItem(${iOriginal})">🗑️</button>
       </div>`;
     div.appendChild(card);
 
     try {
-      new QRCode(document.getElementById(`qrcode-${i}`), {
+      new QRCode(document.getElementById(`qrcode-${item.id}`), {
         text: String(item.codigo || item.id),
-        width: 90, height: 90,
+        width: 80, height: 80,
         colorDark : "#000000", colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.M
       });
@@ -883,7 +874,8 @@ async function vincularArquivoDiretoCatalogo(input){
     salvarArquivoCache(idProdutoAlvoCache, base64, file.name);
     toast("Arquivo anexado e botão liberado! 🎨");
     idProdutoAlvoCache = null; input.value = "";
-    await renderCatalogo();
+    catalogo = await cloudGetProducts();
+    filtrarCatalogo();
   } catch(e) { toast("Erro ao anexar arquivo."); }
 }
 
@@ -899,7 +891,7 @@ async function editarItem(i){
 }
 async function excluirItem(i){
   const item=catalogo[i]; if(!item||!confirm("Excluir?"))return;
-  await cloudDeleteProduct(item.id); await renderCatalogo(); toast("Excluído.");
+  await cloudDeleteProduct(item.id); catalogo = await cloudGetProducts(); filtrarCatalogo(); toast("Excluído.");
 }
 
 function abrirModalVenda(i){
@@ -1075,7 +1067,7 @@ function limparFormulario(show=true){
 
 window.addEventListener('firebase-ready', async ()=>{
   carregarConfig(); applyTheme(safeGet(STORAGE.theme,"dark")); recalcular();
-  try{await renderCatalogo();}catch(e){}
+  try{catalogo = await cloudGetProducts();}catch(e){}
   atualizarSelectCatalogoVendas(); atualizarPainelVendas(); atualizarHistorico();
 });
 </script>
