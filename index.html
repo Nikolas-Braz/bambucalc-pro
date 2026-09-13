@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="BambuCalc 3D PRO - Download em Nuvem Integrado">
+<meta name="description" content="BambuCalc 3D PRO - Download Otimizado">
 <title>BambuCalc 3D PRO</title>
 
 <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22BambuCalc%203D%20PRO%22%2C%22short_name%22%3A%22BambuCalc%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23090d16%22%2C%22theme_color%22%3A%22%2322c55e%22%7D">
@@ -119,6 +119,30 @@ input[type="file"]{ padding: 8px; }
 .btn-outline:hover{ color: var(--text); border-color: var(--text); }
 .btn-danger{ background: var(--danger); color: white; flex: none; }
 .btn-sm{ padding: 8px 14px; font-size: 12px; min-width: auto; }
+
+/* NOVO BOTÃO DE DOWNLOAD ESTILIZADO */
+.btn-download-pro {
+    background: linear-gradient(135deg, #0ea5e9, #2563eb);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(14,165,233,0.3);
+    transition: 0.2s;
+    width: 100%;
+}
+.btn-download-pro:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(14,165,233,0.4);
+}
 
 .summary-list{ display: flex; flex-direction: column; gap: 10px; }
 .summary-row{ display: flex; justify-content: space-between; gap: 10px; font-size: 14px; color: var(--soft); }
@@ -312,7 +336,7 @@ input[type="file"]{ padding: 8px; }
       <section id="page-catalogo" class="page">
         <div class="page-header">
           <div class="page-title">Catálogo & Categorias Detalhadas</div>
-          <div class="page-subtitle">Busque, filtre e gerencie todos os detalhes dos seus produtos impressos em 3D.</div>
+          <div class="page-subtitle">Busque, filtre e gerencie todos los detalhes dos seus produtos impressos em 3D.</div>
         </div>
 
         <div class="card" style="padding: 14px; margin-bottom: 16px;">
@@ -792,11 +816,15 @@ function filtrarCatalogo(){
         <div id="qrcode-${item.id}" class="catalog-qrcode-box"></div>
       </div>
 
-      <div class="catalog-actions">
+      <!-- NOVO BOTÃO E MÉTODO DE DOWNLOAD DIRETO -->
+      <div style="margin-top:4px;">
         ${item.fileBase64 ? 
-          `<button class="btn btn-sm btn-primary" onclick="baixarArquivoCloud('${item.id}')">🎨 Bambu Studio</button>` : 
-          `<button class="btn btn-sm btn-outline" style="border-color:var(--accent); color:var(--accent);" onclick="pedirArquivoCatalogo('${item.id}')">📁 Anexar Arquivo</button>`
+          `<button class="btn-download-pro" onclick="baixarArquivoDireto('${item.id}')">📥 Baixar .3mf/.gcode (${item.fileName || 'projeto'})</button>` : 
+          `<button class="btn btn-sm btn-outline" style="border-color:var(--accent); color:var(--accent); width:100%; border-radius:10px;" onclick="pedirArquivoCatalogo('${item.id}')">📁 Anexar Arquivo para Download</button>`
         }
+      </div>
+
+      <div class="catalog-actions" style="margin-top:4px;">
         <button class="btn btn-sm btn-outline" onclick="editarItem(${iOriginal})">✏️ Editar</button>
         <button class="btn btn-sm btn-primary" onclick="abrirModalVenda(${iOriginal})">🛒 Vender</button>
         <button class="btn btn-sm btn-danger" onclick="excluirItem(${iOriginal})">🗑️</button>
@@ -814,16 +842,38 @@ function filtrarCatalogo(){
   });
 }
 
-function baixarArquivoCloud(id){
+// NOVO MÉTODO DE DOWNLOAD VIA OBJECT URL (Nativo, limpo e direto)
+function baixarArquivoDireto(id){
   const item = catalogo.find(x => x.id === id);
-  if(!item || !item.fileBase64) { toast("Arquivo não encontrado."); return; }
-  const a = document.createElement('a');
-  a.href = item.fileBase64;
-  a.download = item.fileName || "projeto.3mf";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  toast("Baixando arquivo para o Bambu Studio! 🎨");
+  if(!item || !item.fileBase64) { toast("Nenhum arquivo vinculado."); return; }
+  
+  try {
+    // Converte base64 para blob para garantir compatibilidade nativa com qualquer navegador
+    const arr = item.fileBase64.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while(n--){ u8arr[n] = bstr.charCodeAt(n); }
+    const blob = new Blob([u8arr], {type: mime});
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = item.fileName || "projeto.3mf";
+    document.body.appendChild(a);
+    a.click();
+    
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 1000);
+
+    toast("Download iniciado com sucesso! 📥");
+  } catch(e) {
+    console.error(e);
+    toast("Erro ao processar download.");
+  }
 }
 
 function pedirArquivoCatalogo(id){ 
@@ -841,8 +891,8 @@ async function vincularArquivoDiretoCatalogo(input){
       catalogo[idx].fileBase64 = base64;
       catalogo[idx].fileName = file.name;
       await cloudSaveProduct(catalogo[idx]);
-      baixarArquivoCloud(idProdutoAlvoCache);
-      toast("Arquivo salvo na nuvem e baixado! 🎨");
+      baixarArquivoDireto(idProdutoAlvoCache);
+      toast("Arquivo anexado e baixado! 📥");
     }
     idProdutoAlvoCache = null; input.value = "";
     filtrarCatalogo();
