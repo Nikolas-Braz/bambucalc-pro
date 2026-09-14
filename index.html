@@ -2430,7 +2430,7 @@ function parseTime(value){
 
 
 /* =========================================================
-   WEIGHT PARSER
+   WEIGHT PARSER CORRIGIDO
 ========================================================= */
 
 function normalizeNumber(value){
@@ -2461,27 +2461,15 @@ function extractWeightFromText(text){
     if(!text) return null;
 
     const patterns = [
-
+        /filament_weight\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
+        /total_filament_weight\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
         /filament\s+used\s*\[g\]\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
-
         /total\s+filament\s+used\s*\[g\]\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
-
         /filament_used_g\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
-
-        /filament_used\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
-
-        /used_filament_g\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
-
-        /total_filament_used\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
-
-        /filament\s*usage\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)\s*g/i,
-
-        /filament\s*weight\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)\s*g/i,
-
+        /filament\s*used\s*\(g\)\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
         /weight\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)\s*g/i,
-
-        /(?:filament|weight)[^0-9]{0,40}([0-9]+(?:[.,][0-9]+)?)\s*g/i
-
+        /filament\s*usage\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)\s*g/i,
+        /filament_used\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i
     ];
 
     for(const regex of patterns){
@@ -4585,30 +4573,30 @@ function renderCatalogo(){
 
                             ${
                                 download
-                                ? `
-                                    <a
-                                        class="btn btn-secondary btn-small"
-                                        href="${download}"
-                                        target="_blank"
-                                        rel="noopener">
-                                        Download
-                                    </a>
-                                  `
-                                : ""
+                                    ? `
+                                        <a
+                                            class="btn btn-secondary btn-small"
+                                            href="${download}"
+                                            target="_blank"
+                                            rel="noopener">
+                                            Download
+                                        </a>
+                                      `
+                                    : ""
                             }
 
                             ${
                                 vinted
-                                ? `
-                                    <a
-                                        class="btn btn-dark btn-small"
-                                        href="${vinted}"
-                                        target="_blank"
-                                        rel="noopener">
-                                        Vinted
-                                    </a>
-                                  `
-                                : ""
+                                    ? `
+                                        <a
+                                            class="btn btn-dark btn-small"
+                                            href="${vinted}"
+                                            target="_blank"
+                                            rel="noopener">
+                                            Vinted
+                                        </a>
+                                      `
+                                    : ""
                             }
 
                             <button
@@ -4914,6 +4902,10 @@ function exportarHistorico(){
         "\ufeff" + csv,
         "bambucalc-historico.csv",
         "text/csv;charset=utf-8"
+    );
+
+    toast(
+        "Histórico exportado."
     );
 
 }
@@ -5711,13 +5703,13 @@ function renderVinted(){
 
                             ${
                                 p.vintedData
-                                ? `
-                                    <div class="list-item-meta">
-                                        Publicado:
-                                        ${formatDate(p.vintedData)}
-                                    </div>
-                                  `
-                                : ""
+                                    ? `
+                                        <div class="list-item-meta">
+                                            Publicado:
+                                            ${formatDate(p.vintedData)}
+                                        </div>
+                                      `
+                                    : ""
                             }
 
                         </div>
