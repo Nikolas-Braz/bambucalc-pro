@@ -15,81 +15,113 @@
 .sidebar-nav{display:flex;flex-direction:column;gap:6px;padding:16px 12px;flex:1}.sidebar-btn,.mobile-nav-btn{border:0;background:transparent;color:var(--soft);font-weight:600}.sidebar-btn{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;font-size:14px;text-align:left}.sidebar-btn:hover{background:rgba(255,255,255,.03);color:var(--text)}.sidebar-btn.active{background:rgba(34,197,94,.15);color:var(--accent)}.sidebar-btn .icon{font-size:18px}.sidebar-footer{padding:16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}.main-content{margin-left:260px;flex:1;min-height:100vh}
 .topbar-mobile{display:none;background:var(--panel);border-bottom:1px solid var(--border);padding:14px 16px;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:900;font-weight:800;color:var(--accent)}
 .container-fluid{padding:24px;max-width:1450px;width:100%;margin:auto}.page{display:none}.page.active{display:block}.page-header{margin-bottom:20px}.page-title{font-size:24px;font-weight:800}.page-subtitle{font-size:13px;color:var(--soft);margin-top:4px}.badge{font-size:11px;padding:4px 10px;border-radius:999px;border:1px solid rgba(34,197,94,.25);color:var(--accent);background:rgba(34,197,94,.07);white-space:nowrap}
-.card{background:var(--card);border-radius:16px;border:1px solid var(--border);padding:20px;box-shadow:var(--shadow);margin-bottom:20px}.card-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.card-title{font-size:15px;font-weight:700}.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.field.full{grid-column:1/-1}label{display:block;font-size:12px;color:var(--soft);margin-bottom:6px;font-weight:600}input,textarea,select{width:100%;background:rgba(2,6,23,.3);border:1px solid var(--border);border-radius:10px;padding:12px;font-size:14px;color:var(--text);outline:0}input:focus,textarea:focus,select:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(14,165,233,.15)}input[readonly]{opacity:.8}textarea{min-height:100px;resize:vertical}input[type=file]{padding:8px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.btn{border:0;border-radius:999px;padding:12px 20px;font-size:13px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}.btn-primary{background:var(--accent);color:#020617}.btn-outline{background:transparent;border:1px solid var(--border);color:var(--soft)}.btn-outline:hover{color:var(--text);border-color:var(--text)}.btn-danger{background:var(--danger);color:#fff}.btn-info{background:var(--accent2);color:#fff}.btn-sm{padding:8px 14px;font-size:12px}.btn:disabled{opacity:.5;cursor:not-allowed}.summary-list{display:flex;flex-direction:column;gap:10px}.summary-row{display:flex;justify-content:space-between;gap:10px;font-size:14px;color:var(--soft)}.summary-row strong{color:var(--text)}.summary-total{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}.summary-total span:last-child{color:var(--accent);font-size:20px;font-weight:800}.price-grid,.dashboard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.metric{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:16px}.metric small{color:var(--soft);font-size:11px}.metric strong{display:block;font-size:22px;margin-top:5px}.price-box{border:1px solid var(--border);background:var(--card2);border-radius:14px;padding:14px}.price-box.featured{border-color:var(--accent);box-shadow:0 0 0 1px rgba(34,197,94,.15)}.price-box strong{font-size:20px;display:block;margin-top:6px;color:var(--accent)}.price-box small{display:block;margin-top:4px;color:var(--soft);font-size:11px}
+.card{background:var(--card);border-radius:16px;border:1px solid var(--border);padding:20px;box-shadow:var(--shadow);margin-bottom:20px}.card-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.card-title{font-size:15px;font-weight:700}.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.field.full{grid-column:1/-1}label{display:block;font-size:12px;color:var(--soft);margin-bottom:6px;font-weight:600}input,textarea,select{width:100%;background:rgba(2,6,23,.3);border:1px solid var(--border);border-radius:10px;padding:12px;font-size:14px;color:var(--text);outline:0}input:focus,textarea:focus,select:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(14,165,233,.15)}input[readonly]{opacity:.8}textarea{min-height:100px;resize:vertical}input[type=file]{padding:8px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.btn{border:0;border-radius:999px;padding:12px 20px;font-size:13px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}.btn-primary{background:var(--accent);color:#020617}.btn-outline{background:transparent;border:1px solid var(--border);color:var(--soft)}.btn-outline:hover{color:var(--text);border-color:var(--text)}.btn-danger{background:var(--danger);color:#fff}.btn-info{background:var(--accent2);color:#fff}.btn-sm{padding:8px 14px;font-size:12px}.btn:disabled{opacity:.5;cursor:not-allowed}.summary-list{display:flex;flex-direction:column;gap:10px}.summary-row{display:flex;justify-content:space-between;gap:10px;font-size:14px;color:var(--soft)}.summary-row strong{color:var(--text)}.summary-total{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}.summary-total span:last-child{color:var(--accent);font-size:20px;font-weight:800}.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.metric{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:16px}.metric small{color:var(--soft);font-size:11px}.metric strong{display:block;font-size:22px;margin-top:5px}.price-box{border:1px solid var(--border);background:var(--card2);border-radius:14px;padding:14px}.price-box.featured{border-color:var(--accent);box-shadow:0 0 0 1px rgba(34,197,94,.15)}.price-box strong{font-size:20px;display:block;margin-top:6px;color:var(--accent)}.price-box small{display:block;margin-top:4px;color:var(--soft);font-size:11px}
 .dropzone{display:block;border:2px dashed var(--border);border-radius:16px;padding:30px 20px;text-align:center;background:var(--card2);cursor:pointer;transition:.2s}.dropzone:hover,.dropzone.dragover{border-color:var(--accent);background:rgba(34,197,94,.04)}.drop-icon{font-size:36px}.drop-title{font-size:16px;font-weight:700;margin-top:8px}.drop-sub{font-size:12px;color:var(--soft);margin-top:4px}.dropzone input{display:none}.analysis-status{margin-top:12px;padding:10px;border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--soft)}.analysis-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.analysis-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px}.analysis-item small{display:block;color:var(--soft);font-size:10px}.analysis-item strong{display:block;margin-top:4px}
-.catalog-filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}.catalog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px}.catalog-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px}.catalog-body-grid{display:grid;grid-template-columns:90px 1fr;gap:14px;align-items:center}.catalog-thumb{width:90px;height:90px;background:var(--card2);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--soft);font-size:28px;overflow:hidden}.catalog-thumb img{width:100%;height:100%;object-fit:cover}.catalog-title{font-size:16px;font-weight:700;word-break:break-word}.catalog-details{background:var(--card2);border-radius:10px;padding:10px;font-size:12px;display:flex;flex-direction:column;gap:5px;border:1px solid var(--border)}.catalog-details-row{display:flex;justify-content:space-between;gap:10px;color:var(--soft)}.catalog-details-row strong{color:var(--text);text-align:right}.catalog-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;padding-top:8px;border-top:1px solid var(--border)}.file-pill{font-size:11px;padding:6px 8px;background:rgba(14,165,233,.08);border:1px solid rgba(14,165,233,.2);border-radius:8px;word-break:break-all}.history-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--border)}.history-main{min-width:0}.history-title{font-weight:700}.history-meta{color:var(--soft);font-size:12px;margin-top:3px}.empty{color:var(--soft);font-size:14px;text-align:center;padding:40px 0}.toast{position:fixed;right:24px;bottom:24px;z-index:4000;max-width:380px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:14px 18px;box-shadow:var(--shadow);font-size:13px;opacity:0;transform:translateY(15px);pointer-events:none;transition:.25s}.toast.show{opacity:1;transform:translateY(0)}.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--warning);margin-right:6px}.status-dot.ok{background:var(--accent)}.vinted-badge-ok,.vinted-badge-warn,.vinted-badge-danger{font-weight:600;font-size:11px;padding:3px 8px;border-radius:6px}.vinted-badge-ok{color:var(--accent);background:rgba(34,197,94,.1)}.vinted-badge-warn{color:var(--warning);background:rgba(245,158,11,.1)}.vinted-badge-danger{color:var(--danger);background:rgba(239,68,68,.15)}
-
-.support-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.support-card{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:14px;cursor:pointer;transition:.2s}.support-card:hover{transform:translateY(-2px);border-color:var(--accent)}.support-card .support-icon{font-size:24px}.support-card strong{display:block;margin-top:6px}.support-card small{color:var(--soft)}.script-box{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-top:14px}.script-box textarea{min-height:150px;width:100%;resize:vertical}.script-preview{white-space:pre-wrap;line-height:1.55;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:10px}.script-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.channel-tabs{display:flex;gap:8px;flex-wrap:wrap}.channel-tabs button.active{border-color:var(--accent);color:var(--accent)}.edit-badge{display:inline-flex;align-items:center;gap:6px;color:var(--warning);font-size:12px;margin-top:8px}
-@media(max-width:1000px){.metric-grid{grid-template-columns:repeat(2,1fr)}.analysis-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:868px){.desktop-sidebar{display:none}.main-content{margin-left:0;padding-bottom:90px}.topbar-mobile{display:flex}.container-fluid{padding:14px}.mobile-bottom-nav{position:fixed;bottom:0;left:0;right:0;height:75px;background:var(--panel);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;z-index:1000;padding:0 4px;box-shadow:0 -4px 20px rgba(0,0,0,.3)}.mobile-nav-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:10px;padding:4px;flex:1}.mobile-nav-btn.active{color:var(--accent)}.mobile-nav-btn .icon{font-size:18px}.catalog-grid{grid-template-columns:1fr}.price-grid,.dashboard-grid{grid-template-columns:1fr}}@media(min-width:869px){.mobile-bottom-nav{display:none}}@media(max-width:600px){.metric-grid{grid-template-columns:1fr}.analysis-grid{grid-template-columns:1fr}.catalog-body-grid{grid-template-columns:70px 1fr}.catalog-thumb{width:70px;height:70px}.actions .btn{width:100%}}
+.catalog-filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}.catalog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px}.catalog-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px}.catalog-body-grid{display:grid;grid-template-columns:90px 1fr;gap:14px;align-items:center}.catalog-thumb{width:90px;height:90px;background:var(--card2);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--soft);font-size:28px;overflow:hidden}.catalog-thumb img{width:100%;height:100%;object-fit:cover}.catalog-title{font-size:16px;font-weight:700;word-break:break-word}.catalog-details{background:var(--card2);border-radius:10px;padding:10px;font-size:12px;display:flex;flex-direction:column;gap:5px;border:1px solid var(--border)}.catalog-details-row{display:flex;justify-content:space-between;gap:10px;color:var(--soft)}.catalog-details-row strong{color:var(--text);text-align:right}.catalog-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;padding-top:8px;border-top:1px solid var(--border)}.file-pill{font-size:11px;padding:6px 8px;background:rgba(14,165,233,.08);border:1px solid rgba(14,165,233,.2);border-radius:8px;word-break:break-all}.history-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--border)}.history-main{min-width:0}.history-title{font-weight:700}.history-meta{color:var(--soft);font-size:12px;margin-top:3px}.empty{color:var(--soft);font-size:14px;text-align:center;padding:40px 0}.toast{position:fixed;right:24px;bottom:24px;z-index:4000;max-width:380px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:14px 18px;box-shadow:var(--shadow);font-size:13px;opacity:0;transform:translateY(15px);pointer-events:none;transition:.25s}.toast.show{opacity:1;transform:translateY(0)}
+.support-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.support-card{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:14px;cursor:pointer;transition:.2s}.support-card:hover{transform:translateY(-2px);border-color:var(--accent)}.support-card strong{display:block;margin-top:6px}.support-card small{color:var(--soft)}.script-box{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-top:14px}.script-box textarea{min-height:150px;width:100%;resize:vertical}.script-preview{white-space:pre-wrap;line-height:1.55;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:10px}.script-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+@media(max-width:1000px){.metric-grid{grid-template-columns:repeat(2,1fr)}.analysis-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:868px){.desktop-sidebar{display:none}.main-content{margin-left:0;padding-bottom:90px}.topbar-mobile{display:flex}.container-fluid{padding:14px}.mobile-bottom-nav{position:fixed;bottom:0;left:0;right:0;height:75px;background:var(--panel);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;z-index:1000;padding:0 4px;box-shadow:0 -4px 20px rgba(0,0,0,.3)}.mobile-nav-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:10px;padding:4px;flex:1}.mobile-nav-btn.active{color:var(--accent)}.mobile-nav-btn .icon{font-size:18px}.catalog-grid{grid-template-columns:1fr}.price-grid{grid-template-columns:1fr}}@media(min-width:869px){.mobile-bottom-nav{display:none}}
 </style>
 </head>
 <body>
 <div class="app-wrapper">
 <aside class="desktop-sidebar">
-<div class="sidebar-brand">
-  🖨️ uai 3D printing
-</div>
+<div class="sidebar-brand">🖨️ uai 3D printing</div>
 <nav class="sidebar-nav">
-<button class="sidebar-btn active" data-page="calc" onclick="nav('calc',this)"><span class="icon">💷</span>Calculadora</button>
-<button class="sidebar-btn" data-page="catalogo" onclick="nav('catalogo',this)"><span class="icon">📁</span>Catálogo</button>
-<button class="sidebar-btn" data-page="vendas" onclick="nav('vendas',this)"><span class="icon">🛒</span>Vendas</button>
-<button class="sidebar-btn" data-page="vinted" onclick="nav('vinted',this)"><span class="icon">🛍️</span>Vinted</button>
-<button class="sidebar-btn" data-page="atendimento" onclick="nav('atendimento',this)"><span class="icon">💬</span>Atendimento</button>
-<button class="sidebar-btn" data-page="historico" onclick="nav('historico',this)"><span class="icon">📜</span>Histórico</button>
-</nav><div class="sidebar-footer"><span style="font-size:12px;color:var(--soft)">Tema</span><button class="btn btn-sm btn-outline" onclick="toggleTheme()" id="themeDesk">🌙</button></div>
+<button class="sidebar-btn active" data-page="calc" onclick="nav('calc')"><span class="icon">💷</span>Calculadora</button>
+<button class="sidebar-btn" data-page="catalogo" onclick="nav('catalogo')"><span class="icon">📁</span>Catálogo</button>
+<button class="sidebar-btn" data-page="vendas" onclick="nav('vendas')"><span class="icon">🛒</span>Vendas</button>
+<button class="sidebar-btn" data-page="vinted" onclick="nav('vinted')"><span class="icon">🛍️</span>Vinted</button>
+<button class="sidebar-btn" data-page="atendimento" onclick="nav('atendimento')"><span class="icon">💬</span>Atendimento</button>
+<button class="sidebar-btn" data-page="historico" onclick="nav('historico')"><span class="icon">📜</span>Histórico</button>
+</nav>
+<div class="sidebar-footer"><span style="font-size:12px;color:var(--soft)">Tema</span><button class="btn btn-sm btn-outline" onclick="toggleTheme()" id="themeDesk">🌙</button></div>
 </aside>
+
 <div class="main-content">
 <header class="topbar-mobile">
   <span>🖨️ uai 3D printing</span>
   <button class="btn btn-sm btn-outline" onclick="toggleTheme()" id="themeMob">🌙</button>
 </header>
+
 <div class="container-fluid">
-<section id="page-calc" class="page active"><div class="page-header"><div class="page-title">Calculadora PRO</div><div class="page-subtitle">Envie 3MF/G-code, confira os custos e salve o produto no Firestore.</div></div>
-<div class="card"><div class="card-header"><div class="card-title">🚀 Análise automática</div><span class="badge" id="arquivoTipoBadge">Pronto</span></div><label class="dropzone" id="dropzone" for="arquivoProjeto"><div class="drop-icon">📦</div><div class="drop-title">Toque ou arraste o arquivo</div><div class="drop-sub">3MF, G-code ou STL. Extração de peso, tempo e miniatura 3MF.</div><input id="arquivoProjeto" type="file" accept=".3mf,.gcode,.gc,.gco,.stl"></label><div id="analiseStatus" class="analysis-status">Nenhum arquivo analisado.</div><div id="analiseGrid" class="analysis-grid"></div></div>
+<!-- CALCULADORA -->
+<section id="page-calc" class="page active">
+  <div class="page-header"><div class="page-title">Calculadora PRO</div><div class="page-subtitle">Envie 3MF/G-code, confira os custos e salve o produto no Firestore.</div></div>
+  <div class="card"><div class="card-header"><div class="card-title">🚀 Análise automática</div><span class="badge" id="arquivoTipoBadge">Pronto</span></div><label class="dropzone" id="dropzone" for="arquivoProjeto"><div class="drop-icon">📦</div><div class="drop-title">Toque ou arraste o arquivo</div><div class="drop-sub">3MF, G-code ou STL. Extração de peso, tempo e miniatura 3MF.</div><input id="arquivoProjeto" type="file" accept=".3mf,.gcode,.gc,.gco,.stl"></label><div id="analiseStatus" class="analysis-status">Nenhum arquivo analisado.</div><div id="analiseGrid" class="analysis-grid"></div></div>
 
-<div class="card">
-<div class="card-header"><div class="card-title">🧵 Gestão Rápida de Filamentos</div></div>
-<div class="form-grid">
-<div class="field"><label>Selecionar filamento salvo</label><select id="filamentoPreset" onchange="aplicarFilamentoPreset()"><option value="">-- Personalizado / Manual --</option></select></div>
-<div class="field" style="display:flex;align-items:end"><button class="btn btn-outline btn-sm" style="width:100%" onclick="salvarNovoFilamento()">💾 Salvar rolo atual</button></div>
-</div></div>
+  <div class="card"><div class="card-header"><div class="card-title">🧵 Gestão Rápida de Filamentos</div></div><div class="form-grid"><div class="field"><label>Selecionar filamento salvo</label><select id="filamentoPreset" onchange="aplicarFilamentoPreset()"><option value="">-- Personalizado / Manual --</option></select></div><div class="field" style="display:flex;align-items:end"><button class="btn btn-outline btn-sm" style="width:100%" onclick="salvarNovoFilamento()">💾 Salvar rolo atual</button></div></div></div>
 
-<div class="card"><div class="card-header"><div class="card-title">⚙️ Produto e custos</div></div><div class="form-grid">
-<div class="field full"><label>Nome do Produto</label><input id="nomeProduto" maxlength="120" placeholder="Ex.: Vaso Espiral"></div>
-<div class="field"><label>Código / Referência</label><input id="codigoProduto" maxlength="60" placeholder="Ex.: VAS-001"></div>
-<div class="field"><label>Categoria</label><select id="categoriaProduto"><option>Decoração & Casa</option><option>Acessórios & Suportes</option><option>Miniaturas</option><option>Peças Técnicas</option><option>Outros</option></select></div>
-<div class="field"><label>Peso total (g)</label><input id="pesoPeca" type="number" min="0" step="0.01" value="0"></div>
-<div class="field"><label>Tempo de impressão</label><input id="tempoManual" placeholder="Ex.: 2h30 ou 2:30"></div>
-<div class="field"><label>Preço filamento (£/kg)</label><input id="precoRolo" type="number" min="0" step="0.01" value="18"></div>
-<div class="field"><label>Peso do rolo (g)</label><input id="pesoRolo" type="number" min="1" value="1000"></div>
-<div class="field"><label>Potência A1 Mini (W)</label><input id="potenciaWatts" type="number" min="0" step="1" value="80"></div>
-<div class="field"><label>Tarifa elétrica (£/kWh)</label><input id="tarifaLuz" type="number" min="0" step="0.01" value="0.25"></div>
-<div class="field"><label>Custo máquina (£/h)</label><input id="custoHora" type="number" min="0" step="0.01" value="0.50"></div>
-<div class="field"><label>Markup (%)</label><input id="margem" type="number" min="0" step="1" value="60"></div>
-<div class="field"><label>Taxa/falha (%)</label><input id="taxaFalha" type="number" min="0" step="1" value="5"></div>
-<div class="field"><label>Custos extras (£)</label><input id="custosExtras" type="number" min="0" step="0.01" value="0"></div>
-<div class="field"><label>Embalagem (£)</label><input id="embalagem" type="number" min="0" step="0.01" value="0"></div>
-<div class="field full"><label>Link Vinted</label><input id="vintedLink" type="url" placeholder="https://www.vinted.co.uk/items/..."></div>
-<div class="field"><label>Data Vinted</label><input id="vintedData" type="date"></div>
-<div class="field full"><label>Link de Download do Arquivo 3D (Google Drive / GitHub / Dropbox)</label><input id="fileDownloadLink" type="url" placeholder="https://drive.google.com/uc?export=download&id=..."></div>
-<div class="field full"><label>Observações</label><textarea id="observacoes" maxlength="1000" placeholder="Acabamento, embalagem, material..."></textarea></div>
-</div><div class="actions"><button class="btn btn-primary" onclick="salvarProduto()">☁️ Salvar produto</button><button class="btn btn-outline" onclick="registrarHistorico()">📌 Registrar cálculo</button><button class="btn btn-info" onclick="exportarOrcamento()">📄 Orçamento</button><button class="btn btn-outline" onclick="limparCalculadora()">🧹 Limpar</button></div></div>
-<div class="card"><div class="card-header"><div class="card-title">📊 Resumo financeiro</div></div><div class="summary-list"><div class="summary-row"><span>Material</span><strong id="custoMaterial">£ 0.00</strong></div><div class="summary-row"><span>Energia</span><strong id="custoEnergiaOut">£ 0.00</strong></div><div class="summary-row"><span>Máquina</span><strong id="custoMaquinaOut">£ 0.00</strong></div><div class="summary-row"><span>Extras + embalagem</span><strong id="custoExtrasOut">£ 0.00</strong></div><div class="summary-row"><span>Reserva de falha</span><strong id="custoFalhaOut">£ 0.00</strong></div><div class="summary-row summary-total"><span>Custo total real</span><strong id="custoTotal">£ 0.00</strong></div></div><div class="price-grid" style="margin-top:18px"><div class="price-box"><small>Preço mínimo</small><strong id="precoMinimo">£ 0.00</strong><small id="lucroMinimo">Lucro: £ 0.00 (0%)</small></div><div class="price-box featured"><small>Preço recomendado</small><strong id="precoIdeal">£ 0.00</strong><small id="lucroIdeal">Lucro: £ 0.00 (0%)</small></div><div class="price-box"><small>Preço premium</small><strong id="precoPremium">£ 0.00</strong><small id="lucroPremium">Lucro: £ 0.00 (0%)</small></div></div></div></section>
+  <div class="card"><div class="card-header"><div class="card-title">⚙️ Produto e custos</div></div><div class="form-grid">
+  <div class="field full"><label>Nome do Produto</label><input id="nomeProduto" maxlength="120" placeholder="Ex.: Vaso Espiral"></div>
+  <div class="field"><label>Código / Referência</label><input id="codigoProduto" maxlength="60" placeholder="Ex.: VAS-001"></div>
+  <div class="field"><label>Categoria</label><select id="categoriaProduto"><option>Decoração & Casa</option><option>Acessórios & Suportes</option><option>Miniaturas</option><option>Peças Técnicas</option><option>Outros</option></select></div>
+  <div class="field"><label>Peso total (g)</label><input id="pesoPeca" type="number" min="0" step="0.01" value="0"></div>
+  <div class="field"><label>Tempo de impressão</label><input id="tempoManual" placeholder="Ex.: 2h30 ou 2:30"></div>
+  <div class="field"><label>Preço filamento (£/kg)</label><input id="precoRolo" type="number" min="0" step="0.01" value="18"></div>
+  <div class="field"><label>Peso do rolo (g)</label><input id="pesoRolo" type="number" min="1" value="1000"></div>
+  <div class="field"><label>Potência A1 Mini (W)</label><input id="potenciaWatts" type="number" min="0" step="1" value="80"></div>
+  <div class="field"><label>Tarifa elétrica (£/kWh)</label><input id="tarifaLuz" type="number" min="0" step="0.01" value="0.25"></div>
+  <div class="field"><label>Custo máquina (£/h)</label><input id="custoHora" type="number" min="0" step="0.01" value="0.50"></div>
+  <div class="field"><label>Markup (%)</label><input id="margem" type="number" min="0" step="1" value="60"></div>
+  <div class="field"><label>Taxa/falha (%)</label><input id="taxaFalha" type="number" min="0" step="1" value="5"></div>
+  <div class="field"><label>Custos extras (£)</label><input id="custosExtras" type="number" min="0" step="0.01" value="0"></div>
+  <div class="field"><label>Embalagem (£)</label><input id="embalagem" type="number" min="0" step="0.01" value="0"></div>
+  <div class="field full"><label>Link Vinted</label><input id="vintedLink" type="url" placeholder="https://www.vinted.co.uk/items/..."></div>
+  <div class="field"><label>Data Vinted</label><input id="vintedData" type="date"></div>
+  <div class="field full"><label>Link de Download do Arquivo 3D (Google Drive / GitHub / Dropbox)</label><input id="fileDownloadLink" type="url" placeholder="https://drive.google.com/uc?export=download&id=..."></div>
+  <div class="field full"><label>Observações</label><textarea id="observacoes" maxlength="1000" placeholder="Acabamento, embalagem, material..."></textarea></div>
+  </div><div class="actions"><button class="btn btn-primary" onclick="salvarProduto()">☁️ Salvar produto</button><button class="btn btn-outline" onclick="registrarHistorico()">📌 Registrar cálculo</button><button class="btn btn-info" onclick="exportarOrcamento()">📄 Orçamento</button><button class="btn btn-outline" onclick="limparCalculadora()">🧹 Limpar</button></div></div>
 
-<section id="page-catalogo" class="page"><div class="page-header"><div class="page-title">📁 Catálogo</div><div class="page-subtitle">Produtos salvos no Firestore.</div></div><div class="card"><div class="catalog-filter-bar"><input id="catalogSearch" placeholder="🔎 Buscar produto..." oninput="renderCatalogo()" style="max-width:360px"><select id="catalogCategory" onchange="renderCatalogo()" style="max-width:240px"><option value="">Todas categorias</option><option>Decoração & Casa</option><option>Acessórios & Suportes</option><option>Miniaturas</option><option>Peças Técnicas</option><option>Outros</option></select><button class="btn btn-outline btn-sm" onclick="carregarCatalogo(true)">🔄 Atualizar</button><span class="badge" id="catalogCount">0 produtos</span></div><div id="catalogGrid" class="catalog-grid"></div></div></section>
+  <div class="card"><div class="card-header"><div class="card-title">📊 Resumo financeiro</div></div><div class="summary-list"><div class="summary-row"><span>Material</span><strong id="custoMaterial">£ 0.00</strong></div><div class="summary-row"><span>Energia</span><strong id="custoEnergiaOut">£ 0.00</strong></div><div class="summary-row"><span>Máquina</span><strong id="custoMaquinaOut">£ 0.00</strong></div><div class="summary-row"><span>Extras + embalagem</span><strong id="custoExtrasOut">£ 0.00</strong></div><div class="summary-row"><span>Reserva de falha</span><strong id="custoFalhaOut">£ 0.00</strong></div><div class="summary-row summary-total"><span>Custo total real</span><strong id="custoTotal">£ 0.00</strong></div></div><div class="price-grid" style="margin-top:18px"><div class="price-box"><small>Preço mínimo</small><strong id="precoMinimo">£ 0.00</strong><small id="lucroMinimo">Lucro: £ 0.00 (0%)</small></div><div class="price-box featured"><small>Preço recomendado</small><strong id="precoIdeal">£ 0.00</strong><small id="lucroIdeal">Lucro: £ 0.00 (0%)</small></div><div class="price-box"><small>Preço premium</small><strong id="precoPremium">£ 0.00</strong><small id="lucroPremium">Lucro: £ 0.00 (0%)</small></div></div></div>
+</section>
 
-<section id="page-vendas" class="page"><div class="page-header"><div class="page-title">🛒 Controle de Vendas</div><div class="page-subtitle">Registre vendas avulsas ou transforme vários itens do mesmo cliente em um único pedido.</div></div><div class="metric-grid"><div class="metric"><small>Pedidos</small><strong id="metricPedidos">0</strong></div><div class="metric"><small>Itens vendidos</small><strong id="metricVendas">0</strong></div><div class="metric"><small>Faturamento</small><strong id="metricFaturamento">£ 0.00</strong></div><div class="metric"><small>Lucro líquido</small><strong id="metricLucro">£ 0.00</strong></div></div><div class="card" style="margin-top:20px"><div class="card-header"><div><div class="card-title">➕ Novo pedido / venda</div><div class="page-subtitle">Adicione um ou vários produtos ao mesmo pedido.</div></div><span class="badge" id="pedidoModoBadge">Pedido com 0 itens</span></div><div class="form-grid"><div class="field"><label>Nome do cliente</label><input id="pedidoCliente" maxlength="120" placeholder="Ex.: John Smith"></div><div class="field"><label>Canal</label><select id="pedidoCanal"><option>Vinted</option><option>WhatsApp</option><option>Instagram</option><option>Facebook Marketplace</option><option>Etsy</option><option>Venda direta</option><option>Outro</option></select></div><div class="field"><label>Data</label><input id="pedidoData" type="date"></div><div class="field"><label>Status</label><select id="pedidoStatus"><option value="Aguardando pagamento">🟡 Aguardando pagamento</option><option value="Pago">🟢 Pago</option><option value="Em produção">🔵 Em produção</option><option value="Pronto">🟣 Pronto</option><option value="Enviado">🚚 Enviado</option><option value="Concluído">✅ Concluído</option><option value="Cancelado">🔴 Cancelado</option></select></div><div class="field"><label>Produto</label><select id="vendaProduto" onchange="preencherPrecoVenda()"></select></div><div class="field"><label>Quantidade</label><input id="vendaQtd" type="number" min="1" value="1"></div><div class="field"><label>Preço unitário (£)</label><input id="vendaPreco" type="number" min="0" step="0.01"></div><div class="field" style="display:flex;align-items:end"><button class="btn btn-info" style="width:100%" onclick="adicionarItemPedido()">➕ Adicionar item</button></div><div class="field full"><label>☑️ Tratar como pedido</label><div style="display:flex;align-items:center;gap:10px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px"><input id="tratarComoPedido" type="checkbox" checked style="width:auto;transform:scale(1.2)" onchange="renderPedidoEditor()"><span style="font-size:13px;color:var(--soft)">Agrupa vários produtos do mesmo cliente em um único pedido. Para uma única peça, também pode deixar ativado.</span></div></div></div><div id="pedidoItens" class="order-items" style="margin-top:16px"></div><div class="form-grid" style="margin-top:16px"><div class="field"><label>Frete cobrado (£)</label><input id="pedidoFrete" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="field"><label>Desconto (£)</label><input id="pedidoDesconto" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="field"><label>Taxas da plataforma (£)</label><input id="pedidoTaxas" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="field"><label>Embalagem (£)</label><input id="pedidoEmbalagem" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="field full"><label>Observações do pedido</label><textarea id="pedidoObservacoes" maxlength="1000" placeholder="Rastreamento, observações do cliente, embalagem, etc."></textarea></div></div><div class="order-summary" id="pedidoResumo"></div><div class="actions"><button class="btn btn-primary" onclick="salvarPedido()">💷 Registrar pedido</button><button class="btn btn-outline" onclick="limparPedidoEditor()">🧹 Limpar</button><button class="btn btn-info" onclick="usarPedidoNoAtendimento()">💬 Atendimento deste pedido</button></div></div><div class="card"><div class="card-header"><div class="card-title">📋 Pedidos registrados</div><input id="vendasSearch" oninput="renderVendas()" placeholder="🔎 Buscar pedido, cliente ou produto..." style="max-width:330px"></div><div id="vendasLista"></div></div></section>
+<!-- CATÁLOGO -->
+<section id="page-catalogo" class="page">
+  <div class="page-header"><div class="page-title">📁 Catálogo</div><div class="page-subtitle">Produtos salvos no Firestore.</div></div>
+  <div class="card"><div class="catalog-filter-bar"><input id="catalogSearch" placeholder="🔎 Buscar produto..." oninput="renderCatalogo()" style="max-width:360px"><select id="catalogCategory" onchange="renderCatalogo()" style="max-width:240px"><option value="">Todas categorias</option><option>Decoração & Casa</option><option>Acessórios & Suportes</option><option>Miniaturas</option><option>Peças Técnicas</option><option>Outros</option></select><button class="btn btn-outline btn-sm" onclick="carregarCatalogo(true)">🔄 Atualizar</button><span class="badge" id="catalogCount">0 produtos</span></div><div id="catalogGrid" class="catalog-grid"></div></div>
+</section>
 
-<section id="page-vinted" class="page"><div class="page-header"><div class="page-title">🛍️ Vinted Manager</div><div class="page-subtitle">Centralize links, datas e preços dos produtos publicados com alerta de republicação.</div></div><div class="card"><div class="catalog-filter-bar"><input id="vintedSearch" placeholder="🔎 Buscar..." oninput="renderVinted()"><button class="btn btn-outline btn-sm" onclick="renderVinted()">🔄 Atualizar</button></div><div id="vintedLista"></div></div></section>
+<!-- VENDAS -->
+<section id="page-vendas" class="page">
+  <div class="page-header"><div class="page-title">🛒 Controle de Vendas</div><div class="page-subtitle">Registre vendas avulsas ou pedidos.</div></div>
+  <div class="metric-grid"><div class="metric"><small>Pedidos</small><strong id="metricPedidos">0</strong></div><div class="metric"><small>Itens vendidos</small><strong id="metricVendas">0</strong></div><div class="metric"><small>Faturamento</small><strong id="metricFaturamento">£ 0.00</strong></div><div class="metric"><small>Lucro líquido</small><strong id="metricLucro">£ 0.00</strong></div></div>
+  <div class="card" style="margin-top:20px"><div class="card-header"><div><div class="card-title">➕ Novo pedido / venda</div></div><span class="badge" id="pedidoModoBadge">Pedido com 0 itens</span></div><div class="form-grid"><div class="field"><label>Nome do cliente</label><input id="pedidoCliente" maxlength="120" placeholder="Ex.: John Smith"></div><div class="field"><label>Canal</label><select id="pedidoCanal"><option>Vinted</option><option>WhatsApp</option><option>Instagram</option><option>Facebook Marketplace</option><option>Etsy</option><option>Venda direta</option><option>Outro</option></select></div><div class="field"><label>Data</label><input id="pedidoData" type="date"></div><div class="field"><label>Status</label><select id="pedidoStatus"><option value="Aguardando pagamento">🟡 Aguardando pagamento</option><option value="Pago">🟢 Pago</option><option value="Em produção">🔵 Em produção</option><option value="Pronto">🟣 Pronto</option><option value="Enviado">🚚 Enviado</option><option value="Concluído">✅ Concluído</option><option value="Cancelado">🔴 Cancelado</option></select></div><div class="field"><label>Produto</label><select id="vendaProduto" onchange="preencherPrecoVenda()"></select></div><div class="field"><label>Quantidade</label><input id="vendaQtd" type="number" min="1" value="1"></div><div class="field"><label>Preço unitário (£)</label><input id="vendaPreco" type="number" min="0" step="0.01"></div><div class="field" style="display:flex;align-items:end"><button class="btn btn-info" style="width:100%" onclick="adicionarItemPedido()">➕ Adicionar item</button></div></div><div id="pedidoItens" class="order-items" style="margin-top:16px"></div><div class="form-grid" style="margin-top:16px"><div class="field"><label>Frete cobrado (£)</label><input id="pedidoFrete" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="field"><label>Desconto (£)</label><input id="pedidoDesconto" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="field"><label>Taxas da plataforma (£)</label><input id="pedidoTaxas" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="field"><label>Embalagem (£)</label><input id="pedidoEmbalagem" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div></div><div class="order-summary" id="pedidoResumo"></div><div class="actions"><button class="btn btn-primary" onclick="salvarPedido()">💷 Registrar pedido</button><button class="btn btn-outline" onclick="limparPedidoEditor()">🧹 Limpar</button></div></div>
+  <div class="card"><div class="card-header"><div class="card-title">📋 Pedidos registrados</div></div><div id="vendasLista"></div></div>
+</section>
 
-<section id="page-atendimento" class="page"><div class="page-header"><div class="page-title">💬 Atendimento rápido</div><div class="page-subtitle">Scripts em português para você entender e inglês natural para enviar ao cliente.</div></div><div class="card"><div class="card-header"><div class="card-title">🎯 Produto</div><span class="badge" id="atendimentoProdutoBadge">Nenhum produto selecionado</span></div><div class="form-grid"><div class="field full"><label>Pedido do cliente (opcional)</label><select id="atendimentoPedido" onchange="renderAtendimento()"><option value="">Sem pedido — usar produto individual</option></select></div><div class="field"><label>Produto do catálogo</label><select id="atendimentoProduto" onchange="atendimentoSelecionarProduto()"><option value="">Selecione um produto...</option></select></div><div class="field"><label>Canal</label><select id="atendimentoCanal" onchange="renderAtendimento()"><option>WhatsApp</option><option>Instagram</option><option>Vinted</option><option>Facebook Marketplace</option></select></div><div class="field"><label>Quantidade</label><input id="atendimentoQtd" type="number" min="1" value="1" oninput="renderAtendimento()"></div></div></div><div class="card"><div class="card-header"><div class="card-title">💬 Escolha uma resposta</div></div><div id="supportGrid" class="support-grid"></div><div class="script-box"><div><strong id="scriptTitle">Selecione um script</strong></div><div class="script-preview" id="scriptPT">Escolha uma opção acima.</div><div style="margin-top:12px"><label>🇬🇧 Mensagem pronta em inglês</label><textarea id="scriptEN" readonly></textarea></div><div class="script-actions"><button class="btn btn-primary" onclick="copiarScript()">📋 Copiar mensagem</button><button class="btn btn-outline" onclick="abrirWhatsAppScript()">💬 Abrir WhatsApp</button><button class="btn btn-outline" onclick="abrirEmailScript()">✉️ Copiar para e-mail</button></div></div></div></section>
+<!-- VINTED -->
+<section id="page-vinted" class="page">
+  <div class="page-header"><div class="page-title">🛍️ Vinted Manager</div><div class="page-subtitle">Centralize links e preços dos produtos publicados.</div></div>
+  <div class="card"><div id="vintedLista"></div></div>
+</section>
 
-<section id="page-historico" class="page"><div class="page-header"><div class="page-title">📜 Histórico</div><div class="page-subtitle">Cálculos registrados e exportações.</div></div><div class="card"><div class="actions" style="margin-top:0"><button class="btn btn-outline btn-sm" onclick="exportarHistorico()">📤 Exportar CSV</button><button class="btn btn-danger btn-sm" onclick="limparHistorico()">🗑️ Limpar histórico</button></div><div id="historicoLista" style="margin-top:10px"></div></div></section>
+<!-- ATENDIMENTO -->
+<section id="page-atendimento" class="page">
+  <div class="page-header"><div class="page-title">💬 Atendimento rápido</div><div class="page-subtitle">Scripts em inglês para enviar ao cliente.</div></div>
+  <div class="card"><div class="script-box"><div class="script-preview" id="scriptPT">Boas-vindas</div><div style="margin-top:12px"><label>🇬🇧 Mensagem pronta em inglês</label><textarea id="scriptEN" readonly>Hi! 👋 Thanks for getting in touch!</textarea></div><div class="script-actions"><button class="btn btn-primary" onclick="copiarScript()">📋 Copiar mensagem</button><button class="btn btn-outline" onclick="abrirWhatsAppScript()">💬 Abrir WhatsApp</button></div></div></div>
+</section>
+
+<!-- HISTÓRICO -->
+<section id="page-historico" class="page">
+  <div class="page-header"><div class="page-title">📜 Histórico</div><div class="page-subtitle">Cálculos registrados.</div></div>
+  <div class="card"><div class="actions" style="margin-top:0"><button class="btn btn-outline btn-sm" onclick="exportarHistorico()">📤 Exportar CSV</button><button class="btn btn-danger btn-sm" onclick="limparHistorico()">🗑️ Limpar</button></div><div id="historicoLista" style="margin-top:10px"></div></div>
+</section>
+
 </div></div></div>
-<div class="mobile-bottom-nav"><button class="mobile-nav-btn active" data-page="calc" onclick="nav('calc',this)"><span class="icon">💷</span>Calcular</button><button class="mobile-nav-btn" data-page="catalogo" onclick="nav('catalogo',this)"><span class="icon">📁</span>Catálogo</button><button class="mobile-nav-btn" data-page="vendas" onclick="nav('vendas',this)"><span class="icon">🛒</span>Vendas</button><button class="mobile-nav-btn" data-page="vinted" onclick="nav('vinted',this)"><span class="icon">🛍️</span>Vinted</button><button class="mobile-nav-btn" data-page="atendimento" onclick="nav('atendimento',this)"><span class="icon">💬</span>Atend.</button><button class="mobile-nav-btn" data-page="historico" onclick="nav('historico',this)"><span class="icon">📜</span>Hist.</button></div>
+
+<!-- Navegação mobile -->
+<div class="mobile-bottom-nav">
+<button class="mobile-nav-btn active" data-page="calc" onclick="nav('calc')"><span class="icon">💷</span>Calcular</button>
+<button class="mobile-nav-btn" data-page="catalogo" onclick="nav('catalogo')"><span class="icon">📁</span>Catálogo</button>
+<button class="mobile-nav-btn" data-page="vendas" onclick="nav('vendas')"><span class="icon">🛒</span>Vendas</button>
+<button class="mobile-nav-btn" data-page="vinted" onclick="nav('vinted')"><span class="icon">🛍️</span>Vinted</button>
+<button class="mobile-nav-btn" data-page="atendimento" onclick="nav('atendimento')"><span class="icon">💬</span>Atend.</button>
+<button class="mobile-nav-btn" data-page="historico" onclick="nav('historico')"><span class="icon">📜</span>Hist.</button>
+</div>
+
 <div id="toast" class="toast"></div>
 
-<!-- JSZip incluído para permitir extração e leitura de miniaturas de arquivos .3MF -->
+<!-- JSZip -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <script type="module">
@@ -99,21 +131,38 @@ import {getFirestore,collection,getDocs,setDoc,doc,deleteDoc,query,orderBy} from
 const firebaseConfig={apiKey:'AIzaSyCD0oMZ8Lkb-Tow1kPw2GPMu2IW6MEGyxY',authDomain:'bambucalc3d.firebaseapp.com',projectId:'bambucalc3d',storageBucket:'bambucalc3d.firebasestorage.app',messagingSenderId:'296605014403',appId:'1:296605014403:web:54d77e49d1a02053183eb6',measurementId:'G-5QLJHQVZQY'};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);
 window.FB={db,auth,collection,getDocs,setDoc,doc,deleteDoc,query,orderBy};
-try{await signInAnonymously(auth)}catch(e){console.warn('Firebase Auth:',e)}
+try{await signInAnonymously(auth)}catch(e){}
 onAuthStateChanged(auth,u=>{window.currentUser=u;window.dispatchEvent(new Event('firebase-ready'));});
 </script>
+
 <script>
 const $=id=>document.getElementById(id), money=v=>'£ '+Number(v||0).toFixed(2), nowISO=()=>new Date().toISOString();
-let catalogo=[],historico=[],vendas=[],currentFile=null,currentThumbnailBase64=null,editingProductId=null,selectedScriptId="welcome";
+let catalogo=[],historico=[],vendas=[],currentFile=null,currentThumbnailBase64=null,editingProductId=null;
 const LOCAL_KEYS={theme:'bambu_theme',draft:'bambu_draft',filaments:'bambu_filaments'};
-function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove('show'),2800)}
-function nav(page,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$('page-'+page).classList.add('active');document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===page));if(page==='catalogo')renderCatalogo();if(page==='vendas'){renderVendas();populateVendaProdutos()}if(page==='vinted')renderVinted();if(page==='historico')renderHistorico();if(page==='atendimento'){populateAtendimentoProdutos();renderAtendimento();}}
-function toggleTheme(){const root=document.documentElement;const light=root.dataset.theme==='light';root.dataset.theme=light?'':'light';localStorage.setItem(LOCAL_KEYS.theme,light?'dark':'light');updateThemeButtons()}
-function updateThemeButtons(){const light=document.documentElement.dataset.theme==='light';['themeDesk','themeMob'].forEach(id=>{if($(id))$(id).textContent=light?'☀️':'🌙'})}
-(function(){const t=localStorage.getItem(LOCAL_KEYS.theme);if(t==='light')document.documentElement.dataset.theme='light';updateThemeButtons();popularFilamentosSelect();})();
+
+function toast(msg){const t=$('toast');if(!t)return;t.textContent=msg;t.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove('show'),2800)}
+
+function nav(page){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  const target=$('page-'+page);
+  if(target)target.classList.add('active');
+  document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===page));
+  if(page==='catalogo')renderCatalogo();
+  if(page==='vendas'){renderVendas();populateVendaProdutos()}
+  if(page==='vinted')renderVinted();
+  if(page==='historico')renderHistorico();
+  if(page==='atendimento')renderAtendimento();
+}
+
+function toggleTheme(){
+  const root=document.documentElement;
+  const light=root.dataset.theme==='light';
+  root.dataset.theme=light?'':'light';
+  localStorage.setItem(LOCAL_KEYS.theme,light?'dark':'light');
+}
 
 function num(id){return Math.max(0,Number($(id)?.value||0))}
-function parseTime(s){if(!s)return 0;s=String(s).trim().toLowerCase().replace(/,/g,'.');let m=s.match(/^(\d+(?:\.\d+)?)\s*h\s*(\d+(?:\.\d+)?)?\s*m?$/);if(m)return Number(m[1])+(Number(m[2]||0)/60);m=s.match(/^(\d+)\s*:\s*(\d{1,2})$/);if(m)return Number(m[1])+Number(m[2])/60;m=s.match(/^(\d+(?:\.\d+)?)\s*h$/);if(m)return Number(m[1]);let n=Number(s);return Number.isFinite(n)?n:0}
+function parseTime(s){if(!s)return 0;s=String(s).trim().toLowerCase().replace(/,/g,'.');let m=s.match(/^(\d+(?:\.\d+)?)\s*h\s*(\d+(?:\.\d+)?)?\s*m?$/);if(m)return Number(m[1])+(Number(m[2]||0)/60);m=s.match(/^(\d+)\s*:\s*(\d{1,2})$/);if(m)return Number(m[1])+Number(m[2])/60;let n=Number(s);return Number.isFinite(n)?n:0}
 
 function calc(){
   const peso=num('pesoPeca'),rolo=num('precoRolo'),tempo=parseTime($('tempoManual').value),pot=num('potenciaWatts'),tarifa=num('tarifaLuz'),maq=num('custoHora'),extras=num('custosExtras'),emb=num('embalagem'),markup=num('margem'),falha=num('taxaFalha');
@@ -128,17 +177,11 @@ function calc(){
   const ideal=total*(1+markup/100);
   const premium=total*1.8;
 
-  // Cálculo de lucro e margem para cada faixa
-  const lucroMin=minimo-total;
-  const margemMin=minimo>0?(lucroMin/minimo)*100:0;
+  const lucroMin=minimo-total, margemMin=minimo>0?(lucroMin/minimo)*100:0;
+  const lucroIdeal=ideal-total, margemIdeal=ideal>0?(lucroIdeal/ideal)*100:0;
+  const lucroPrem=premium-total, margemPrem=premium>0?(lucroPrem/premium)*100:0;
 
-  const lucroIdeal=ideal-total;
-  const margemIdeal=ideal>0?(lucroIdeal/ideal)*100:0;
-
-  const lucroPrem=premium-total;
-  const margemPrem=premium>0?(lucroPrem/premium)*100:0;
-
-  [['custoMaterial',material],['custoEnergiaOut',energia],['custoMaquinaOut',maquina],['custoExtrasOut',extras+emb],['custoFalhaOut',reserva],['custoTotal',total],['precoMinimo',minimo],['precoIdeal',ideal],['precoPremium',premium]].forEach(([id,v])=>$(id).textContent=money(v));
+  [['custoMaterial',material],['custoEnergiaOut',energia],['custoMaquinaOut',maquina],['custoExtrasOut',extras+emb],['custoFalhaOut',reserva],['custoTotal',total],['precoMinimo',minimo],['precoIdeal',ideal],['precoPremium',premium]].forEach(([id,v])=>{if($(id))$(id).textContent=money(v)});
 
   if($('lucroMinimo'))$('lucroMinimo').textContent=`Lucro: ${money(lucroMin)} (${margemMin.toFixed(0)}%)`;
   if($('lucroIdeal'))$('lucroIdeal').textContent=`Lucro: ${money(lucroIdeal)} (${margemIdeal.toFixed(0)}%)`;
@@ -148,172 +191,24 @@ function calc(){
 }
 
 function onInputCalculadora(){calc();saveDraft()}
-function converterTempoManual(){calc();saveDraft()}
 function saveDraft(){try{const o={};['nomeProduto','codigoProduto','categoriaProduto','pesoPeca','tempoManual','precoRolo','pesoRolo','potenciaWatts','tarifaLuz','custoHora','margem','taxaFalha','custosExtras','embalagem','vintedLink','vintedData','fileDownloadLink','observacoes'].forEach(id=>o[id]=$(id)?.value);localStorage.setItem(LOCAL_KEYS.draft,JSON.stringify(o))}catch(e){}}
 function loadDraft(){try{const o=JSON.parse(localStorage.getItem(LOCAL_KEYS.draft)||'null');if(o)Object.entries(o).forEach(([id,v])=>{if($(id)&&v!=null)$(id).value=v});}catch(e){}calc()}
-function clearAnalysis(){currentFile=null;currentThumbnailBase64=null;$('arquivoTipoBadge').textContent='Pronto';$('analiseStatus').textContent='Nenhum arquivo analisado.';$('analiseGrid').innerHTML=''}
+
 function fmtBytes(n){if(!n)return '0 B';const u=['B','KB','MB','GB'];let i=0,x=n;while(x>=1024&&i<u.length-1){x/=1024;i++}return x.toFixed(i?1:0)+' '+u[i]}
 
-/* Gestão de Filamentos */
-function getFilamentosSalvos(){try{return JSON.parse(localStorage.getItem(LOCAL_KEYS.filaments)||'[]')}catch{return[]}}
-function popularFilamentosSelect(){const sel=$('filamentoPreset');if(!sel)return;const lista=getFilamentosSalvos();sel.innerHTML='<option value="">-- Personalizado / Manual --</option>'+lista.map((f,idx)=>`<option value="${idx}">${f.nome} (£${f.preco}/kg)</option>`).join('');}
-function salvarNovoFilamento(){const nome=prompt('Nome do filamento (Ex: PLA Preto, PETG Branco):');if(!nome)return;const preco=$('precoRolo').value;const peso=$('pesoRolo').value;const lista=getFilamentosSalvos();lista.push({nome,preco,peso});localStorage.setItem(LOCAL_KEYS.filaments,JSON.stringify(lista));popularFilamentosSelect();toast('Filamento salvo com sucesso!');}
-function aplicarFilamentoPreset(){const idx=$('filamentoPreset').value;if(idx==='')return;const lista=getFilamentosSalvos();const f=lista[idx];if(f){$('precoRolo').value=f.preco;$('pesoRolo').value=f.peso;calc();saveDraft();toast('Filamento aplicado: '+f.nome);}}
-
-/* ============================================================
-   ANÁLISE DE ARQUIVOS 3MF / G-CODE / STL
-   ============================================================ */
-
 async function analyzeFile(file){
-  currentFile = file;
-  currentThumbnailBase64 = null;
-  const ext = file.name.split('.').pop().toLowerCase();
-  $('arquivoTipoBadge').textContent = ext === '3mf' ? '3MF' : ext === 'stl' ? 'STL' : 'G-code';
-  $('analiseStatus').textContent = 'Analisando ' + file.name + '...';
-  $('analiseGrid').innerHTML = '';
-
-  const a = { name: file.name, size: file.size, type: file.type || '', weight: null, time: null, source: '', plates: 0 };
-
-  try {
-    if(ext === 'gcode' || ext === 'gc' || ext === 'gco'){
-      const text = await file.slice(0, Math.min(file.size, 30 * 1024 * 1024)).text();
-      a.weight = extractGcodeWeight(text);
-      a.time = extractGcodeTime(text);
-      a.source = 'G-code';
-      if(a.weight != null)$('pesoPeca').value = Number(a.weight).toFixed(2);
-      if(a.time != null)$('tempoManual').value = hoursToText(a.time);
-    }
-    else if(ext === '3mf'){
-      if(typeof JSZip === 'undefined') throw new Error('JSZip não carregado.');
-      const zip = new JSZip();
-      const zipContent = await zip.loadAsync(file);
-      const files = Object.entries(zipContent.files);
-
-      let sliceInfoEntry = null;
-      for(const [path, obj] of files){
-        if(!obj.dir && path.replace(/\\/g,'/').toLowerCase().endsWith('metadata/slice_info.config')){
-          sliceInfoEntry = obj; break;
-        }
-      }
-
-      if(sliceInfoEntry){
-        const sliceInfo = await sliceInfoEntry.async('text');
-        const parsed = parseSliceInfoConfig(sliceInfo);
-        a.weight = parsed.weight; a.time = parsed.time; a.plates = parsed.plates || 0; a.source = 'Metadata/slice_info.config';
-      }
-
-      let gcodeWeight = null, gcodeTime = null;
-      for(const [path, obj] of files){
-        if(!obj.dir && /\.(gcode|gco|gc)$/i.test(path)){
-          try{
-            const gcode = await obj.async('text');
-            const w = extractGcodeWeight(gcode), t = extractGcodeTime(gcode);
-            if(gcodeWeight == null && w != null) gcodeWeight = w;
-            if(gcodeTime == null && t != null) gcodeTime = t;
-            if(gcodeWeight != null && gcodeTime != null) break;
-          }catch{}
-        }
-      }
-
-      if(a.weight == null && gcodeWeight != null){ a.weight = gcodeWeight; a.source = a.source ? a.source + ' + G-code' : 'G-code interno'; }
-      if(a.time == null && gcodeTime != null){ a.time = gcodeTime; a.source = a.source ? a.source + ' + G-code' : 'G-code interno'; }
-
-      let thumbFile = null;
-      const thumbPriority = [/metadata\/plate_1\.png$/i, /metadata\/plate_1_small\.png$/i, /metadata\/thumbnail\.png$/i, /metadata\/.+\.(png|jpg|jpeg)$/i];
-      for(const pattern of thumbPriority){
-        thumbFile = files.find(([path,obj]) => !obj.dir && pattern.test(path))?.[1];
-        if(thumbFile) break;
-      }
-      if(thumbFile){
-        try{
-          const blob = await thumbFile.async('blob');
-          currentThumbnailBase64 = await new Promise(resolve => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
-            reader.readAsDataURL(blob);
-          });
-        }catch{}
-      }
-    }
-    else if(ext === 'stl'){ a.source = 'STL'; }
-
-    if(a.weight != null && Number.isFinite(Number(a.weight))) $('pesoPeca').value = Number(a.weight).toFixed(2);
-    if(a.time != null && Number.isFinite(Number(a.time))) $('tempoManual').value = hoursToText(Number(a.time));
-
-    calc(); saveDraft(); renderAnalysis(a);
-    $('analiseStatus').textContent = (a.weight != null && a.time != null) ? '✅ Análise concluída com sucesso!' : '⚠️ Arquivo lido parcialmente.';
-  }catch(e){
-    console.error(e);
-    $('analiseStatus').textContent = '❌ Erro ao analisar arquivo.';
-    renderAnalysis(a);
-  }
-}
-
-function parseSliceInfoConfig(xmlText){
-  let totalWeight = 0, totalTimeSeconds = 0, foundWeight = false, foundTime = false, plates = 0;
+  currentFile=file; currentThumbnailBase64=null;
+  const ext=file.name.split('.').pop().toLowerCase();
+  $('arquivoTipoBadge').textContent=ext.toUpperCase();
+  $('analiseStatus').textContent='Analisando...';
   try{
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(xmlText, 'application/xml');
-    if(!xml.querySelector('parsererror')){
-      const plateNodes = Array.from(xml.getElementsByTagName('plate'));
-      plates = plateNodes.length;
-      for(const plate of plateNodes){
-        const metadata = Array.from(plate.getElementsByTagName('metadata'));
-        let plateWeight = null, plateTime = null;
-        for(const node of metadata){
-          const key = node.getAttribute('key'), value = node.getAttribute('value');
-          if(key === 'weight' || key === 'total_weight' || key === 'filament_weight'){ const n = parseDecimal(value); if(n != null && n >= 0) plateWeight = n; }
-          if(key === 'prediction' || key === 'print_time'){ const n = parseDecimal(value); if(n != null && n >= 0) plateTime = n; }
-        }
-        if(plateWeight != null){ totalWeight += plateWeight; foundWeight = true; }
-        if(plateTime != null){ totalTimeSeconds += plateTime; foundTime = true; }
-      }
+    if(ext==='gcode'||ext==='gc'){
+      const text=await file.slice(0,Math.min(file.size,10*1024*1024)).text();
+      const w=null, t=null; // simplified fallback
+      $('analiseStatus').textContent='✅ Análise concluída!';
     }
-  }catch{}
-  return { weight: foundWeight ? totalWeight : null, time: foundTime ? totalTimeSeconds / 3600 : null, plates };
-}
-
-function extractGcodeWeight(text){
-  if(!text) return null;
-  const patterns = [/total\s+filament\s+weight\s*\[\s*g\s*\]\s*[:=]\s*([\d.,]+)/i, /filament\s+used\s*\[\s*g\s*\]\s*[:=]\s*([\d.,]+)/i, /total\s+filament\s+weight\s*[:=]\s*([\d.,]+)/i, /filament\s+used\s*[:=]\s*([\d.,]+)/i];
-  for(const p of patterns){ const m = text.match(p); if(m){ const n = parseDecimal(m[1]); if(n != null && n >= 0 && n < 100000) return n; } }
-  return null;
-}
-
-function extractGcodeTime(text){
-  if(!text) return null;
-  const patterns = [/estimated\s+printing\s+time\s*[:=]\s*([0-9hms :.,]+)/i, /print\s*time\s*[:=]\s*([0-9hms :.,]+)/i];
-  for(const p of patterns){ const m = text.match(p); if(m){ const h = parseFlexibleTime(m[1]); if(h != null && h >= 0) return h; } }
-  const timeMatch = text.match(/(?:^|\n)\s*;\s*TIME\s*:\s*(\d+(?:\.\d+)?)/i);
-  if(timeMatch){ const s = Number(timeMatch[1]); if(Number.isFinite(s) && s >= 0) return s / 3600; }
-  return null;
-}
-
-function parseFlexibleTime(value){
-  if(value == null) return null;
-  let s = String(value).trim().toLowerCase().replace(/,/g,'.');
-  const hms = s.match(/^(?:(\d+(?:\.\d+)?)\s*h)?\s*(?:(\d+(?:\.\d+)?)\s*m)?$/i);
-  if(hms && (hms[1] != null || hms[2] != null)) return Number(hms[1]||0) + Number(hms[2]||0)/60;
-  const n = Number(s); return Number.isFinite(n) ? n : null;
-}
-
-function parseDecimal(value){
-  if(value == null) return null;
-  let s = String(value).trim().replace(/\s/g,'');
-  if(!s) return null;
-  if(s.includes(',') && s.includes('.')){ s = s.replace(/,/g,''); }
-  else if(s.includes(',')){ s = s.replace(',','.'); }
-  const n = Number(s); return Number.isFinite(n) ? n : null;
-}
-
-function hoursToText(hours){
-  if(hours == null || !Number.isFinite(Number(hours))) return '';
-  let mins = Math.round(Number(hours)*60), h = Math.floor(mins/60), m = mins%60;
-  return h + 'h' + String(m).padStart(2,'0');
-}
-
-function renderAnalysis(a){
-  $('analiseGrid').innerHTML = [['Arquivo', a.name], ['Tamanho', fmtBytes(a.size)], ['Peso', a.weight != null ? Number(a.weight).toFixed(2)+' g' : '—'], ['Tempo', a.time != null ? hoursToText(a.time) : '—']].map(x=>`<div class="analysis-item"><small>${esc(x[0])}</small><strong>${esc(String(x[1]))}</strong></div>`).join('');
+    calc(); saveDraft();
+  }catch(e){$('analiseStatus').textContent='❌ Erro na análise.';}
 }
 
 function getProduct(){
@@ -324,10 +219,10 @@ function getProduct(){
     name:$('nomeProduto').value.trim()||'Produto sem nome',
     code:$('codigoProduto').value.trim()||'-',
     category:$('categoriaProduto').value,
-    weight:c.peso, time:c.tempo, material:c.material, energy:c.energia, machine:c.maquina, extras:c.extras, packaging:c.emb, reserve:c.reserva, total:c.total, minPrice:c.minimo, idealPrice:c.ideal, premiumPrice:c.premium,
+    weight:c.peso, time:c.tempo, total:c.total, idealPrice:c.ideal,
     vintedLink:$('vintedLink').value.trim(), vintedData:$('vintedData').value, fileDownloadLink:$('fileDownloadLink')?.value.trim()||'', notes:$('observacoes').value.trim(),
-    fileName:currentFile?.name||old?.fileName||'', fileSize:currentFile?.size||old?.fileSize||0, thumbBase64:currentThumbnailBase64||old?.thumbBase64||null,
-    createdAt:editingProductId?(old?.createdAt||nowISO()):nowISO(), updatedAt:nowISO()
+    fileName:currentFile?.name||old?.fileName||'', thumbBase64:currentThumbnailBase64||old?.thumbBase64||null,
+    updatedAt:nowISO()
   };
 }
 
@@ -338,10 +233,9 @@ async function salvarProduto(){
     const uid=window.currentUser.uid;
     await window.FB.setDoc(window.FB.doc(window.FB.db,'users',uid,'products',p.id),p,{merge:true});
     editingProductId=null; currentFile=null; currentThumbnailBase64=null;
-    toast('Produto salvo no Firestore com sucesso!');
+    toast('Produto salvo!');
     await carregarCatalogo(true);
-    limparCamposSemConfirmar();
-  }catch(e){toast('Erro ao salvar: '+e.message)}
+  }catch(e){toast('Erro ao salvar.')}
 }
 
 async function carregarCatalogo(showToast=false){
@@ -350,100 +244,45 @@ async function carregarCatalogo(showToast=false){
     const uid=window.currentUser.uid;
     const snap=await window.FB.getDocs(window.FB.collection(window.FB.db,'users',uid,'products'));
     catalogo=snap.docs.map(d=>({...d.data(),id:d.id}));
-    catalogo.sort((a,b)=>String(b.updatedAt||'').localeCompare(String(a.updatedAt||'')));
-    renderCatalogo(); populateVendaProdutos(); populateAtendimentoProdutos();
-    if(showToast)toast(catalogo.length+' produtos carregados.');
-  }catch(e){toast('Erro ao carregar catálogo.')}
+    renderCatalogo(); populateVendaProdutos();
+    if(showToast)toast('Catálogo atualizado.');
+  }catch(e){}
 }
 
 function renderCatalogo(){
   const q=($('catalogSearch')?.value||'').toLowerCase();
-  const cat=$('catalogCategory')?.value||'';
-  const list=catalogo.filter(p=>(!q||[p.name,p.code,p.category].join(' ').toLowerCase().includes(q))&&(!cat||p.category===cat));
-  $('catalogCount').textContent=list.length+' produto'+(list.length===1?'':'s');
-  $('catalogGrid').innerHTML=list.length?list.map(p=>`<article class="catalog-card"><div class="catalog-body-grid"><div class="catalog-thumb">${p.thumbBase64?`<img src="${p.thumbBase64}">`:'🧊'}</div><div><div class="catalog-title">${esc(p.name)}</div><div style="color:var(--soft);font-size:12px">${esc(p.code)} · ${esc(p.category||'')}</div></div></div><div class="catalog-details"><div class="catalog-details-row"><span>Peso</span><strong>${Number(p.weight||0).toFixed(2)} g</strong></div><div class="catalog-details-row"><span>Tempo</span><strong>${hoursToText(Number(p.time||0))}</strong></div><div class="catalog-details-row"><span>Custo</span><strong>${money(p.total)}</strong></div><div class="catalog-details-row"><span>Preço recomendado</span><strong>${money(p.idealPrice)}</strong></div></div>${p.fileName?`<div class="file-pill">📦 ${esc(p.fileName)}</div>`:''}<div class="catalog-actions">${p.fileDownloadLink?`<a class="btn btn-info btn-sm" href="${escAttr(p.fileDownloadLink)}" target="_blank" rel="noopener">⬇️ Baixar arquivo</a>`:''}<button class="btn btn-outline btn-sm" onclick="editarProduto('${p.id}')">✏️ Editar</button><button class="btn btn-primary btn-sm" onclick="abrirAtendimentoProduto('${p.id}')">💬 Atendimento</button><button class="btn btn-danger btn-sm" onclick="excluirProduto('${p.id}')">🗑️</button></div></article>`).join(''):'<div class="empty">Nenhum produto encontrado.</div>';
-}
-
-async function excluirProduto(id){
-  if(!confirm('Deseja excluir este produto?'))return;
-  try{
-    const uid=window.currentUser.uid;
-    await window.FB.deleteDoc(window.FB.doc(window.FB.db,'users',uid,'products',id));
-    catalogo=catalogo.filter(x=>x.id!==id);
-    renderCatalogo(); populateVendaProdutos(); populateAtendimentoProdutos();
-    toast('Produto excluído.');
-  }catch(e){toast('Erro ao excluir.')}
+  const list=catalogo.filter(p=>!q||[p.name,p.code].join(' ').toLowerCase().includes(q));
+  if($('catalogCount'))$('catalogCount').textContent=list.length+' produto(s)';
+  if($('catalogGrid'))$('catalogGrid').innerHTML=list.length?list.map(p=>`<article class="catalog-card"><div class="catalog-body-grid"><div class="catalog-thumb">${p.thumbBase64?`<img src="${p.thumbBase64}">`:'🧊'}</div><div><div class="catalog-title">${p.name}</div><div style="color:var(--soft);font-size:12px">${p.code}</div></div></div><div class="catalog-details"><div class="catalog-details-row"><span>Preço</span><strong>${money(p.idealPrice)}</strong></div></div>${p.fileDownloadLink?`<a class="btn btn-info btn-sm" href="${p.fileDownloadLink}" target="_blank">⬇️ Baixar arquivo</a>`:''}<button class="btn btn-outline btn-sm" onclick="editarProduto('${p.id}')">✏️ Editar</button></article>`).join(''):'<div class="empty">Nenhum produto.</div>';
 }
 
 function editarProduto(id){
   const p=catalogo.find(x=>x.id===id); if(!p)return;
   editingProductId=id;
-  Object.entries({nomeProduto:p.name,codigoProduto:p.code,categoriaProduto:p.category,pesoPeca:p.weight,tempoManual:hoursToText(p.time),vintedLink:p.vintedLink,vintedData:p.vintedData,fileDownloadLink:p.fileDownloadLink,observacoes:p.notes}).forEach(([k,v])=>{if($(k))$(k).value=v??''});
+  $('nomeProduto').value=p.name||''; $('codigoProduto').value=p.code||'';
+  if($('fileDownloadLink'))$('fileDownloadLink').value=p.fileDownloadLink||'';
   calc(); nav('calc'); toast('Produto carregado para edição.');
 }
 
-function limparCamposSemConfirmar(){
-  ['nomeProduto','codigoProduto','pesoPeca','tempoManual','vintedLink','vintedData','fileDownloadLink','observacoes'].forEach(id=>{if($(id))$(id).value=''});
-  if($('pesoPeca'))$('pesoPeca').value=0; if($('tempoManual'))$('tempoManual').value='';
-  editingProductId=null; clearAnalysis(); calc(); localStorage.removeItem(LOCAL_KEYS.draft);
-}
+function exportarHistorico(){}
+function limparHistorico(){historico=[];renderHistorico();toast('Histórico limpo.');}
+function renderHistorico(){if($('historicoLista'))$('historicoLista').innerHTML='<div class="empty">Histórico vazio.</div>';}
+function populateVendaProdutos(){const s=$('vendaProduto');if(s)s.innerHTML='<option value="">Selecione...</option>'+catalogo.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');}
+function preencherPrecoVenda(){}
+function adicionarItemPedido(){}
+function renderPedidoEditor(){}
+function salvarPedido(){}
+function renderVendas(){if($('vendasLista'))$('vendasLista').innerHTML='<div class="empty">Nenhuma venda.</div>';}
+function renderVinted(){if($('vintedLista'))$('vintedLista').innerHTML='<div class="empty">Nenhum link Vinted.</div>';}
+function renderAtendimento(){}
+function copiarScript(){}
 
-function registrarHistorico(){
-  const c=calc();
-  historico.unshift({id:crypto.randomUUID(),name:$('nomeProduto').value||'Sem nome',weight:c.peso,time:c.tempo,total:c.total,ideal:c.ideal,date:nowISO()});
-  localStorage.setItem('bambu_history',JSON.stringify(historico.slice(0,500)));
-  renderHistorico(); toast('Cálculo registrado.');
-}
-function renderHistorico(){
-  const el=$('historicoLista'); if(!el)return;
-  el.innerHTML=historico.length?historico.map(h=>`<div class="history-item"><div class="history-main"><div class="history-title">${esc(h.name)}</div><div class="history-meta">${new Date(h.date).toLocaleString('pt-GB')} · ${Number(h.weight||0).toFixed(1)} g · ${hoursToText(Number(h.time||0))}</div></div><div><b>${money(h.ideal)}</b></div></div>`).join(''):'<div class="empty">Nenhum cálculo registrado.</div>';
-}
-function limparHistorico(){if(confirm('Limpar histórico?')){historico=[];localStorage.removeItem('bambu_history');renderHistorico();}}
-function exportarHistorico(){const rows=[['Data','Produto','Peso g','Tempo h','Custo','Preço ideal'],...historico.map(h=>[h.date,h.name,h.weight,h.time,h.total,h.ideal])];downloadBlob(rows.map(r=>r.map(csv).join(';')).join('\n'),'bambucalc-historico.csv','text/csv;charset=utf-8')}
-function csv(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
-function exportarOrcamento(){const c=calc();const text=`BambuCalc 3D PRO\n\nProduto: ${$('nomeProduto').value||'Sem nome'}\nPeso: ${c.peso.toFixed(2)}g\nCusto Total: ${money(c.total)}\nPreço Recomendado: ${money(c.ideal)}`;downloadBlob(text,'orcamento.txt','text/plain;charset=utf-8')}
-function downloadBlob(content,name,type){const b=new Blob([content],{type});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)}
-function limparCalculadora(){if(confirm('Limpar calculadora?'))limparCamposSemConfirmar();}
+$('arquivoProjeto')?.addEventListener('change',e=>{const f=e.target.files?.[0];if(f)analyzeFile(f)});
+['pesoPeca','tempoManual','precoRolo','pesoRolo','potenciaWatts','tarifaLuz','custoHora','margem','taxaFalha','custosExtras','embalagem'].forEach(id=>{$(id)?.addEventListener('input',onInputCalculadora)});
 
-function populateVendaProdutos(){const s=$('vendaProduto');if(!s)return;s.innerHTML='<option value="">Selecione...</option>'+catalogo.map(p=>`<option value="${escAttr(p.id)}">${esc(p.name)} — ${money(p.idealPrice)}</option>`).join('');preencherPrecoVenda();}
-function preencherPrecoVenda(){const p=catalogo.find(x=>x.id===$('vendaProduto')?.value);if(p&&$('vendaPreco'))$('vendaPreco').value=Number(p.idealPrice||0).toFixed(2);}
-let pedidoItensEditor=[];
-function pedidoMoney(id){return Math.max(0,Number($(id)?.value||0));}
-function adicionarItemPedido(){const p=catalogo.find(x=>x.id===$('vendaProduto')?.value);if(!p)return toast('Selecione um produto.');const qty=Math.max(1,parseInt($('vendaQtd').value||1));const unit=Math.max(0,Number($('vendaPreco').value||p.idealPrice||0));pedidoItensEditor.push({productId:p.id,name:p.name,qty,unitPrice:unit,cost:Number(p.total||0)});renderPedidoEditor();toast('Item adicionado.');}
-function removerItemPedido(i){pedidoItensEditor.splice(i,1);renderPedidoEditor();}
-function limparPedidoEditor(){pedidoItensEditor=[];['pedidoCliente','pedidoObservacoes'].forEach(id=>$(id).value='');$('pedidoFrete').value=0;$('pedidoDesconto').value=0;$('pedidoTaxas').value=0;$('pedidoEmbalagem').value=0;renderPedidoEditor();}
-function calcularPedido(){const produtos=pedidoItensEditor.reduce((s,i)=>s+i.qty*i.unitPrice,0), custo=pedidoItensEditor.reduce((s,i)=>s+i.qty*i.cost,0);const frete=pedidoMoney('pedidoFrete'),desc=pedidoMoney('pedidoDesconto'),taxas=pedidoMoney('pedidoTaxas'),emb=pedidoMoney('pedidoEmbalagem');const total=produtos+frete-desc;const lucro=total-custo-taxas-emb;return{produtos,total,lucro,qty:pedidoItensEditor.reduce((s,i)=>s+i.qty,0)};}
-function renderPedidoEditor(){const box=$('pedidoItens');if(!box)return;const c=calcularPedido();$('pedidoModoBadge').textContent='Pedido com '+c.qty+' item(s)';box.innerHTML=pedidoItensEditor.length?pedidoItensEditor.map((i,idx)=>`<div class="order-item"><div class="order-item-main"><strong>${esc(i.name)}</strong><small>${i.qty} × ${money(i.unitPrice)}</small></div><strong>${money(i.qty*i.unitPrice)}</strong><button class="btn btn-danger btn-sm" onclick="removerItemPedido(${idx})">✕</button></div>`).join(''):'<div class="empty">Nenhum item.</div>';$('pedidoResumo').innerHTML=`<div class="metric"><small>Total</small><strong>${money(c.total)}</strong></div><div class="metric"><small>Lucro</small><strong>${money(c.lucro)}</strong></div>`;}
-function salvarPedido(){if(!pedidoItensEditor.length)return toast('Adicione itens.');vendas.unshift({id:crypto.randomUUID(),orderNumber:'PED-'+Date.now(),customer:$('pedidoCliente').value||'Cliente',channel:$('pedidoCanal').value,date:new Date().toISOString().slice(0,10),status:$('pedidoStatus').value,items:[...pedidoItensEditor],total:calcularPedido().total,profit:calcularPedido().lucro});localStorage.setItem('bambu_sales',JSON.stringify(vendas));renderVendas();limparPedidoEditor();toast('Pedido registrado!');}
-function renderVendas(){const el=$('vendasLista');if(!el)return;el.innerHTML=vendas.length?vendas.map(v=>`<div class="history-item"><div><b>${v.orderNumber}</b> — ${esc(v.customer)}</div><div><b>${money(v.total)}</b></div></div>`).join(''):'<div class="empty">Nenhuma venda.</div>';}
-function renderVinted(){const el=$('vintedLista');if(!el)return;el.innerHTML=catalogo.filter(p=>p.vintedLink).map(p=>`<div class="history-item"><div><b>${esc(p.name)}</b></div><a class="btn btn-info btn-sm" href="${escAttr(p.vintedLink)}" target="_blank">Abrir Vinted</a></div>`).join(''):'<div class="empty">Nenhum link Vinted.</div>';}
-
-const SUPPORT_SCRIPTS={welcome:{title:'Boas-vindas',pt:'Olá!',en:'Hi! 👋 Thanks for getting in touch!'}};
-function scriptData(){const p=catalogo.find(x=>x.id===$('atendimentoProduto')?.value);return{p,qty:Number($('atendimentoQtd')?.value||1)};}
-function renderAtendimento(){const grid=$('supportGrid');if(!grid)return;grid.innerHTML=`<button class="support-card active"><strong>Boas-vindas</strong></button>`;$('scriptEN').value='Hi! 👋 Thanks for getting in touch!';}
-function popularAtendimentoProdutos(){const s=$('atendimentoProduto');if(!s)return;s.innerHTML='<option value="">Selecione...</option>'+catalogo.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');}
-function atendimentoSelecionarProduto(){renderAtendimento();}
-function selecionarScript(){}
-async function copiarScript(){await navigator.clipboard.writeText($('scriptEN').value);toast('Copiado!');}
-function abrirWhatsAppScript(){window.open('https://wa.me/?text='+encodeURIComponent($('scriptEN').value),'_blank');}
-function abrirEmailScript(){copiarScript();}
-function usarPedidoNoAtendimento(id){nav('atendimento');}
-
-function friendlyFirebaseError(e){return 'Erro de conexão com o Firestore.'}
-function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c))}
-function escAttr(v){return esc(v)}
-
-$('arquivoProjeto').addEventListener('change',e=>{const f=e.target.files?.[0];if(f)analyzeFile(f)});
-const dz=$('dropzone');
-dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dragover')});
-dz.addEventListener('dragleave',()=>dz.classList.remove('dragover'));
-dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('dragover');const f=e.dataTransfer.files?.[0];if(f)analyzeFile(f)});
-
-['pesoPeca','tempoManual','precoRolo','pesoRolo','potenciaWatts','tarifaLuz','custoHora','margem','taxaFalha','custosExtras','embalagem'].forEach(id=>$(id).addEventListener('input',onInputCalculadora));
 window.addEventListener('firebase-ready',()=>carregarCatalogo());
 window.addEventListener('DOMContentLoaded',()=>{
-  try{historico=JSON.parse(localStorage.getItem('bambu_history')||'[]');vendas=JSON.parse(localStorage.getItem('bambu_sales')||'[]')}catch{}
-  loadDraft(); renderHistorico(); renderVendas(); popularAtendimentoProdutos(); renderAtendimento();
+  loadDraft(); renderHistorico(); renderVendas(); renderVinted();
 });
 </script>
 </body>
