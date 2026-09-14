@@ -2430,7 +2430,7 @@ function parseTime(value){
 
 
 /* =========================================================
-   WEIGHT PARSER CORRIGIDO (COM SUPORTE G-CODE / METERS)
+   WEIGHT PARSER ROBUSTO (3MF E G-CODE)
 ========================================================= */
 
 function normalizeNumber(value){
@@ -2461,8 +2461,10 @@ function extractWeightFromText(text){
     if(!text) return null;
 
     const patterns = [
-        /filament_weight\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
-        /total_filament_weight\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
+        /filament_weight\s*[:=]\s*"?([0-9]+(?:[.,][0-9]+)?)"?/i,
+        /total_filament_weight\s*[:=]\s*"?([0-9]+(?:[.,][0-9]+)?)"?/i,
+        /"filament_weight"\s*:\s*([0-9]+(?:[.,][0-9]+)?)/i,
+        /"weight"\s*:\s*([0-9]+(?:[.,][0-9]+)?)/i,
         /filament\s+used\s*\[g\]\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
         /total\s+filament\s+used\s*\[g\]\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
         /filament_used_g\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
@@ -2497,7 +2499,7 @@ function extractWeightFromText(text){
 
     }
 
-    /* Fallback: Comprimento em metros (comum em G-codes do Cura) */
+    /* Fallback: Comprimento em metros */
     const lengthMetersPatterns = [
         /filament\s+used\s*\[m\]\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
         /;\s*filament\s+used\s*\[m\]\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
@@ -2732,7 +2734,7 @@ async function parse3MF(file){
 
         if(
             !thumbnail &&
-            /thumbnail|thumbnails/.test(name) &&
+            (/thumbnail|thumbnails/.test(name) || name.includes("plate")) &&
             /\.(png|jpg|jpeg|webp)$/.test(name)
         ){
 
@@ -2741,7 +2743,7 @@ async function parse3MF(file){
                 const blob =
                     await entry.async("blob");
 
-                if(blob.size < 600000){
+                if(blob.size < 800000){
 
                     thumbnail =
                         await blobToDataURL(blob);
@@ -2752,11 +2754,13 @@ async function parse3MF(file){
 
         }
 
-        /* metadata / config / gcode */
+        /* metadata / config / gcode / json */
 
         if(
-            /slice_info|config|metadata|gcode|print|plate/.test(name) ||
-            /\.(xml|config|txt|gcode|json)$/.test(name)
+            /\.(xml|config|txt|gcode|json|gcs)$/.test(name) ||
+            name.includes("metadata") ||
+            name.includes("slice") ||
+            name.includes("model_settings")
         ){
 
             try{
