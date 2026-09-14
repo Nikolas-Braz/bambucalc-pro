@@ -73,6 +73,7 @@
 <div class="field"><label>Embalagem (£)</label><input id="embalagem" type="number" min="0" step="0.01" value="0"></div>
 <div class="field full"><label>Link Vinted</label><input id="vintedLink" type="url" placeholder="https://www.vinted.co.uk/items/..."></div>
 <div class="field"><label>Data Vinted</label><input id="vintedData" type="date"></div>
+<div class="field full"><label>Link de Download do Arquivo 3D (GitHub / Drive / Dropbox)</label><input id="fileDownloadLink" type="url" placeholder="https://raw.githubusercontent.com/... ou link de download direto"></div>
 <div class="field full"><label>Observações</label><textarea id="observacoes" maxlength="1000" placeholder="Acabamento, embalagem, material..."></textarea></div>
 </div><div class="actions"><button class="btn btn-primary" onclick="salvarProduto()">☁️ Salvar produto</button><button class="btn btn-outline" onclick="registrarHistorico()">📌 Registrar cálculo</button><button class="btn btn-info" onclick="exportarOrcamento()">📄 Orçamento</button><button class="btn btn-outline" onclick="limparCalculadora()">🧹 Limpar</button></div></div>
 <div class="card"><div class="card-header"><div class="card-title">📊 Resumo financeiro</div></div><div class="summary-list"><div class="summary-row"><span>Material</span><strong id="custoMaterial">£ 0.00</strong></div><div class="summary-row"><span>Energia</span><strong id="custoEnergiaOut">£ 0.00</strong></div><div class="summary-row"><span>Máquina</span><strong id="custoMaquinaOut">£ 0.00</strong></div><div class="summary-row"><span>Extras + embalagem</span><strong id="custoExtrasOut">£ 0.00</strong></div><div class="summary-row"><span>Reserva de falha</span><strong id="custoFalhaOut">£ 0.00</strong></div><div class="summary-row summary-total"><span>Custo total real</span><strong id="custoTotal">£ 0.00</strong></div></div><div class="price-grid" style="margin-top:18px"><div class="price-box"><small>Preço mínimo</small><strong id="precoMinimo">£ 0.00</strong></div><div class="price-box featured"><small>Preço recomendado</small><strong id="precoIdeal">£ 0.00</strong></div><div class="price-box"><small>Preço premium</small><strong id="precoPremium">£ 0.00</strong></div></div></div></section>
@@ -118,7 +119,7 @@ function parseTime(s){if(!s)return 0;s=String(s).trim().toLowerCase().replace(/,
 function calc(){const peso=num('pesoPeca'),rolo=num('precoRolo'),tempo=parseTime($('tempoManual').value),pot=num('potenciaWatts'),tarifa=num('tarifaLuz'),maq=num('custoHora'),extras=num('custosExtras'),emb=num('embalagem'),markup=num('margem'),falha=num('taxaFalha');const material=peso*(rolo/Math.max(1,num('pesoRolo')));const energia=(pot/1000)*tempo*tarifa;const maquina=tempo*maq;const base=material+energia+maquina+extras+emb;const reserva=base*(falha/100);const total=base+reserva;const minimo=total*1.2;const ideal=total*(1+markup/100);const premium=total*1.8;[['custoMaterial',material],['custoEnergiaOut',energia],['custoMaquinaOut',maquina],['custoExtrasOut',extras+emb],['custoFalhaOut',reserva],['custoTotal',total],['precoMinimo',minimo],['precoIdeal',ideal],['precoPremium',premium]].forEach(([id,v])=>$(id).textContent=money(v));return{peso,tempo,material,energia,maquina,extras,emb,reserva,total,minimo,ideal,premium}}
 function onInputCalculadora(){calc();saveDraft()}
 function converterTempoManual(){calc();saveDraft()}
-function saveDraft(){try{const o={};['nomeProduto','codigoProduto','categoriaProduto','pesoPeca','tempoManual','precoRolo','pesoRolo','potenciaWatts','tarifaLuz','custoHora','margem','taxaFalha','custosExtras','embalagem','vintedLink','vintedData','observacoes'].forEach(id=>o[id]=$(id)?.value);localStorage.setItem(LOCAL_KEYS.draft,JSON.stringify(o))}catch(e){}}
+function saveDraft(){try{const o={};['nomeProduto','codigoProduto','categoriaProduto','pesoPeca','tempoManual','precoRolo','pesoRolo','potenciaWatts','tarifaLuz','custoHora','margem','taxaFalha','custosExtras','embalagem','vintedLink','vintedData','fileDownloadLink','observacoes'].forEach(id=>o[id]=$(id)?.value);localStorage.setItem(LOCAL_KEYS.draft,JSON.stringify(o))}catch(e){}}
 function loadDraft(){try{const o=JSON.parse(localStorage.getItem(LOCAL_KEYS.draft)||'null');if(o)Object.entries(o).forEach(([id,v])=>{if($(id)&&v!=null)$(id).value=v});}catch(e){}calc()}
 function clearAnalysis(){currentFile=null;currentThumbnailBase64=null;$('arquivoTipoBadge').textContent='Pronto';$('analiseStatus').textContent='Nenhum arquivo analisado.';$('analiseGrid').innerHTML=''}
 function fmtBytes(n){if(!n)return '0 B';const u=['B','KB','MB','GB'];let i=0,x=n;while(x>=1024&&i<u.length-1){x/=1024;i++}return x.toFixed(i?1:0)+' '+u[i]}
@@ -295,10 +296,6 @@ async function analyzeFile(file){
               gcodeTime = t;
             }
 
-            /*
-              Se já encontramos os dois dados,
-              não precisamos ler outros G-codes.
-            */
             if(
               gcodeWeight != null &&
               gcodeTime != null
@@ -396,14 +393,6 @@ async function analyzeFile(file){
 
       let thumbFile = null;
 
-      /*
-         Prioridade:
-         plate_1.png
-         plate_1_small.png
-         thumbnail.png
-         qualquer PNG/JPG dentro de Metadata
-      */
-
       const thumbPriority = [
         /metadata\/plate_1\.png$/i,
         /metadata\/plate_1_small\.png$/i,
@@ -458,12 +447,6 @@ async function analyzeFile(file){
     else if(ext === 'stl'){
 
       a.source = 'STL';
-
-      /*
-         STL não contém normalmente tempo/peso
-         de impressão.
-      */
-
       a.weight = null;
       a.time = null;
     }
@@ -488,46 +471,21 @@ async function analyzeFile(file){
 
     calc();
     saveDraft();
-
     renderAnalysis(a);
 
-
-    /* ========================================================
-       STATUS REAL DA ANÁLISE
-       ======================================================== */
-
     if(a.weight != null && a.time != null){
-
-      $('analiseStatus').textContent =
-        '✅ Análise concluída! Peso e tempo encontrados automaticamente.';
-
+      $('analiseStatus').textContent = '✅ Análise concluída! Peso e tempo encontrados automaticamente.';
     }else if(a.weight != null){
-
-      $('analiseStatus').textContent =
-        '⚠️ Peso encontrado, mas o tempo de impressão não foi encontrado.';
-
+      $('analiseStatus').textContent = '⚠️ Peso encontrado, mas o tempo de impressão não foi encontrado.';
     }else if(a.time != null){
-
-      $('analiseStatus').textContent =
-        '⚠️ Tempo encontrado, mas o peso não foi encontrado.';
-
+      $('analiseStatus').textContent = '⚠️ Tempo encontrado, mas o peso não foi encontrado.';
     }else{
-
-      $('analiseStatus').textContent =
-        '⚠️ Arquivo aberto, mas peso e tempo não foram encontrados.';
-
+      $('analiseStatus').textContent = '⚠️ Arquivo aberto, mas peso e tempo não foram encontrados.';
     }
 
   }catch(e){
-
-    console.error(
-      '[BambuCalc] Erro na análise:',
-      e
-    );
-
-    $('analiseStatus').textContent =
-      '❌ Não foi possível analisar completamente este arquivo.';
-
+    console.error('[BambuCalc] Erro na análise:', e);
+    $('analiseStatus').textContent = '❌ Não foi possível analisar completamente este arquivo.';
     renderAnalysis(a);
   }
 }
@@ -538,879 +496,278 @@ async function analyzeFile(file){
    ============================================================ */
 
 function parseSliceInfoConfig(xmlText){
-
   let totalWeight = 0;
   let totalTimeSeconds = 0;
-
   let foundWeight = false;
   let foundTime = false;
-
   let plates = 0;
 
-  /*
-    Primeiro tenta DOMParser.
-    É muito mais seguro para XML.
-  */
-
   try{
-
-    const parser =
-      new DOMParser();
-
-    const xml =
-      parser.parseFromString(
-        xmlText,
-        'application/xml'
-      );
-
-    const parserError =
-      xml.querySelector('parsererror');
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(xmlText, 'application/xml');
+    const parserError = xml.querySelector('parsererror');
 
     if(!parserError){
-
-      const plateNodes =
-        Array.from(xml.getElementsByTagName('plate'));
-
+      const plateNodes = Array.from(xml.getElementsByTagName('plate'));
       plates = plateNodes.length;
 
-
-      /* ------------------------------------------------------
-         Cada plate
-         ------------------------------------------------------ */
-
       for(const plate of plateNodes){
-
-        const metadata =
-          Array.from(
-            plate.getElementsByTagName('metadata')
-          );
-
+        const metadata = Array.from(plate.getElementsByTagName('metadata'));
         let plateWeight = null;
         let plateTime = null;
 
-
         for(const node of metadata){
-
-          const key =
-            node.getAttribute('key');
-
-          const value =
-            node.getAttribute('value');
-
+          const key = node.getAttribute('key');
+          const value = node.getAttribute('value');
           if(!key || value == null) continue;
 
-
-          /* Peso total da placa */
-
-          if(
-            key === 'weight' ||
-            key === 'total_weight' ||
-            key === 'filament_weight'
-          ){
-
-            const n =
-              parseDecimal(value);
-
-            if(n != null && n >= 0){
-
-              plateWeight = n;
-            }
+          if(key === 'weight' || key === 'total_weight' || key === 'filament_weight'){
+            const n = parseDecimal(value);
+            if(n != null && n >= 0) plateWeight = n;
           }
 
-
-          /* Tempo total da placa */
-
-          if(
-            key === 'prediction' ||
-            key === 'print_time' ||
-            key === 'print_time_seconds'
-          ){
-
-            const n =
-              parseDecimal(value);
-
-            if(n != null && n >= 0){
-
-              /*
-                prediction do Bambu é em segundos.
-              */
-
-              plateTime = n;
-            }
+          if(key === 'prediction' || key === 'print_time' || key === 'print_time_seconds'){
+            const n = parseDecimal(value);
+            if(n != null && n >= 0) plateTime = n;
           }
         }
 
-
-        /*
-          Se weight existir na placa,
-          usa ele.
-        */
-
         if(plateWeight != null){
-
           totalWeight += plateWeight;
           foundWeight = true;
-
         }else{
-
-          /*
-            Fallback:
-            somar used_g dos filamentos.
-          */
-
-          const filaments =
-            Array.from(
-              plate.getElementsByTagName('filament')
-            );
-
+          const filaments = Array.from(plate.getElementsByTagName('filament'));
           let filamentWeight = 0;
           let hasFilamentWeight = false;
 
           for(const filament of filaments){
-
-            const usedG =
-              parseDecimal(
-                filament.getAttribute('used_g')
-              );
-
-            if(
-              usedG != null &&
-              usedG >= 0
-            ){
-
+            const usedG = parseDecimal(filament.getAttribute('used_g'));
+            if(usedG != null && usedG >= 0){
               filamentWeight += usedG;
               hasFilamentWeight = true;
             }
           }
 
           if(hasFilamentWeight){
-
             totalWeight += filamentWeight;
             foundWeight = true;
           }
         }
 
-
         if(plateTime != null){
-
           totalTimeSeconds += plateTime;
           foundTime = true;
         }
       }
 
-
-      /*
-        Alguns arquivos podem ter metadata fora
-        de <plate>. Fazemos uma segunda busca.
-      */
-
       if(!foundWeight){
-
-        const nodes =
-          Array.from(
-            xml.getElementsByTagName('metadata')
-          );
-
+        const nodes = Array.from(xml.getElementsByTagName('metadata'));
         for(const node of nodes){
-
-          if(
-            node.getAttribute('key') === 'weight'
-          ){
-
-            const n =
-              parseDecimal(
-                node.getAttribute('value')
-              );
-
-            if(n != null){
-
-              totalWeight += n;
-              foundWeight = true;
-              break;
-            }
+          if(node.getAttribute('key') === 'weight'){
+            const n = parseDecimal(node.getAttribute('value'));
+            if(n != null){ totalWeight += n; foundWeight = true; break; }
           }
         }
       }
 
       if(!foundTime){
-
-        const nodes =
-          Array.from(
-            xml.getElementsByTagName('metadata')
-          );
-
+        const nodes = Array.from(xml.getElementsByTagName('metadata'));
         for(const node of nodes){
-
-          if(
-            node.getAttribute('key') === 'prediction'
-          ){
-
-            const n =
-              parseDecimal(
-                node.getAttribute('value')
-              );
-
-            if(n != null){
-
-              totalTimeSeconds += n;
-              foundTime = true;
-              break;
-            }
+          if(node.getAttribute('key') === 'prediction'){
+            const n = parseDecimal(node.getAttribute('value'));
+            if(n != null){ totalTimeSeconds += n; foundTime = true; break; }
           }
         }
       }
     }
-
   }catch(err){
-
-    console.warn(
-      '[BambuCalc] DOMParser falhou:',
-      err
-    );
+    console.warn('[BambuCalc] DOMParser falhou:', err);
   }
 
-
-  /*
-    ------------------------------------------------------------
-    FALLBACK POR REGEX
-    ------------------------------------------------------------
-  */
-
   if(!foundWeight){
-
     const weights = [];
-
-    const re =
-      /key=["'](?:weight|total_weight|filament_weight)["'][^>]*value=["']([^"']+)["']/gi;
-
+    const re = /key=["'](?:weight|total_weight|filament_weight)["'][^>]*value=["']([^"']+)["']/gi;
     let m;
-
     while((m = re.exec(xmlText))){
-
-      const n =
-        parseDecimal(m[1]);
-
-      if(n != null && n >= 0){
-        weights.push(n);
-      }
+      const n = parseDecimal(m[1]);
+      if(n != null && n >= 0) weights.push(n);
     }
-
     if(weights.length){
-
-      /*
-        Se houver várias placas,
-        soma os valores.
-      */
-
-      totalWeight =
-        weights.reduce(
-          (sum,v) => sum + v,
-          0
-        );
-
+      totalWeight = weights.reduce((sum,v) => sum + v, 0);
       foundWeight = true;
     }
   }
 
-
   if(!foundTime){
-
     const predictions = [];
-
-    const re =
-      /key=["'](?:prediction|print_time|print_time_seconds)["'][^>]*value=["']([^"']+)["']/gi;
-
+    const re = /key=["'](?:prediction|print_time|print_time_seconds)["'][^>]*value=["']([^"']+)["']/gi;
     let m;
-
     while((m = re.exec(xmlText))){
-
-      const n =
-        parseDecimal(m[1]);
-
-      if(n != null && n >= 0){
-        predictions.push(n);
-      }
+      const n = parseDecimal(m[1]);
+      if(n != null && n >= 0) predictions.push(n);
     }
-
     if(predictions.length){
-
-      totalTimeSeconds =
-        predictions.reduce(
-          (sum,v) => sum + v,
-          0
-        );
-
+      totalTimeSeconds = predictions.reduce((sum,v) => sum + v, 0);
       foundTime = true;
     }
   }
 
-
   return {
-
-    weight:
-      foundWeight ?
-      totalWeight :
-      null,
-
-    time:
-      foundTime ?
-      totalTimeSeconds / 3600 :
-      null,
-
+    weight: foundWeight ? totalWeight : null,
+    time: foundTime ? totalTimeSeconds / 3600 : null,
     plates
   };
 }
 
-
-/* ============================================================
-   PESO NO G-CODE
-   ============================================================ */
-
 function extractGcodeWeight(text){
-
   if(!text) return null;
-
-
   const patterns = [
-
-    /*
-      Bambu / Orca
-      ; total filament weight [g] : 12.34
-    */
-
     /total\s+filament\s+weight\s*\[\s*g\s*\]\s*[:=]\s*([\d.,]+)/i,
-
-    /*
-      ; filament used [g] = 12.34
-    */
-
     /filament\s+used\s*\[\s*g\s*\]\s*[:=]\s*([\d.,]+)/i,
-
-    /*
-      total filament weight: 12.34
-    */
-
     /total\s+filament\s+weight\s*[:=]\s*([\d.,]+)/i,
-
-    /*
-      filament used: 12.34
-    */
-
     /filament\s+used\s*[:=]\s*([\d.,]+)/i,
-
-    /*
-      filament_weight = 12.34
-    */
-
     /filament[_\s-]*weight\s*[:=]\s*([\d.,]+)/i,
-
-    /*
-      weight = 12.34
-    */
-
     /\bweight\s*[:=]\s*([\d.,]+)\s*g\b/i
   ];
-
-
   for(const pattern of patterns){
-
-    const m =
-      text.match(pattern);
-
+    const m = text.match(pattern);
     if(m){
-
-      const n =
-        parseDecimal(m[1]);
-
-      if(
-        n != null &&
-        n >= 0 &&
-        n < 100000
-      ){
-
-        return n;
-      }
+      const n = parseDecimal(m[1]);
+      if(n != null && n >= 0 && n < 100000) return n;
     }
   }
-
-
   return null;
 }
-
-
-/* ============================================================
-   TEMPO NO G-CODE
-   ============================================================ */
 
 function extractGcodeTime(text){
-
   if(!text) return null;
-
-
-  /*
-    Exemplos:
-
-    ; estimated printing time = 1h 23m 45s
-    ; estimated printing time (normal mode) = 1h 23m
-    */
-
   const patterns = [
-
     /estimated\s+printing\s+time(?:\s*\([^)]*\))?\s*[:=]\s*([0-9hms :.,]+)/i,
-
     /estimated\s+print(?:ing)?\s*time\s*[:=]\s*([0-9hms :.,]+)/i,
-
     /print\s*time\s*[:=]\s*([0-9hms :.,]+)/i
   ];
-
-
   for(const pattern of patterns){
-
-    const m =
-      text.match(pattern);
-
+    const m = text.match(pattern);
     if(m){
-
-      const hours =
-        parseFlexibleTime(m[1]);
-
-      if(
-        hours != null &&
-        hours >= 0 &&
-        hours < 10000
-      ){
-
-        return hours;
-      }
+      const hours = parseFlexibleTime(m[1]);
+      if(hours != null && hours >= 0 && hours < 10000) return hours;
     }
   }
-
-
-  /*
-    Bambu / Orca também pode usar:
-
-    TIME: 5234
-
-    normalmente segundos.
-  */
-
-  const timeMatch =
-    text.match(
-      /(?:^|\n)\s*;\s*TIME\s*:\s*(\d+(?:\.\d+)?)/i
-    );
-
+  const timeMatch = text.match(/(?:^|\n)\s*;\s*TIME\s*:\s*(\d+(?:\.\d+)?)/i);
   if(timeMatch){
-
-    const seconds =
-      Number(timeMatch[1]);
-
-    if(
-      Number.isFinite(seconds) &&
-      seconds >= 0
-    ){
-
-      return seconds / 3600;
-    }
+    const seconds = Number(timeMatch[1]);
+    if(Number.isFinite(seconds) && seconds >= 0) return seconds / 3600;
   }
-
-
   return null;
 }
-
-
-/* ============================================================
-   TEMPO FLEXÍVEL
-   ============================================================ */
 
 function parseFlexibleTime(value){
-
   if(value == null) return null;
-
-  let s =
-    String(value)
-      .trim()
-      .toLowerCase()
-      .replace(/,/g,'.');
-
+  let s = String(value).trim().toLowerCase().replace(/,/g,'.');
   if(!s) return null;
-
-
-  /*
-    1h 23m 45s
-    1h23m
-    1h
-  */
-
-  const hms =
-    s.match(
-      /^(?:(\d+(?:\.\d+)?)\s*h)?\s*(?:(\d+(?:\.\d+)?)\s*m)?\s*(?:(\d+(?:\.\d+)?)\s*s)?$/i
-    );
-
-  if(
-    hms &&
-    (
-      hms[1] != null ||
-      hms[2] != null ||
-      hms[3] != null
-    )
-  ){
-
-    return (
-      Number(hms[1] || 0) +
-      Number(hms[2] || 0) / 60 +
-      Number(hms[3] || 0) / 3600
-    );
+  const hms = s.match(/^(?:(\d+(?:\.\d+)?)\s*h)?\s*(?:(\d+(?:\.\d+)?)\s*m)?\s*(?:(\d+(?:\.\d+)?)\s*s)?$/i);
+  if(hms && (hms[1] != null || hms[2] != null || hms[3] != null)){
+    return Number(hms[1] || 0) + Number(hms[2] || 0) / 60 + Number(hms[3] || 0) / 3600;
   }
-
-
-  /*
-    1:23
-  */
-
-  const colon =
-    s.match(
-      /^(\d+)\s*:\s*(\d{1,2})(?::(\d{1,2}))?$/
-    );
-
+  const colon = s.match(/^(\d+)\s*:\s*(\d{1,2})(?::(\d{1,2}))?$/);
   if(colon){
-
-    const first =
-      Number(colon[1]);
-
-    const second =
-      Number(colon[2]);
-
-    const third =
-      Number(colon[3] || 0);
-
-
-    if(colon[3] != null){
-
-      /*
-        HH:MM:SS
-      */
-
-      return (
-        first +
-        second / 60 +
-        third / 3600
-      );
-
-    }else{
-
-      /*
-        HH:MM
-      */
-
-      return first + second / 60;
-    }
+    const first = Number(colon[1]), second = Number(colon[2]), third = Number(colon[3] || 0);
+    return colon[3] != null ? first + second / 60 + third / 3600 : first + second / 60;
   }
-
-
-  const n =
-    Number(s);
-
-  return Number.isFinite(n)
-    ? n
-    : null;
+  const n = Number(s);
+  return Number.isFinite(n) ? n : null;
 }
-
-
-/* ============================================================
-   METADADOS GENÉRICOS
-   ============================================================ */
 
 function extractWeightFromAnyMetadata(text){
-
   if(!text) return null;
-
-
   const patterns = [
-
     /key=["']weight["'][^>]*value=["']([\d.,]+)["']/i,
-
     /"weight"\s*:\s*([\d.,]+)/i,
-
     /"filament_weight"\s*:\s*([\d.,]+)/i,
-
     /filament\s+used\s*\[\s*g\s*\]\s*[:=]\s*([\d.,]+)/i,
-
     /total\s+filament\s+weight\s*\[\s*g\s*\]\s*[:=]\s*([\d.,]+)/i
   ];
-
-
   for(const pattern of patterns){
-
-    const m =
-      text.match(pattern);
-
+    const m = text.match(pattern);
     if(m){
-
-      const n =
-        parseDecimal(m[1]);
-
-      if(n != null && n >= 0){
-        return n;
-      }
+      const n = parseDecimal(m[1]);
+      if(n != null && n >= 0) return n;
     }
   }
-
   return null;
 }
-
 
 function extractTimeFromAnyMetadata(text){
-
   if(!text) return null;
-
-
-  /*
-    prediction é em segundos.
-  */
-
-  const prediction =
-    text.match(
-      /key=["']prediction["'][^>]*value=["']([\d.,]+)["']/i
-    );
-
+  const prediction = text.match(/key=["']prediction["'][^>]*value=["']([\d.,]+)["']/i);
   if(prediction){
-
-    const seconds =
-      parseDecimal(prediction[1]);
-
-    if(
-      seconds != null &&
-      seconds >= 0
-    ){
-
-      return seconds / 3600;
-    }
+    const seconds = parseDecimal(prediction[1]);
+    if(seconds != null && seconds >= 0) return seconds / 3600;
   }
-
-
-  const patterns = [
-
-    /"print_time"\s*:\s*([\d.,]+)/i,
-
-    /"prediction"\s*:\s*([\d.,]+)/i,
-
-    /estimated\s+printing\s+time\s*[:=]\s*([0-9hms :.,]+)/i
-  ];
-
-
+  const patterns = [/"print_time"\s*:\s*([\d.,]+)/i,/"prediction"\s*:\s*([\d.,]+)/i,/estimated\s+printing\s+time\s*[:=]\s*([0-9hms :.,]+)/i];
   for(const pattern of patterns){
-
-    const m =
-      text.match(pattern);
-
+    const m = text.match(pattern);
     if(m){
-
-      const value =
-        m[1];
-
-      /*
-        JSON prediction normalmente segundos.
-      */
-
-      if(
-        pattern.source.includes('prediction') ||
-        pattern.source.includes('print_time')
-      ){
-
-        const n =
-          parseDecimal(value);
-
-        if(n != null && n >= 0){
-
-          return n / 3600;
-        }
+      const value = m[1];
+      if(pattern.source.includes('prediction') || pattern.source.includes('print_time')){
+        const n = parseDecimal(value);
+        if(n != null && n >= 0) return n / 3600;
       }
-
-      const hours =
-        parseFlexibleTime(value);
-
-      if(hours != null){
-        return hours;
-      }
+      const hours = parseFlexibleTime(value);
+      if(hours != null) return hours;
     }
   }
-
   return null;
 }
-
-
-/* ============================================================
-   NÚMERO DECIMAL
-   ============================================================ */
 
 function parseDecimal(value){
-
   if(value == null) return null;
-
-  let s =
-    String(value)
-      .trim()
-      .replace(/\s/g,'');
-
+  let s = String(value).trim().replace(/\s/g,'');
   if(!s) return null;
-
-
-  /*
-    Aceita:
-
-    12.34
-    12,34
-    1,234.56
-  */
-
-  if(
-    s.includes(',') &&
-    s.includes('.')
-  ){
-
-    if(s.lastIndexOf('.') > s.lastIndexOf(',')){
-      s = s.replace(/,/g,'');
-    }else{
-      s = s.replace(/\./g,'').replace(',','.');
-    }
-
+  if(s.includes(',') && s.includes('.')){
+    if(s.lastIndexOf('.') > s.lastIndexOf(',')) s = s.replace(/,/g,'');
+    else s = s.replace(/\./g,'').replace(',','.');
   }else if(s.includes(',')){
-
     s = s.replace(',','.');
   }
-
-
   const n = Number(s);
-
-  return Number.isFinite(n)
-    ? n
-    : null;
+  return Number.isFinite(n) ? n : null;
 }
-
-
-/* ============================================================
-   FORMATAÇÃO DO TEMPO
-   ============================================================ */
 
 function hoursToText(hours){
-
-  if(
-    hours == null ||
-    !Number.isFinite(Number(hours))
-  ){
-
-    return '';
-  }
-
-  let totalMinutes =
-    Math.round(Number(hours) * 60);
-
-  let h =
-    Math.floor(totalMinutes / 60);
-
-  let m =
-    totalMinutes % 60;
-
-
-  /*
-    Evita coisas como 2h60.
-  */
-
-  if(m >= 60){
-    h++;
-    m = 0;
-  }
-
-
-  return (
-    h +
-    'h' +
-    String(m).padStart(2,'0')
-  );
+  if(hours == null || !Number.isFinite(Number(hours))) return '';
+  let totalMinutes = Math.round(Number(hours) * 60);
+  let h = Math.floor(totalMinutes / 60);
+  let m = totalMinutes % 60;
+  if(m >= 60){ h++; m = 0; }
+  return h + 'h' + String(m).padStart(2,'0');
 }
 
-
-/* ============================================================
-   FALLBACK ANTIGO — MANTIDO PARA COMPATIBILIDADE
-   ============================================================ */
-
 function extractNumber(text,labels){
-
   if(!text) return null;
-
   for(const label of labels){
-
-    const escaped =
-      label.replace(
-        /[.*+?^${}()|[\]\\]/g,
-        '\\$&'
-      );
-
-    const re =
-      new RegExp(
-        escaped +
-        '\\s*[:=]\\s*([\\d.,]+)',
-        'i'
-      );
-
-    const m =
-      text.match(re);
-
+    const escaped = label.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    const re = new RegExp(escaped + '\\s*[:=]\\s*([\\d.,]+)','i');
+    const m = text.match(re);
     if(m){
-
-      const n =
-        parseDecimal(m[1]);
-
-      if(n != null){
-        return n;
-      }
+      const n = parseDecimal(m[1]);
+      if(n != null) return n;
     }
   }
-
   return null;
 }
 
-
 function renderAnalysis(a){
-
-  const weight =
-    a.weight != null
-      ? Number(a.weight).toFixed(2) + ' g'
-      : '—';
-
-  const time =
-    a.time != null
-      ? hoursToText(Number(a.time))
-      : '—';
-
+  const weight = a.weight != null ? Number(a.weight).toFixed(2) + ' g' : '—';
+  const time = a.time != null ? hoursToText(Number(a.time)) : '—';
   $('analiseGrid').innerHTML = [
-
     ['Arquivo', a.name],
-
     ['Tamanho', fmtBytes(a.size)],
-
     ['Peso detectado', weight],
-
     ['Tempo detectado', time],
-
-    [
-      'Fonte',
-      a.source || 'Não encontrado'
-    ],
-
-    [
-      'Placas',
-      a.plates
-        ? String(a.plates)
-        : '—'
-    ]
-
-  ].map(x =>
-    `<div class="analysis-item">
-      <small>${esc(x[0])}</small>
-      <strong>${esc(String(x[1]))}</strong>
-    </div>`
-  ).join('');
+    ['Fonte', a.source || 'Não encontrado'],
+    ['Placas', a.plates ? String(a.plates) : '—']
+  ].map(x => `<div class="analysis-item"><small>${esc(x[0])}</small><strong>${esc(String(x[1]))}</strong></div>`).join('');
 }
 
 function getProduct(){
@@ -1435,6 +792,7 @@ function getProduct(){
     premiumPrice:c.premium,
     vintedLink:$('vintedLink').value.trim(),
     vintedData:$('vintedData').value,
+    fileDownloadLink:$('fileDownloadLink')?.value.trim()||'',
     notes:$('observacoes').value.trim(),
     fileName:currentFile?.name||old?.fileName||'',
     fileSize:currentFile?.size||old?.fileSize||0,
@@ -1466,11 +824,11 @@ function renderCatalogo(){
   const cat=$('catalogCategory')?.value||'';
   const list=catalogo.filter(p=>(!q||[p.name,p.code,p.category,p.fileName].join(' ').toLowerCase().includes(q))&&(!cat||p.category===cat));
   $('catalogCount').textContent=list.length+' produto'+(list.length===1?'':'s');
-  $('catalogGrid').innerHTML=list.length?list.map(p=>`<article class="catalog-card"><div class="catalog-body-grid"><div class="catalog-thumb">${p.thumbBase64?`<img src="${p.thumbBase64}" alt="Miniatura">`:'🧊'}</div><div><div class="catalog-title">${esc(p.name)}</div><div style="color:var(--soft);font-size:12px">${esc(p.code)} · ${esc(p.category||'')}</div></div></div><div class="catalog-details"><div class="catalog-details-row"><span>Peso</span><strong>${Number(p.weight||0).toFixed(2)} g</strong></div><div class="catalog-details-row"><span>Tempo</span><strong>${hoursToText(Number(p.time||0))}</strong></div><div class="catalog-details-row"><span>Custo</span><strong>${money(p.total)}</strong></div><div class="catalog-details-row"><span>Preço recomendado</span><strong>${money(p.idealPrice)}</strong></div></div>${p.fileName?`<div class="file-pill">📦 ${esc(p.fileName)}</div>`:''}<div class="catalog-actions"><button class="btn btn-outline btn-sm" onclick="editarProduto('${p.id}')">✏️ Editar</button><button class="btn btn-primary btn-sm" onclick="abrirAtendimentoProduto('${p.id}')">💬 Atendimento</button><button class="btn btn-danger btn-sm" onclick="excluirProduto('${p.id}')">🗑️</button></div></article>`).join(''):'<div class="empty">Nenhum produto encontrado.</div>'}
+  $('catalogGrid').innerHTML=list.length?list.map(p=>`<article class="catalog-card"><div class="catalog-body-grid"><div class="catalog-thumb">${p.thumbBase64?`<img src="${p.thumbBase64}" alt="Miniatura">`:'🧊'}</div><div><div class="catalog-title">${esc(p.name)}</div><div style="color:var(--soft);font-size:12px">${esc(p.code)} · ${esc(p.category||'')}</div></div></div><div class="catalog-details"><div class="catalog-details-row"><span>Peso</span><strong>${Number(p.weight||0).toFixed(2)} g</strong></div><div class="catalog-details-row"><span>Tempo</span><strong>${hoursToText(Number(p.time||0))}</strong></div><div class="catalog-details-row"><span>Custo</span><strong>${money(p.total)}</strong></div><div class="catalog-details-row"><span>Preço recomendado</span><strong>${money(p.idealPrice)}</strong></div></div>${p.fileName?`<div class="file-pill">📦 ${esc(p.fileName)}</div>`:''}<div class="catalog-actions">${p.fileDownloadLink?`<a class="btn btn-info btn-sm" href="${escAttr(p.fileDownloadLink)}" target="_blank" rel="noopener">⬇️ Baixar arquivo</a>`:''}<button class="btn btn-outline btn-sm" onclick="editarProduto('${p.id}')">✏️ Editar</button><button class="btn btn-primary btn-sm" onclick="abrirAtendimentoProduto('${p.id}')">💬 Atendimento</button><button class="btn btn-danger btn-sm" onclick="excluirProduto('${p.id}')">🗑️</button></div></article>`).join(''):'<div class="empty">Nenhum produto encontrado.</div>'}
 
 async function excluirProduto(id){if(!confirm('Excluir este produto?'))return;try{const uid=window.currentUser.uid;await window.FB.deleteDoc(window.FB.doc(window.FB.db,'users',uid,'products',id));catalogo=catalogo.filter(x=>x.id!==id);renderCatalogo();populateVendaProdutos();populateAtendimentoProdutos();toast('Produto excluído.')}catch(e){toast('Erro ao excluir: '+friendlyFirebaseError(e))}}
-function editarProduto(id){const p=catalogo.find(x=>x.id===id);if(!p)return;editingProductId=id;Object.entries({nomeProduto:p.name,codigoProduto:p.code,categoriaProduto:p.category,pesoPeca:p.weight,tempoManual:hoursToText(p.time),vintedLink:p.vintedLink,vintedData:p.vintedData,observacoes:p.notes}).forEach(([k,v])=>{if($(k))$(k).value=v??''});$('analiseStatus').textContent=p.fileName?'Arquivo associado: '+p.fileName:'Nenhum arquivo carregado nesta edição.';calc();nav('calc');toast('Produto carregado para edição. Ao salvar, o registro será atualizado.')}
-function limparCamposSemConfirmar(){['nomeProduto','codigoProduto','pesoPeca','tempoManual','vintedLink','vintedData','observacoes'].forEach(id=>{if($(id))$(id).value=''});if($('pesoPeca'))$('pesoPeca').value=0;if($('tempoManual'))$('tempoManual').value='';editingProductId=null;clearAnalysis();calc();localStorage.removeItem(LOCAL_KEYS.draft)}
+function editarProduto(id){const p=catalogo.find(x=>x.id===id);if(!p)return;editingProductId=id;Object.entries({nomeProduto:p.name,codigoProduto:p.code,categoriaProduto:p.category,pesoPeca:p.weight,tempoManual:hoursToText(p.time),vintedLink:p.vintedLink,vintedData:p.vintedData,fileDownloadLink:p.fileDownloadLink,observacoes:p.notes}).forEach(([k,v])=>{if($(k))$(k).value=v??''});$('analiseStatus').textContent=p.fileName?'Arquivo associado: '+p.fileName:'Nenhum arquivo carregado nesta edição.';calc();nav('calc');toast('Produto carregado para edição. Ao salvar, o registro será atualizado.')}
+function limparCamposSemConfirmar(){['nomeProduto','codigoProduto','pesoPeca','tempoManual','vintedLink','vintedData','fileDownloadLink','observacoes'].forEach(id=>{if($(id))$(id).value=''});if($('pesoPeca'))$('pesoPeca').value=0;if($('tempoManual'))$('tempoManual').value='';editingProductId=null;clearAnalysis();calc();localStorage.removeItem(LOCAL_KEYS.draft)}
 function registrarHistorico(){const c=calc();historico.unshift({id:crypto.randomUUID(),name:$('nomeProduto').value||'Sem nome',weight:c.peso,time:c.tempo,total:c.total,ideal:c.ideal,date:nowISO()});localStorage.setItem('bambu_history',JSON.stringify(historico.slice(0,500)));renderHistorico();toast('Cálculo registrado.');}
 function renderHistorico(){const el=$('historicoLista');if(!historico.length){el.innerHTML='<div class="empty">Nenhum cálculo registrado.</div>';return}el.innerHTML=historico.map(h=>`<div class="history-item"><div class="history-main"><div class="history-title">${esc(h.name)}</div><div class="history-meta">${new Date(h.date).toLocaleString('pt-GB')} · ${Number(h.weight||0).toFixed(1)} g · ${hoursToText(Number(h.time||0))}</div></div><div><b>${money(h.ideal)}</b></div></div>`).join('')}
 function limparHistorico(){if(confirm('Limpar todo o histórico local?')){historico=[];localStorage.removeItem('bambu_history');renderHistorico();}}
@@ -1478,7 +836,7 @@ function exportarHistorico(){const rows=[['Data','Produto','Peso g','Tempo h','C
 function csv(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
 function exportarOrcamento(){const c=calc();const text=`BambuCalc 3D PRO\n\nProduto: ${$('nomeProduto').value||'Sem nome'}\nCódigo: ${$('codigoProduto').value||'-'}\nPeso: ${c.peso.toFixed(2)} g\nTempo: ${hoursToText(c.tempo)}\n\nCusto total: ${money(c.total)}\nPreço mínimo: ${money(c.minimo)}\nPreço recomendado: ${money(c.ideal)}\nPreço premium: ${money(c.premium)}\n\nObservações: ${$('observacoes').value||'-'}`;downloadBlob(text,'orcamento-bambucalc.txt','text/plain;charset=utf-8')}
 function downloadBlob(content,name,type){const b=new Blob([content],{type});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)}
-function limparCalculadora(){if(!confirm('Limpar os dados da calculadora?'))return;['nomeProduto','codigoProduto','pesoPeca','tempoManual','vintedLink','vintedData','observacoes'].forEach(id=>$(id).value='');$('pesoPeca').value=0;$('tempoManual').value='';clearAnalysis();calc();localStorage.removeItem(LOCAL_KEYS.draft)}
+function limparCalculadora(){if(!confirm('Limpar os dados da calculadora?'))return;['nomeProduto','codigoProduto','pesoPeca','tempoManual','vintedLink','vintedData','fileDownloadLink','observacoes'].forEach(id=>$(id).value='');$('pesoPeca').value=0;$('tempoManual').value='';clearAnalysis();calc();localStorage.removeItem(LOCAL_KEYS.draft)}
 function populateVendaProdutos(){const s=$('vendaProduto');if(!s)return;s.innerHTML='<option value="">Selecione...</option>'+catalogo.map(p=>`<option value="${escAttr(p.id)}">${esc(p.name)} — ${money(p.idealPrice)}</option>`).join('');preencherPrecoVenda();}
 function preencherPrecoVenda(){const p=catalogo.find(x=>x.id===$('vendaProduto')?.value);if(p&&$('vendaPreco'))$('vendaPreco').value=Number(p.idealPrice||0).toFixed(2);}
 let pedidoItensEditor=[];
