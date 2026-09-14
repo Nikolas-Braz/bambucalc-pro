@@ -1072,7 +1072,8 @@ small{
             <div class="form-group">
                 <label>Tempo de impressão</label>
                 <input id="tempoManual"
-                       placeholder="Ex.: 3h18m ou 3:18">
+                       placeholder="Ex.: 3h18m ou 3:18"
+                       oninput="converterTempoManual(false)">
             </div>
 
             <div class="form-group">
@@ -2321,1062 +2322,316 @@ document
 
 
 /* =========================================================
-   TIME PARSER
+   TIME PARSER (ENGINE ROBUSTA)
 ========================================================= */
+
+function tempoComUnidades(s){
+    const raw = String(s || "").trim().toLowerCase().replace(/,/g, ".");
+    if(!raw) return 0;
+    let h = 0, m = 0, sec = 0, found = false;
+    const mh = raw.match(/(\d+(?:\.\d+)?)\s*(?:hours?|hrs?|h)\b/);
+    if(mh){ h = +mh[1]; found = true; }
+    const mm = raw.match(/(\d+(?:\.\d+)?)\s*(?:minutes?|mins?|m)\b/);
+    if(mm){ m = +mm[1]; found = true; }
+    const ms = raw.match(/(\d+(?:\.\d+)?)\s*(?:seconds?|secs?|s)\b/);
+    if(ms){ sec = +ms[1]; found = true; }
+    if(found) return h + m / 60 + sec / 3600;
+    const c = raw.match(/^(\d+)\s*:\s*(\d{1,2})(?::(\d{1,2}))?$/);
+    if(c){
+        const a = +c[1], b = +c[2], d = +(c[3] || 0);
+        return c[3] ? a + b / 60 + d / 3600 : a + b / 60;
+    }
+    return 0;
+}
+
+function parseBambuTimeValue(v, key = ""){
+    const s = String(v ?? "").trim();
+    if(!s) return 0;
+    const u = tempoComUnidades(s);
+    if(u > 0) return u;
+    const n = normalizarNumero(s);
+    if(!Number.isFinite(n) || n < 0) return 0;
+    return /time|duration|second|sec|estimated|print/.test(String(key).toLowerCase()) ? n / 3600 : n;
+}
 
 function parseTime(value){
-
-    if(value === null ||
-       value === undefined){
-
-        return 0;
-
-    }
-
-    let s =
-        String(value)
-            .trim()
-            .toLowerCase();
-
+    if(value === null || value === undefined) return 0;
+    if(typeof value === "number") return value / 3600 > 100 ? value / 3600 : value; // Suporte a segundos ou horas diretas
+    const s = String(value).trim();
     if(!s) return 0;
-
-    s = s.replace(/,/g,".");
-
-    /* segundos */
-
-    let match =
-        s.match(
-            /^(\d+(?:\.\d+)?)\s*s$/
-        );
-
-    if(match){
-
-        return Number(match[1]) / 3600;
-
-    }
-
-    /* horas + minutos + segundos */
-
-    match =
-        s.match(
-            /(\d+(?:\.\d+)?)\s*h/
-        );
-
-    const hours =
-        match ? Number(match[1]) : 0;
-
-    match =
-        s.match(
-            /(\d+(?:\.\d+)?)\s*m/
-        );
-
-    const minutes =
-        match ? Number(match[1]) : 0;
-
-    match =
-        s.match(
-            /(\d+(?:\.\d+)?)\s*s/
-        );
-
-    const seconds =
-        match ? Number(match[1]) : 0;
-
-    if(
-        /h|m|s/.test(s)
-    ){
-
-        return hours +
-               minutes / 60 +
-               seconds / 3600;
-
-    }
-
-    /* HH:MM:SS */
-
-    if(s.includes(":")){
-
-        const parts =
-            s.split(":")
-              .map(Number);
-
-        if(parts.length === 3){
-
-            return (
-                (parts[0] || 0) +
-                (parts[1] || 0) / 60 +
-                (parts[2] || 0) / 3600
-            );
-
-        }
-
-        if(parts.length === 2){
-
-            return (
-                (parts[0] || 0) +
-                (parts[1] || 0) / 60
-            );
-
-        }
-
-    }
-
-    /* número puro = horas */
-
-    const n = Number(s);
-
+    const u = tempoComUnidades(s);
+    if(u > 0) return u;
+    const n = Number(s.replace(/,/g, "."));
     return Number.isFinite(n) ? n : 0;
-
 }
 
-
-/* =========================================================
-   WEIGHT PARSER ROBUSTO (3MF E G-CODE)
-========================================================= */
-
-function normalizeNumber(value){
-
-    if(value === null ||
-       value === undefined){
-
-        return null;
-
-    }
-
-    let s =
-        String(value)
-            .trim()
-            .replace(/,/g,".");
-
-    const n =
-        parseFloat(s);
-
-    return Number.isFinite(n)
-        ? n
-        : null;
-
-}
-
-function extractWeightFromText(text){
-
-    if(!text) return null;
-
+function extractTime(text){
+    const source = String(text || "");
     const patterns = [
-        /filament_weight\s*[:=]\s*"?([0-9]+(?:[.,][0-9]+)?)"?/i,
-        /total_filament_weight\s*[:=]\s*"?([0-9]+(?:[.,][0-9]+)?)"?/i,
-        /"filament_weight"\s*:\s*([0-9]+(?:[.,][0-9]+)?)/i,
-        /"weight"\s*:\s*([0-9]+(?:[.,][0-9]+)?)/i,
-        /filament\s+used\s*\[g\]\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
-        /total\s+filament\s+used\s*\[g\]\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
-        /filament_used_g\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
-        /filament\s*used\s*\(g\)\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
-        /;\s*filament\s+used\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)\s*g/i,
-        /weight\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)\s*g/i,
-        /filament\s*usage\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)\s*g/i,
-        /filament_used\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i
+        /(?:total\s+estimated\s+printing\s+time|estimated\s+printing\s+time(?:\s*\([^)]*\))?|estimated\s+print(?:ing)?\s+time|total\s+print(?:ing)?\s+time|print(?:ing)?\s+time)\s*(?:\([^)]*\))?\s*[:=]\s*([^\n\r#;}]+)/i,
+        /(?:["']?)(?:total_time|print_time|estimated_time|printing_time|printTime|totalPrintTime)(?:["']?)\s*[:=]\s*["']?([0-9]+(?:[\.,][0-9]+)?)/i
     ];
-
-    for(const regex of patterns){
-
-        const match =
-            text.match(regex);
-
-        if(match){
-
-            const value =
-                normalizeNumber(match[1]);
-
-            if(
-                value !== null &&
-                value > 0 &&
-                value < 100000
-            ){
-
-                return value;
-
-            }
-
-        }
-
-    }
-
-    /* Fallback: Comprimento em metros */
-    const lengthMetersPatterns = [
-        /filament\s+used\s*\[m\]\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
-        /;\s*filament\s+used\s*\[m\]\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
-        /filament_used_m\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i
-    ];
-
-    for(const regex of lengthMetersPatterns){
-        const match = text.match(regex);
-        if(match){
-            const meters = normalizeNumber(match[1]);
-            if(meters !== null && meters > 0){
-                const weightFromMeters = meters * 100 * 0.024;
-                return Number(weightFromMeters.toFixed(2));
-            }
+    for(const r of patterns){
+        const m = source.match(r);
+        if(m){
+            const h = parseBambuTimeValue(m[1], "print_time");
+            if(h > 0 && h < 100000) return h;
         }
     }
-
-    return null;
-
+    const keyRe = /(?:["']?)([A-Za-z0-9_ -]*(?:print|printing|estimated|total)[A-Za-z0-9_ -]*(?:time|duration))(?:["']?)\s*[:=]\s*["']?([^"',;\n\r}]+)/gi;
+    let m;
+    while((m = keyRe.exec(source))){
+        const h = parseBambuTimeValue(m[2], m[1]);
+        if(h > 0 && h < 100000) return h;
+    }
+    return 0;
 }
 
 
 /* =========================================================
-   TIME EXTRACTION
+   WEIGHT PARSER (ENGINE ROBUSTA)
 ========================================================= */
 
-function extractTimeFromText(text){
+function normalizarNumero(v){
+    if(v === undefined || v === null) return NaN;
+    let s = String(v).trim().replace(/\s/g, "");
+    if(/^-?\d+[\.,]\d+$/.test(s)) s = s.replace(",", ".");
+    else if(/^-?\d{1,3}(?:[.,]\d{3})+$/.test(s)) s = s.replace(/[.,]/g, "");
+    const n = Number(s);
+    return Number.isFinite(n) ? n : NaN;
+}
 
-    if(!text) return null;
-
+function extractWeight(text){
+    const source = String(text || "");
     const patterns = [
-
-        /total\s+estimated\s+time\s*[:=]\s*([^\r\n]+)/i,
-
-        /estimated\s+printing\s+time[^:=]*[:=]\s*([^\r\n]+)/i,
-
-        /estimated\s+print(?:ing)?\s*time[^:=]*[:=]\s*([^\r\n]+)/i,
-
-        /model\s+printing\s+time\s*[:=]\s*([^\r\n]+)/i,
-
-        /print(?:ing)?\s*time\s*[:=]\s*([^\r\n]+)/i,
-
-        /estimated_time\s*[:=]\s*([^\r\n]+)/i,
-
-        /print_time\s*[:=]\s*([^\r\n]+)/i,
-
-        /total_time\s*[:=]\s*([^\r\n]+)/i,
-
-        /time\s*[:=]\s*(\d+h[^;\r\n]*)/i
-
+        /(?:total\s+)?filament\s+used\s*\[\s*g\s*\]\s*[:=]\s*["']?([0-9]+(?:[\.,][0-9]+)?)/i,
+        /filament\s+used\s*[:=]\s*["']?([0-9]+(?:[\.,][0-9]+)?)\s*g\b/i,
+        /(?:total[_\s-]*filament[_\s-]*(?:weight|used)|filament[_\s-]*(?:weight|used)|filament[_\s-]*weight[_\s-]*g|filament[_\s-]*used[_\s-]*g|total[_\s-]*filament[_\s-]*weight[_\s-]*g|filament_weight|used_g|total_weight)\s*[:=]\s*["']?([0-9]+(?:[\.,][0-9]+)?)/i,
+        /["'](?:filament[_\s-]*(?:used|weight)|total[_\s-]*weight|used_g)["']\s*:\s*["']?([0-9]+(?:[\.,][0-9]+)?)/i
     ];
-
-    for(const regex of patterns){
-
-        const match =
-            text.match(regex);
-
-        if(match){
-
-            const value =
-                parseTime(
-                    match[1]
-                        .replace(/[;"<>]/g," ")
-                        .trim()
-                );
-
-            if(value > 0){
-
-                return value;
-
-            }
-
+    for(const r of patterns){
+        const m = source.match(r);
+        if(m){
+            const n = normalizarNumero(m[1]);
+            if(Number.isFinite(n) && n > 0 && n < 100000) return n;
         }
-
     }
-
-    /* Cura / outros slicers */
-
-    const secondsPatterns = [
-
-        /;\s*TIME\s*:\s*(\d+)/i,
-
-        /;\s*PRINT_TIME\s*:\s*(\d+)/i,
-
-        /;\s*TOTAL_TIME\s*:\s*(\d+)/i
-
-    ];
-
-    for(const regex of secondsPatterns){
-
-        const match =
-            text.match(regex);
-
-        if(match){
-
-            const seconds =
-                Number(match[1]);
-
-            if(seconds > 0){
-
-                return seconds / 3600;
-
-            }
-
-        }
-
+    const keyRe = /(?:["']?)([A-Za-z0-9_ -]*(?:weight|used_g|filament)[A-Za-z0-9_ -]*)(?:["']?)\s*[:=]\s*["']?([0-9]+(?:[\.,][0-9]+)?)/gi;
+    let m;
+    while((m = keyRe.exec(source))){
+        const k = m[1].toLowerCase();
+        if(/mm|length|speed|temperature/.test(k)) continue;
+        const n = normalizarNumero(m[2]);
+        if(Number.isFinite(n) && n > 0 && n < 100000) return n;
     }
+    return 0;
+}
 
-    return null;
-
+function converterTempoManual(show = false){
+    const h = parseTime($("tempoManual").value);
+    $("horasPeca").value = h.toFixed(2);
+    if(show && !h && $("tempoManual").value.trim()){
+        toast("Formato de tempo inválido.");
+    }
+    calc();
+    return h;
 }
 
 
 /* =========================================================
-   G-CODE
+   PARSER 3MF NATIVO (ZIP)
 ========================================================= */
 
-async function parseGCode(file){
-
-    const maxChunk =
-        15 * 1024 * 1024;
-
-    let text =
-        await file
-            .slice(
-                0,
-                Math.min(file.size,maxChunk)
-            )
-            .text();
-
-    let weight =
-        extractWeightFromText(text);
-
-    let hours =
-        extractTimeFromText(text);
-
-    /* procurar no final */
-
-    if(
-        (!weight || !hours) &&
-        file.size > maxChunk
-    ){
-
-        const tailSize =
-            2 * 1024 * 1024;
-
-        const start =
-            Math.max(
-                0,
-                file.size - tailSize
-            );
-
-        const tail =
-            await file
-                .slice(start,file.size)
-                .text();
-
-        if(!weight){
-
-            weight =
-                extractWeightFromText(tail);
-
-        }
-
-        if(!hours){
-
-            hours =
-                extractTimeFromText(tail);
-
-        }
-
-        text += "\n" + tail;
-
+async function lerZip3MF(file){
+    const buf = await file.arrayBuffer(), dv = new DataView(buf), u8 = new Uint8Array(buf);
+    let eocd = -1;
+    for(let i = u8.length - 22; i >= Math.max(0, u8.length - 65558); i--){
+        if(dv.getUint32(i, true) === 0x06054b50){ eocd = i; break; }
     }
-
-    return {
-
-        type:"G-code",
-
-        weight,
-
-        hours,
-
-        width:null,
-        depth:null,
-        height:null,
-
-        source:file.name
-
-    };
-
+    if(eocd < 0) throw new Error("ZIP inválido ou 3MF corrompido.");
+    const cdSize = dv.getUint32(eocd + 12, true), cdOff = dv.getUint32(eocd + 16, true), out = {};
+    let p = cdOff;
+    while(p < cdOff + cdSize){
+        if(dv.getUint32(p, true) !== 0x02014b50) break;
+        const method = dv.getUint16(p + 10, true), csize = dv.getUint32(p + 20, true), usize = dv.getUint32(p + 24, true);
+        const nl = dv.getUint16(p + 28, true), xl = dv.getUint16(p + 30, true), cl = dv.getUint16(p + 32, true), lo = dv.getUint32(p + 42, true);
+        const name = new TextDecoder().decode(u8.slice(p + 46, p + 46 + nl));
+        p += 46 + nl + xl + cl;
+        if(dv.getUint32(lo, true) !== 0x04034b50) continue;
+        const lnl = dv.getUint16(lo + 26, true), lxl = dv.getUint16(lo + 28, true), startData = lo + 30 + lnl + lxl, raw = u8.slice(startData, startData + csize);
+        let data;
+        if(method === 0) data = raw;
+        else if(method === 8){
+            if(!("DecompressionStream" in window)) throw new Error("Este navegador não suporta descompressão ZIP nativa.");
+            const ds = new DecompressionStream("deflate-raw");
+            const stream = new Blob([raw]).stream().pipeThrough(ds);
+            data = new Uint8Array(await new Response(stream).arrayBuffer());
+        } else {
+            continue;
+        }
+        out[name] = { data, size: usize };
+    }
+    return out;
 }
 
+function textOf(entry){
+    return new TextDecoder("utf-8").decode(entry.data);
+}
 
-/* =========================================================
-   3MF
-========================================================= */
+function extractFilament(text){
+    const patterns = [
+        /"filament_type"\s*:\s*\[\s*"([^"]+)"/i,
+        /"filament_settings_id"\s*:\s*\[\s*"([^"]+)"/i,
+        /(?:filament_type|material)\s*[:=]\s*["']?([^"',;\n\r}]+)/i
+    ];
+    for(const r of patterns){
+        const m = text.match(r);
+        if(m && m[1]) return m[1].trim().slice(0, 80);
+    }
+    return "";
+}
+
+function extractPrinter(text){
+    const patterns = [
+        /"printer_model"\s*:\s*"([^"]+)"/i,
+        /(?:printer_model|printer)\s*[:=]\s*["']?([^"',;\n\r}]+)/i
+    ];
+    for(const r of patterns){
+        const m = text.match(r);
+        if(m && m[1]) return m[1].trim().slice(0, 100);
+    }
+    return "";
+}
 
 async function parse3MF(file){
-
-    if(!window.JSZip){
-
-        throw new Error(
-            "JSZip não carregado."
-        );
-
+    const entries = await lerZip3MF(file), names = Object.keys(entries);
+    const textEntries = names.filter(n => /\.(config|json|xml|model|txt|gcode|gc|gco)$/i.test(n));
+    let all = "", projectText = "";
+    
+    for(const n of textEntries){
+        try{
+            const t = textOf(entries[n]);
+            all += "\n" + t;
+            if(/project_settings\.config$/i.test(n)) projectText += "\n" + t;
+        }catch(e){}
     }
 
-    const zip =
-        await JSZip.loadAsync(file);
+    let weight = extractWeight(all);
+    let hours = extractTime(all);
+    let filament = extractFilament(projectText || all);
+    let printer = extractPrinter(projectText || all);
 
-    let weight = null;
-    let hours = null;
-
-    let width = null;
-    let depth = null;
-    let height = null;
-
-    let thumbnail = null;
-
-    const entries =
-        Object.values(zip.files);
-
-    for(const entry of entries){
-
-        if(entry.dir) continue;
-
-        const name =
-            entry.name.toLowerCase();
-
-        /* thumbnail */
-
-        if(
-            !thumbnail &&
-            (/thumbnail|thumbnails/.test(name) || name.includes("plate")) &&
-            /\.(png|jpg|jpeg|webp)$/.test(name)
-        ){
-
-            try{
-
-                const blob =
-                    await entry.async("blob");
-
-                if(blob.size < 800000){
-
-                    thumbnail =
-                        await blobToDataURL(blob);
-
-                }
-
-            }catch(e){}
-
-        }
-
-        /* metadata / config / gcode / json */
-
-        if(
-            /\.(xml|config|txt|gcode|json|gcs)$/.test(name) ||
-            name.includes("metadata") ||
-            name.includes("slice") ||
-            name.includes("model_settings")
-        ){
-
-            try{
-
-                const text =
-                    await entry.async("text");
-
-                if(!weight){
-
-                    weight =
-                        extractWeightFromText(text);
-
-                }
-
-                if(!hours){
-
-                    hours =
-                        extractTimeFromText(text);
-
-                }
-
-                if(
-                    !width ||
-                    !depth ||
-                    !height
-                ){
-
-                    const dimensions =
-                        extractDimensions(text);
-
-                    if(dimensions){
-
-                        width =
-                            width || dimensions.width;
-
-                        depth =
-                            depth || dimensions.depth;
-
-                        height =
-                            height || dimensions.height;
-
-                    }
-
-                }
-
-            }catch(e){}
-
-        }
-
+    // Varre arquivos G-code embutidos se houver
+    const gcodeNames = names.filter(n => /\.gcode$/i.test(n) || /\.gco$/i.test(n));
+    for(const gn of gcodeNames){
+        try{
+            const gt = textOf(entries[gn]);
+            const gw = extractWeight(gt);
+            const gv = extractTime(gt);
+            if(!weight && gw) weight = gw;
+            if(!hours && gv) hours = gv;
+        }catch(e){}
     }
 
     return {
-
-        type:"3MF",
-
+        type: "3MF",
         weight,
-
-        hours,
-
-        width,
-        depth,
-        height,
-
-        thumbnail,
-
-        source:file.name
-
+        hours: hours > 0 ? hours : null,
+        filament,
+        printer,
+        source: file.name,
+        thumbnail: null
     };
-
 }
 
-function extractDimensions(text){
-
-    if(!text) return null;
-
-    const patterns = [
-
-        /(?:size|dimensions|bounding_box)[^0-9]{0,80}([0-9.]+)[^0-9]+([0-9.]+)[^0-9]+([0-9.]+)/i,
-
-        /(?:width)[^0-9]{0,20}([0-9.]+)[^0-9]+(?:depth|length)[^0-9]{0,20}([0-9.]+)[^0-9]+(?:height)[^0-9]{0,20}([0-9.]+)/i
-
-    ];
-
-    for(const regex of patterns){
-
-        const m =
-            text.match(regex);
-
-        if(m){
-
-            return {
-
-                width:Number(m[1]),
-                depth:Number(m[2]),
-                height:Number(m[3])
-
-            };
-
-        }
-
-    }
-
-    return null;
-
-}
-
-
-/* =========================================================
-   STL
-========================================================= */
-
-async function parseSTL(file){
-
-    const buffer =
-        await file.arrayBuffer();
-
-    const view =
-        new DataView(buffer);
-
-    let vertices = [];
-
-    let binary = false;
-
-    if(buffer.byteLength >= 84){
-
-        const triangleCount =
-            view.getUint32(
-                80,
-                true
-            );
-
-        const expected =
-            84 +
-            triangleCount * 50;
-
-        if(
-            triangleCount > 0 &&
-            expected === buffer.byteLength
-        ){
-
-            binary = true;
-
-        }
-
-    }
-
-    if(binary){
-
-        const triangleCount =
-            view.getUint32(
-                80,
-                true
-            );
-
-        let offset = 84;
-
-        for(
-            let i=0;
-            i<triangleCount;
-            i++
-        ){
-
-            offset += 12;
-
-            for(let j=0;j<3;j++){
-
-                const x =
-                    view.getFloat32(
-                        offset,
-                        true
-                    );
-
-                const y =
-                    view.getFloat32(
-                        offset+4,
-                        true
-                    );
-
-                const z =
-                    view.getFloat32(
-                        offset+8,
-                        true
-                    );
-
-                vertices.push([x,y,z]);
-
-                offset += 12;
-
-            }
-
-            offset += 2;
-
-        }
-
-    }else{
-
-        const text =
-            new TextDecoder()
-                .decode(buffer);
-
-        const regex =
-            /vertex\s+([\-0-9.eE]+)\s+([\-0-9.eE]+)\s+([\-0-9.eE]+)/gi;
-
-        let match;
-
-        while(
-            (match = regex.exec(text))
-        ){
-
-            vertices.push([
-
-                Number(match[1]),
-                Number(match[2]),
-                Number(match[3])
-
-            ]);
-
-        }
-
-    }
-
-    if(!vertices.length){
-
-        return {
-
-            type:"STL",
-
-            weight:null,
-            hours:null,
-
-            width:null,
-            depth:null,
-            height:null,
-
-            source:file.name
-
-        };
-
-    }
-
-    const xs =
-        vertices.map(v=>v[0]);
-
-    const ys =
-        vertices.map(v=>v[1]);
-
-    const zs =
-        vertices.map(v=>v[2]);
-
+async function parseGCode(file){
+    const text = await file.text();
+    const weight = extractWeight(text);
+    const hours = extractTime(text);
+    const filament = extractFilament(text);
+    const printer = extractPrinter(text);
     return {
-
-        type:"STL",
-
-        weight:null,
-        hours:null,
-
-        width:
-            Math.max(...xs)-Math.min(...xs),
-
-        depth:
-            Math.max(...ys)-Math.min(...ys),
-
-        height:
-            Math.max(...zs)-Math.min(...zs),
-
-        source:file.name
-
+        type: "G-code",
+        weight,
+        hours: hours > 0 ? hours : null,
+        filament,
+        printer,
+        source: file.name
     };
-
 }
 
 
 /* =========================================================
-   IMAGE
-========================================================= */
-
-function blobToDataURL(blob){
-
-    return new Promise(
-        (resolve,reject)=>{
-
-            const reader =
-                new FileReader();
-
-            reader.onload =
-                () => resolve(
-                    reader.result
-                );
-
-            reader.onerror =
-                reject;
-
-            reader.readAsDataURL(blob);
-
-        }
-    );
-
-}
-
-async function compressImageDataURL(
-    dataURL,
-    maxSize=300
-){
-
-    return new Promise(resolve => {
-
-        const img =
-            new Image();
-
-        img.onload = () => {
-
-            let width = img.width;
-            let height = img.height;
-
-            const ratio =
-                Math.min(
-                    1,
-                    maxSize / Math.max(width,height)
-                );
-
-            width =
-                Math.round(width * ratio);
-
-            height =
-                Math.round(height * ratio);
-
-            const canvas =
-                document.createElement("canvas");
-
-            canvas.width = width;
-            canvas.height = height;
-
-            const ctx =
-                canvas.getContext("2d");
-
-            ctx.fillStyle="#ffffff";
-
-            ctx.fillRect(
-                0,
-                0,
-                width,
-                height
-            );
-
-            ctx.drawImage(
-                img,
-                0,
-                0,
-                width,
-                height
-            );
-
-            resolve(
-                canvas.toDataURL(
-                    "image/jpeg",
-                    .75
-                )
-            );
-
-        };
-
-        img.onerror =
-            () => resolve(null);
-
-        img.src = dataURL;
-
-    });
-
-}
-
-
-/* =========================================================
-   ANALYZE FILE
+   ANALYZE FILE ORCHESTRATOR
 ========================================================= */
 
 async function analyzeFile(file){
-
     if(!file) return;
-
     currentFile = file;
     currentThumbnailBase64 = null;
 
-    const ext =
-        file.name
-            .split(".")
-            .pop()
-            .toLowerCase();
-
-    $("arquivoTipoBadge").textContent =
-        ext.toUpperCase();
-
-    $("analiseStatus").textContent =
-        "⏳ Analisando arquivo...";
-
+    const ext = file.name.split(".").pop().toLowerCase();
+    $("arquivoTipoBadge").textContent = ext.toUpperCase();
+    $("analiseStatus").textContent = "⏳ Analisando arquivo...";
     $("analiseGrid").innerHTML = "";
-
     $("analysisPreview").innerHTML = "";
 
     try{
-
         let data;
-
-        if(
-            ext === "gcode" ||
-            ext === "gc" ||
-            ext === "gco"
-        ){
-
-            data =
-                await parseGCode(file);
-
-        }else if(ext === "3mf"){
-
-            data =
-                await parse3MF(file);
-
-            if(data.thumbnail){
-
-                currentThumbnailBase64 =
-                    await compressImageDataURL(
-                        data.thumbnail
-                    );
-
-            }
-
-        }else if(ext === "stl"){
-
-            data =
-                await parseSTL(file);
-
-        }else{
-
-            throw new Error(
-                "Formato não suportado."
-            );
-
+        if(ext === "gcode" || ext === "gc" || ext === "gco"){
+            data = await parseGCode(file);
+        } else if(ext === "3mf"){
+            data = await parse3MF(file);
+        } else {
+            throw new Error("Formato não suportado.");
         }
 
         currentAnalysis = data;
 
-        if(data.weight !== null){
-
-            $("pesoPeca").value =
-                Number(data.weight).toFixed(2);
-
+        if(data.weight !== null && data.weight > 0){
+            $("pesoPeca").value = Number(data.weight).toFixed(2);
         }
 
-        if(data.hours !== null){
-
-            $("horasPeca").value =
-                Number(data.hours).toFixed(4);
-
-            $("tempoManual").value =
-                formatTime(data.hours);
-
+        if(data.hours !== null && data.hours > 0){
+            $("horasPeca").value = Number(data.hours).toFixed(4);
+            $("tempoManual").value = formatTime(data.hours);
         }
 
-        if(
-            data.type === "STL" &&
-            data.weight === null
-        ){
-
-            $("analiseStatus").textContent =
-                "✅ STL analisado. Dimensões encontradas. Peso e tempo precisam ser informados.";
-
-        }else if(
-            data.weight !== null &&
-            data.hours !== null
-        ){
-
-            $("analiseStatus").textContent =
-                "✅ Peso e tempo encontrados automaticamente.";
-
-        }else if(data.weight !== null){
-
-            $("analiseStatus").textContent =
-                "⚠️ Peso encontrado. Tempo precisa ser informado.";
-
-        }else if(data.hours !== null){
-
-            $("analiseStatus").textContent =
-                "⚠️ Tempo encontrado. Peso precisa ser informado.";
-
-        }else{
-
-            $("analiseStatus").textContent =
-                "⚠️ Arquivo analisado, mas não encontrei peso/tempo nos metadados.";
-
-        }
-
+        $("analiseStatus").textContent = "✅ Análise concluída com sucesso!";
         renderAnalysis(data);
 
-        if(
-            !$("nomeProduto").value
-        ){
-
-            $("nomeProduto").value =
-                file.name.replace(
-                    /\.[^.]+$/,
-                    ""
-                );
-
+        if(!$("nomeProduto").value){
+            $("nomeProduto").value = file.name.replace(/\.[^.]+$/, "");
         }
-
-        if(
-            !$("codigoProduto").value
-        ){
-
-            $("codigoProduto").value =
-                file.name
-                    .replace(
-                        /\.[^.]+$/,
-                        ""
-                    )
-                    .toUpperCase()
-                    .replace(
-                        /[^A-Z0-9]+/g,
-                        "-"
-                    )
-                    .slice(0,30);
-
+        if(!$("codigoProduto").value){
+            $("codigoProduto").value = file.name.replace(/\.[^.]+$/, "").toUpperCase().replace(/[^A-Z0-9]+/g, "-").slice(0, 30);
         }
 
         calc();
-
         saveDraft();
+        toast("Arquivo processado com sucesso!");
 
     }catch(error){
-
         console.error(error);
-
-        $("analiseStatus").textContent =
-            "❌ Erro ao analisar: " +
-            error.message;
-
-        toast(
-            "Não foi possível analisar o arquivo."
-        );
-
+        $("analiseStatus").textContent = "❌ Erro ao analisar: " + error.message;
+        toast("Não foi possível analisar o arquivo.");
     }
-
 }
 
 function renderAnalysis(data){
-
-    const grid =
-        $("analiseGrid");
-
+    const grid = $("analiseGrid");
     const items = [
-
-        [
-            "Formato",
-            data.type || "-"
-        ],
-
-        [
-            "Peso",
-            data.weight !== null
-                ? Number(data.weight).toFixed(2)+" g"
-                : "Não encontrado"
-        ],
-
-        [
-            "Tempo",
-            data.hours !== null
-                ? formatTime(data.hours)
-                : "Não encontrado"
-        ],
-
-        [
-            "Dimensões",
-            data.width &&
-            data.depth &&
-            data.height
-                ? `${data.width.toFixed(1)} × ${data.depth.toFixed(1)} × ${data.height.toFixed(1)} mm`
-                : "Não disponível"
-        ]
-
+        ["Formato", data.type || "-"],
+        ["Peso", data.weight ? `${Number(data.weight).toFixed(2)} g` : "Não encontrado"],
+        ["Tempo", data.hours ? formatTime(data.hours) : "Não encontrado"],
+        ["Material", data.filament || "Não detectado"]
     ];
-
-    grid.innerHTML =
-        items.map(item => `
-
-            <div class="analysis-item">
-
-                <div class="label">
-                    ${escapeHTML(item[0])}
-                </div>
-
-                <div class="value">
-                    ${escapeHTML(item[1])}
-                </div>
-
-            </div>
-
-        `).join("");
-
-    if(data.thumbnail){
-
-        $("analysisPreview").innerHTML = `
-
-            <img
-                src="${data.thumbnail}"
-                alt="Thumbnail do arquivo">
-
-            <div>
-                <strong>${escapeHTML(data.source)}</strong>
-                <div style="color:var(--muted);margin-top:5px">
-                    Preview encontrado dentro do 3MF.
-                </div>
-            </div>
-
-        `;
-
-    }
-
+    grid.innerHTML = items.map(item => `
+        <div class="analysis-item">
+            <div class="label">${escapeHTML(item[0])}</div>
+            <div class="value">${escapeHTML(item[1])}</div>
+        </div>
+    `).join("");
 }
 
 
@@ -3384,86 +2639,33 @@ function renderAnalysis(data){
    DRAG DROP
 ========================================================= */
 
-const dropzone =
-    $("dropzone");
+const dropzone = $("dropzone");
+const fileInput = $("arquivoProjeto");
 
-const fileInput =
-    $("arquivoProjeto");
+dropzone.addEventListener("click", () => fileInput.click());
+fileInput.addEventListener("change", e => {
+    const file = e.target.files[0];
+    if(file) analyzeFile(file);
+});
 
-dropzone.addEventListener(
-    "click",
-    () => fileInput.click()
-);
+["dragenter", "dragover"].forEach(eventName => {
+    dropzone.addEventListener(eventName, e => {
+        e.preventDefault();
+        dropzone.classList.add("dragover");
+    });
+});
 
-fileInput.addEventListener(
-    "change",
-    e => {
+["dragleave", "drop"].forEach(eventName => {
+    dropzone.addEventListener(eventName, e => {
+        e.preventDefault();
+        dropzone.classList.remove("dragover");
+    });
+});
 
-        const file =
-            e.target.files[0];
-
-        if(file){
-
-            analyzeFile(file);
-
-        }
-
-    }
-);
-
-["dragenter","dragover"].forEach(
-    eventName => {
-
-        dropzone.addEventListener(
-            eventName,
-            e => {
-
-                e.preventDefault();
-
-                dropzone.classList.add(
-                    "dragover"
-                );
-
-            }
-        );
-
-    }
-);
-
-["dragleave","drop"].forEach(
-    eventName => {
-
-        dropzone.addEventListener(
-            eventName,
-            e => {
-
-                e.preventDefault();
-
-                dropzone.classList.remove(
-                    "dragover"
-                );
-
-            }
-        );
-
-    }
-);
-
-dropzone.addEventListener(
-    "drop",
-    e => {
-
-        const file =
-            e.dataTransfer.files[0];
-
-        if(file){
-
-            analyzeFile(file);
-
-        }
-
-    }
-);
+dropzone.addEventListener("drop", e => {
+    const file = e.dataTransfer.files[0];
+    if(file) analyzeFile(file);
+});
 
 
 /* =========================================================
@@ -3471,2840 +2673,134 @@ dropzone.addEventListener(
 ========================================================= */
 
 function calc(){
-
-    const peso =
-        Number($("pesoPeca").value) || 0;
-
-    const precoRolo =
-        Number($("precoRolo").value) || 0;
-
-    const pesoRolo =
-        Number($("pesoRolo").value) || 1000;
-
-    const hours =
-        parseTime(
-            $("tempoManual").value
-        ) ||
-        Number($("horasPeca").value) ||
-        0;
-
-    const potencia =
-        Number($("potenciaWatts").value) || 0;
-
-    const tarifa =
-        Number($("tarifaLuz").value) || 0;
-
-    const machineHour =
-        Number($("custoHora").value) || 0;
-
-    const margem =
-        Number($("margem").value) || 0;
-
-    const failureRate =
-        Number($("taxaFalha").value) || 0;
-
-    const extras =
-        Number($("custosExtras").value) || 0;
-
-    const embalagem =
-        Number($("embalagem").value) || 0;
-
-
-    /* MATERIAL */
-
-    const material =
-        peso *
-        (precoRolo / pesoRolo);
-
-
-    /* ENERGIA */
-
-    const energy =
-        (potencia / 1000) *
-        hours *
-        tarifa;
-
-
-    /* MÁQUINA */
-
-    const machine =
-        hours *
-        machineHour;
-
-
-    /* EXTRAS */
-
-    const extrasTotal =
-        extras +
-        embalagem;
-
-
-    /* BASE */
-
-    const base =
-        material +
-        energy +
-        machine +
-        extrasTotal;
-
-
-    /* RESERVA */
-
-    const failureCost =
-        base *
-        (failureRate / 100);
-
-
-    /* CUSTO FINAL */
-
-    const total =
-        base +
-        failureCost;
-
-
-    /*
-       PREÇOS
-    */
-
-    const minimum =
-        total * 1.20;
-
-    const ideal =
-        total *
-        (1 + margem / 100);
-
-    const premium =
-        total * 1.80;
-
-
-    /*
-       LUCRO
-       
-       IMPORTANTE:
-       O lucro é o preço de venda
-       menos o custo total.
-    */
-
-    const profitMinimum =
-        minimum - total;
-
-    const profitIdeal =
-        ideal - total;
-
-    const profitPremium =
-        premium - total;
-
-
-    /*
-       MARGEM REAL SOBRE O PREÇO DE VENDA
-    */
-
-    const marginMinimum =
-        minimum > 0
-            ? (profitMinimum / minimum) * 100
-            : 0;
-
-    const marginIdeal =
-        ideal > 0
-            ? (profitIdeal / ideal) * 100
-            : 0;
-
-    const marginPremium =
-        premium > 0
-            ? (profitPremium / premium) * 100
-            : 0;
-
-
-    /*
-       OUTPUTS
-    */
-
-    $("horasPeca").value =
-        hours.toFixed(4);
-
-    $("custoMaterial").textContent =
-        money(material);
-
-    $("custoEnergiaOut").textContent =
-        money(energy);
-
-    $("custoMaquinaOut").textContent =
-        money(machine);
-
-    $("custoExtrasOut").textContent =
-        money(extrasTotal);
-
-    $("custoFalhaOut").textContent =
-        money(failureCost);
-
-    $("custoTotal").textContent =
-        money(total);
-
-
-    $("precoMinimo").textContent =
-        money(minimum);
-
-    $("precoIdeal").textContent =
-        money(ideal);
-
-    $("precoPremium").textContent =
-        money(premium);
-
-
-    $("lucroMinimo").textContent =
-        money(profitMinimum);
-
-    $("lucroIdeal").textContent =
-        money(profitIdeal);
-
-    $("lucroPremium").textContent =
-        money(profitPremium);
-
-
-    $("margemMinima").textContent =
-        marginMinimum.toFixed(1)+"%";
-
-    $("margemIdeal").textContent =
-        marginIdeal.toFixed(1)+"%";
-
-    $("margemPremium").textContent =
-        marginPremium.toFixed(1)+"%";
-
+    const peso = Number($("pesoPeca").value) || 0;
+    const precoRolo = Number($("precoRolo").value) || 0;
+    const pesoRolo = Number($("pesoRolo").value) || 1000;
+    const hours = parseTime($("tempoManual").value) || Number($("horasPeca").value) || 0;
+    const potencia = Number($("potenciaWatts").value) || 0;
+    const tarifa = Number($("tarifaLuz").value) || 0;
+    const machineHour = Number($("custoHora").value) || 0;
+    const margem = Number($("margem").value) || 0;
+    const failureRate = Number($("taxaFalha").value) || 0;
+    const extras = Number($("custosExtras").value) || 0;
+    const embalagem = Number($("embalagem").value) || 0;
+
+    const material = peso * (precoRolo / pesoRolo);
+    const energy = (potencia / 1000) * hours * tarifa;
+    const machine = hours * machineHour;
+    const extrasTotal = extras + embalagem;
+    const base = material + energy + machine + extrasTotal;
+    const failureCost = base * (failureRate / 100);
+    const total = base + failureCost;
+
+    const minimum = total * 1.20;
+    const ideal = total * (1 + margem / 100);
+    const premium = total * 1.80;
+
+    const profitMinimum = minimum - total;
+    const profitIdeal = ideal - total;
+    const profitPremium = premium - total;
+
+    const marginMinimum = minimum > 0 ? (profitMinimum / minimum) * 100 : 0;
+    const marginIdeal = ideal > 0 ? (profitIdeal / ideal) * 100 : 0;
+    const marginPremium = premium > 0 ? (profitPremium / premium) * 100 : 0;
+
+    $("horasPeca").value = hours.toFixed(4);
+    $("custoMaterial").textContent = money(material);
+    $("custoEnergiaOut").textContent = money(energy);
+    $("custoMaquinaOut").textContent = money(machine);
+    $("custoExtrasOut").textContent = money(extrasTotal);
+    $("custoFalhaOut").textContent = money(failureCost);
+    $("custoTotal").textContent = money(total);
+
+    $("precoMinimo").textContent = money(minimum);
+    $("precoIdeal").textContent = money(ideal);
+    $("precoPremium").textContent = money(premium);
+
+    $("lucroMinimo").textContent = money(profitMinimum);
+    $("lucroIdeal").textContent = money(profitIdeal);
+    $("lucroPremium").textContent = money(profitPremium);
+
+    $("margemMinima").textContent = marginMinimum.toFixed(1) + "%";
+    $("margemIdeal").textContent = marginIdeal.toFixed(1) + "%";
+    $("margemPremium").textContent = marginPremium.toFixed(1) + "%";
 
     return {
-
-        peso,
-        hours,
-
-        precoRolo,
-        pesoRolo,
-
-        potencia,
-        tarifa,
-
-        machineHour,
-
-        margem,
-        failureRate,
-
-        extras,
-        embalagem,
-
-        material,
-        energy,
-        machine,
-
-        extrasTotal,
-        failureCost,
-
-        total,
-
-        minimum,
-        ideal,
-        premium,
-
-        profitMinimum,
-        profitIdeal,
-        profitPremium,
-
-        marginMinimum,
-        marginIdeal,
-        marginPremium
-
+        peso, hours, material, energy, machine, extrasTotal, failureCost, total, minimum, ideal, premium, profitMinimum, profitIdeal, profitPremium
     };
-
 }
 
 function onInputCalculadora(){
-
     calc();
-
     saveDraft();
-
 }
 
 [
-    "pesoPeca",
-    "precoRolo",
-    "pesoRolo",
-    "tempoManual",
-    "potenciaWatts",
-    "tarifaLuz",
-    "custoHora",
-    "margem",
-    "taxaFalha",
-    "custosExtras",
-    "embalagem",
-    "nomeProduto",
-    "codigoProduto",
-    "categoriaProduto",
-    "vintedLink",
-    "vintedData",
-    "fileDownloadLink",
-    "observacoes"
-
+    "pesoPeca", "precoRolo", "pesoRolo", "tempoManual", "potenciaWatts", "tarifaLuz", "custoHora", "margem", "taxaFalha", "custosExtras", "embalagem", "nomeProduto", "codigoProduto", "categoriaProduto", "vintedLink", "vintedData", "fileDownloadLink", "observacoes"
 ].forEach(id => {
-
     const el = $(id);
-
     if(!el) return;
-
-    el.addEventListener(
-        "input",
-        onInputCalculadora
-    );
-
-    el.addEventListener(
-        "change",
-        onInputCalculadora
-    );
-
+    el.addEventListener("input", onInputCalculadora);
+    el.addEventListener("change", onInputCalculadora);
 });
 
 
 /* =========================================================
-   DRAFT
+   DRAFT & STORAGE
 ========================================================= */
 
 function saveDraft(){
-
     const data = {
-
-        nomeProduto:$("nomeProduto").value,
-        codigoProduto:$("codigoProduto").value,
-        categoriaProduto:$("categoriaProduto").value,
-
-        pesoPeca:$("pesoPeca").value,
-        tempoManual:$("tempoManual").value,
-
-        precoRolo:$("precoRolo").value,
-        pesoRolo:$("pesoRolo").value,
-
-        potenciaWatts:$("potenciaWatts").value,
-        tarifaLuz:$("tarifaLuz").value,
-        custoHora:$("custoHora").value,
-        margem:$("margem").value,
-        taxaFalha:$("taxaFalha").value,
-
-        custosExtras:$("custosExtras").value,
-        embalagem:$("embalagem").value,
-
-        vintedLink:$("vintedLink").value,
-        vintedData:$("vintedData").value,
-        fileDownloadLink:$("fileDownloadLink").value,
-
-        observacoes:$("observacoes").value
-
+        nomeProduto: $("nomeProduto").value,
+        codigoProduto: $("codigoProduto").value,
+        categoriaProduto: $("categoriaProduto").value,
+        pesoPeca: $("pesoPeca").value,
+        tempoManual: $("tempoManual").value,
+        precoRolo: $("precoRolo").value,
+        pesoRolo: $("pesoRolo").value,
+        potenciaWatts: $("potenciaWatts").value,
+        tarifaLuz: $("tarifaLuz").value,
+        custoHora: $("custoHora").value,
+        margem: $("margem").value,
+        taxaFalha: $("taxaFalha").value,
+        custosExtras: $("custosExtras").value,
+        embalagem: $("embalagem").value,
+        vintedLink: $("vintedLink").value,
+        vintedData: $("vintedData").value,
+        fileDownloadLink: $("fileDownloadLink").value,
+        observacoes: $("observacoes").value
     };
-
     try{
-
-        localStorage.setItem(
-            LOCAL_KEYS.draft,
-            JSON.stringify(data)
-        );
-
-    }catch(e){
-
-        console.warn(
-            "Não foi possível salvar rascunho.",
-            e
-        );
-
-    }
-
+        localStorage.setItem(LOCAL_KEYS.draft, JSON.stringify(data));
+    }catch(e){}
 }
 
 function loadDraft(){
-
     try{
-
-        const raw =
-            localStorage.getItem(
-                LOCAL_KEYS.draft
-            );
-
+        const raw = localStorage.getItem(LOCAL_KEYS.draft);
         if(!raw) return;
-
-        const data =
-            JSON.parse(raw);
-
+        const data = JSON.parse(raw);
         Object.keys(data).forEach(key => {
-
             const el = $(key);
-
-            if(
-                el &&
-                data[key] !== undefined &&
-                data[key] !== null
-            ){
-
+            if(el && data[key] !== undefined && data[key] !== null){
                 el.value = data[key];
-
             }
-
         });
-
         calc();
-
-    }catch(e){
-
-        console.warn(
-            "Erro no rascunho.",
-            e
-        );
-
-    }
-
+    }catch(e){}
 }
-
-
-/* =========================================================
-   FILAMENTS
-========================================================= */
-
-function loadLocalFilaments(){
-
-    try{
-
-        const raw =
-            localStorage.getItem(
-                LOCAL_KEYS.filaments
-            );
-
-        if(raw){
-
-            filamentos =
-                JSON.parse(raw);
-
-        }
-
-    }catch(e){
-
-        filamentos = [];
-
-    }
-
-}
-
-function saveLocalFilaments(){
-
-    localStorage.setItem(
-        LOCAL_KEYS.filaments,
-        JSON.stringify(filamentos)
-    );
-
-}
-
-function renderFilamentPresets(){
-
-    const select =
-        $("filamentoPreset");
-
-    if(!select) return;
-
-    select.innerHTML =
-        `<option value="">Selecione...</option>` +
-        filamentos.map(f => `
-
-            <option value="${escapeHTML(f.id)}">
-                ${escapeHTML(f.name)}
-                — ${money(f.price)}/kg
-            </option>
-
-        `).join("");
-
-}
-
-async function salvarNovoFilamento(){
-
-    const name =
-        prompt(
-            "Nome do filamento:",
-            "PLA"
-        );
-
-    if(!name) return;
-
-    const price =
-        Number($("precoRolo").value) || 0;
-
-    const weight =
-        Number($("pesoRolo").value) || 1000;
-
-    const item = {
-
-        id:uid(),
-        name:name.trim(),
-        price,
-        weight,
-        updatedAt:nowISO()
-
-    };
-
-    filamentos.push(item);
-
-    saveLocalFilaments();
-
-    await firestoreSet(
-        "filaments",
-        item.id,
-        item
-    );
-
-    renderFilamentPresets();
-
-    $("filamentoPreset").value =
-        item.id;
-
-    toast(
-        "Filamento salvo."
-    );
-
-}
-
-async function loadFilaments(){
-
-    loadLocalFilaments();
-
-    if(window.currentUser){
-
-        const cloud =
-            await firestoreGet(
-                "filaments"
-            );
-
-        if(cloud.length){
-
-            filamentos = cloud;
-
-            saveLocalFilaments();
-
-        }
-
-    }
-
-    renderFilamentPresets();
-
-}
-
-function aplicarFilamentoPreset(){
-
-    const id =
-        $("filamentoPreset").value;
-
-    if(!id) return;
-
-    const item =
-        filamentos.find(
-            f => f.id === id
-        );
-
-    if(!item) return;
-
-    $("precoRolo").value =
-        Number(item.price).toFixed(2);
-
-    $("pesoRolo").value =
-        Number(item.weight);
-
-    calc();
-
-    saveDraft();
-
-}
-
-
-/* =========================================================
-   PRODUCT
-========================================================= */
-
-function getProduct(){
-
-    const result =
-        calc();
-
-    return {
-
-        id:
-            editingProductId ||
-            uid(),
-
-        name:
-            $("nomeProduto").value.trim() ||
-            "Produto sem nome",
-
-        code:
-            $("codigoProduto").value.trim() ||
-            "-",
-
-        category:
-            $("categoriaProduto").value.trim() ||
-            "Sem categoria",
-
-        weight:
-            result.peso,
-
-        hours:
-            result.hours,
-
-        materialCost:
-            result.material,
-
-        energyCost:
-            result.energy,
-
-        machineCost:
-            result.machine,
-
-        extrasCost:
-            result.extrasTotal,
-
-        failureCost:
-            result.failureCost,
-
-        totalCost:
-            result.total,
-
-        minimumPrice:
-            result.minimum,
-
-        idealPrice:
-            result.ideal,
-
-        premiumPrice:
-            result.premium,
-
-        profitMinimum:
-            result.profitMinimum,
-
-        profitIdeal:
-            result.profitIdeal,
-
-        profitPremium:
-            result.profitPremium,
-
-        marginIdeal:
-            result.marginIdeal,
-
-        vintedLink:
-            $("vintedLink").value.trim(),
-
-        vintedData:
-            $("vintedData").value,
-
-        fileDownloadLink:
-            $("fileDownloadLink").value.trim(),
-
-        notes:
-            $("observacoes").value.trim(),
-
-        fileName:
-            currentFile
-                ? currentFile.name
-                : "",
-
-        thumbBase64:
-            currentThumbnailBase64 || "",
-
-        analysis:
-            currentAnalysis || null,
-
-        updatedAt:
-            nowISO()
-
-    };
-
-}
-
-async function salvarProduto(){
-
-    const product =
-        getProduct();
-
-    if(
-        !product.name ||
-        product.name === "Produto sem nome"
-    ){
-
-        toast(
-            "Informe o nome do produto."
-        );
-
-        return;
-
-    }
-
-    if(product.totalCost <= 0){
-
-        if(
-            !confirm(
-                "O custo total está £0.00. Deseja salvar mesmo assim?"
-            )
-        ){
-
-            return;
-
-        }
-
-    }
-
-    const ok =
-        await firestoreSet(
-            "products",
-            product.id,
-            product
-        );
-
-    if(ok){
-
-        const index =
-            catalogo.findIndex(
-                p => p.id === product.id
-            );
-
-        if(index >= 0){
-
-            catalogo[index] = product;
-
-        }else{
-
-            catalogo.push(product);
-
-        }
-
-        editingProductId =
-            product.id;
-
-        renderCatalogo();
-
-        renderVinted();
-
-        populateVendaProdutos();
-
-        toast(
-            "Produto salvo no catálogo."
-        );
-
-    }else{
-
-        /*
-           fallback local
-        */
-
-        const index =
-            catalogo.findIndex(
-                p => p.id === product.id
-            );
-
-        if(index >= 0){
-
-            catalogo[index] = product;
-
-        }else{
-
-            catalogo.push(product);
-
-        }
-
-        localStorage.setItem(
-            "bambu_catalogo_fallback",
-            JSON.stringify(catalogo)
-        );
-
-        toast(
-            "Produto salvo localmente. Firestore não disponível."
-        );
-
-    }
-
-}
-
-function editarProduto(id){
-
-    const product =
-        catalogo.find(
-            p => p.id === id
-        );
-
-    if(!product) return;
-
-    editingProductId =
-        product.id;
-
-    $("nomeProduto").value =
-        product.name || "";
-
-    $("codigoProduto").value =
-        product.code || "";
-
-    $("categoriaProduto").value =
-        product.category || "";
-
-    $("pesoPeca").value =
-        Number(product.weight || 0);
-
-    $("tempoManual").value =
-        product.hours
-            ? formatTime(product.hours)
-            : "";
-
-    $("horasPeca").value =
-        Number(product.hours || 0);
-
-    $("vintedLink").value =
-        product.vintedLink || "";
-
-    $("vintedData").value =
-        product.vintedData || "";
-
-    $("fileDownloadLink").value =
-        product.fileDownloadLink || "";
-
-    $("observacoes").value =
-        product.notes || "";
-
-    currentThumbnailBase64 =
-        product.thumbBase64 || null;
-
-    currentAnalysis =
-        product.analysis || null;
-
-    if(product.fileName){
-
-        $("arquivoTipoBadge").textContent =
-            product.fileName
-                .split(".")
-                .pop()
-                .toUpperCase();
-
-    }
-
-    calc();
-
-    openPage("calc");
-
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
-
-    toast(
-        "Produto carregado para edição."
-    );
-
-}
-
-async function excluirProduto(id){
-
-    const product =
-        catalogo.find(
-            p => p.id === id
-        );
-
-    if(!product) return;
-
-    if(
-        !confirm(
-            `Excluir "${product.name}" do catálogo?`
-        )
-    ){
-
-        return;
-
-    }
-
-    if(window.currentUser){
-
-        await firestoreDelete(
-            "products",
-            id
-        );
-
-    }
-
-    catalogo =
-        catalogo.filter(
-            p => p.id !== id
-        );
-
-    renderCatalogo();
-
-    populateVendaProdutos();
-
-    renderVinted();
-
-    toast(
-        "Produto excluído."
-    );
-
-}
-
-function usarProdutoNaCalculadora(id){
-
-    editarProduto(id);
-
-}
-
-
-/* =========================================================
-   CATALOG
-========================================================= */
-
-async function carregarCatalogo(showToast=false){
-
-    if(window.currentUser){
-
-        const cloud =
-            await firestoreGet(
-                "products"
-            );
-
-        if(cloud.length){
-
-            catalogo = cloud;
-
-        }
-
-    }
-
-    if(!catalogo.length){
-
-        try{
-
-            const local =
-                localStorage.getItem(
-                    "bambu_catalogo_fallback"
-                );
-
-            if(local){
-
-                catalogo =
-                    JSON.parse(local);
-
-            }
-
-        }catch(e){}
-
-    }
-
-    renderCatalogo();
-
-    populateVendaProdutos();
-
-    renderVinted();
-
-    if(showToast){
-
-        toast(
-            `${catalogo.length} produto(s) carregado(s).`
-        );
-
-    }
-
-}
-
-function renderCatalogo(){
-
-    const grid =
-        $("catalogGrid");
-
-    if(!grid) return;
-
-    const search =
-        $("catalogSearch")
-            .value
-            .trim()
-            .toLowerCase();
-
-    const category =
-        $("catalogCategory")
-            .value;
-
-    const categories =
-        [...new Set(
-            catalogo
-                .map(p => p.category)
-                .filter(Boolean)
-        )]
-        .sort();
-
-    const select =
-        $("catalogCategory");
-
-    const current =
-        select.value;
-
-    select.innerHTML =
-        `<option value="">Todas as categorias</option>` +
-        categories.map(c => `
-
-            <option value="${escapeHTML(c)}">
-                ${escapeHTML(c)}
-            </option>
-
-        `).join("");
-
-    if(
-        categories.includes(current)
-    ){
-
-        select.value = current;
-
-    }
-
-    const filtered =
-        catalogo.filter(p => {
-
-            const text =
-                [
-                    p.name,
-                    p.code,
-                    p.category,
-                    p.fileName
-                ]
-                .join(" ")
-                .toLowerCase();
-
-            const matchesSearch =
-                !search ||
-                text.includes(search);
-
-            const matchesCategory =
-                !category ||
-                p.category === category;
-
-            return (
-                matchesSearch &&
-                matchesCategory
-            );
-
-        });
-
-    $("catalogCount").textContent =
-        `${filtered.length} produto(s)`;
-
-    if(!filtered.length){
-
-        grid.innerHTML =
-            `<div class="empty" style="grid-column:1/-1">
-                Nenhum produto encontrado.
-            </div>`;
-
-        return;
-
-    }
-
-    grid.innerHTML =
-        filtered.map(product => {
-
-            const img =
-                product.thumbBase64
-                    ? `
-                        <img
-                            src="${product.thumbBase64}"
-                            alt="${escapeHTML(product.name)}">
-                      `
-                    : `
-                        <div class="no-thumb">
-                            🧊 Sem preview
-                        </div>
-                      `;
-
-            const download =
-                safeUrl(
-                    product.fileDownloadLink
-                );
-
-            const vinted =
-                safeUrl(
-                    product.vintedLink
-                );
-
-            return `
-
-                <article class="product-card">
-
-                    <div class="product-thumb">
-                        ${img}
-                    </div>
-
-                    <div class="product-body">
-
-                        <h3>
-                            ${escapeHTML(product.name)}
-                        </h3>
-
-                        <div class="product-code">
-                            ${escapeHTML(product.code || "-")}
-                            ·
-                            ${escapeHTML(product.category || "Sem categoria")}
-                        </div>
-
-                        <div class="product-info">
-
-                            <div>
-                                <small>Peso</small>
-                                <strong>
-                                    ${Number(product.weight || 0).toFixed(2)} g
-                                </strong>
-                            </div>
-
-                            <div>
-                                <small>Tempo</small>
-                                <strong>
-                                    ${product.hours
-                                        ? formatTime(product.hours)
-                                        : "-"
-                                    }
-                                </strong>
-                            </div>
-
-                            <div>
-                                <small>Custo</small>
-                                <strong>
-                                    ${money(product.totalCost)}
-                                </strong>
-                            </div>
-
-                            <div>
-                                <small>Lucro ideal</small>
-                                <strong style="color:var(--accent)">
-                                    ${money(product.profitIdeal)}
-                                </strong>
-                            </div>
-
-                        </div>
-
-                        <div>
-                            <small style="color:var(--muted)">
-                                Preço ideal
-                            </small>
-
-                            <div class="product-price">
-                                ${money(product.idealPrice)}
-                            </div>
-                        </div>
-
-                        <div class="product-actions">
-
-                            <button
-                                class="btn btn-primary btn-small"
-                                onclick="editarProduto('${product.id}')">
-                                Editar
-                            </button>
-
-                            ${
-                                download
-                                    ? `
-                                        <a
-                                            class="btn btn-secondary btn-small"
-                                            href="${download}"
-                                            target="_blank"
-                                            rel="noopener">
-                                            Download
-                                        </a>
-                                      `
-                                    : ""
-                            }
-
-                            ${
-                                vinted
-                                    ? `
-                                        <a
-                                            class="btn btn-dark btn-small"
-                                            href="${vinted}"
-                                            target="_blank"
-                                            rel="noopener">
-                                            Vinted
-                                        </a>
-                                      `
-                                    : ""
-                            }
-
-                            <button
-                                class="btn btn-danger btn-small"
-                                onclick="excluirProduto('${product.id}')">
-                                Excluir
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </article>
-
-            `;
-
-        }).join("");
-
-}
-
-
-/* =========================================================
-   HISTORY
-========================================================= */
-
-async function registrarHistorico(){
-
-    const result =
-        calc();
-
-    const item = {
-
-        id:uid(),
-
-        date:nowISO(),
-
-        name:
-            $("nomeProduto").value.trim() ||
-            "Cálculo sem nome",
-
-        code:
-            $("codigoProduto").value.trim(),
-
-        weight:
-            result.peso,
-
-        hours:
-            result.hours,
-
-        totalCost:
-            result.total,
-
-        minimumPrice:
-            result.minimum,
-
-        idealPrice:
-            result.ideal,
-
-        premiumPrice:
-            result.premium,
-
-        profitMinimum:
-            result.profitMinimum,
-
-        profitIdeal:
-            result.profitIdeal,
-
-        profitPremium:
-            result.profitPremium
-
-    };
-
-    historico.unshift(item);
-
-    const ok =
-        await firestoreSet(
-            "history",
-            item.id,
-            item
-        );
-
-    if(ok){
-
-        toast(
-            "Cálculo registrado no histórico."
-        );
-
-    }else{
-
-        toast(
-            "Cálculo registrado localmente."
-        );
-
-    }
-
-    renderHistorico();
-
-}
-
-async function loadHistorico(){
-
-    if(window.currentUser){
-
-        const cloud =
-            await firestoreGet(
-                "history"
-            );
-
-        if(cloud.length){
-
-            historico =
-                cloud.sort(
-                    (a,b) =>
-                        new Date(b.date) -
-                        new Date(a.date)
-                );
-
-        }
-
-    }
-
-    renderHistorico();
-
-}
-
-function renderHistorico(){
-
-    const el =
-        $("historicoLista");
-
-    if(!el) return;
-
-    if(!historico.length){
-
-        el.innerHTML =
-            `<div class="empty">
-                Histórico vazio.
-            </div>`;
-
-        return;
-
-    }
-
-    el.innerHTML =
-        historico.map(item => `
-
-            <div class="list-item">
-
-                <div class="list-item-header">
-
-                    <div>
-
-                        <div class="list-item-title">
-                            ${escapeHTML(item.name)}
-                        </div>
-
-                        <div class="list-item-meta">
-                            ${formatDate(item.date)}
-                            ·
-                            ${Number(item.weight || 0).toFixed(2)} g
-                            ·
-                            ${item.hours
-                                ? formatTime(item.hours)
-                                : "-"
-                            }
-                        </div>
-
-                    </div>
-
-                    <strong style="color:var(--accent)">
-                        ${money(item.idealPrice)}
-                    </strong>
-
-                </div>
-
-                <div style="margin-top:10px">
-
-                    Custo:
-                    <strong>
-                        ${money(item.totalCost)}
-                    </strong>
-
-                    &nbsp; · &nbsp;
-
-                    Lucro ideal:
-                    <strong style="color:var(--accent)">
-                        ${money(item.profitIdeal)}
-                    </strong>
-
-                </div>
-
-            </div>
-
-        `).join("");
-
-}
-
-async function limparHistorico(){
-
-    if(!historico.length){
-
-        toast(
-            "Histórico já está vazio."
-        );
-
-        return;
-
-    }
-
-    if(
-        !confirm(
-            "Excluir todo o histórico?"
-        )
-    ){
-
-        return;
-
-    }
-
-    if(window.currentUser){
-
-        for(const item of historico){
-
-            await firestoreDelete(
-                "history",
-                item.id
-            );
-
-        }
-
-    }
-
-    historico = [];
-
-    renderHistorico();
-
-    toast(
-        "Histórico limpo."
-    );
-
-}
-
-function exportarHistorico(){
-
-    if(!historico.length){
-
-        toast(
-            "Não há histórico para exportar."
-        );
-
-        return;
-
-    }
-
-    const header = [
-        "Data",
-        "Produto",
-        "Código",
-        "Peso g",
-        "Horas",
-        "Custo",
-        "Preço mínimo",
-        "Preço ideal",
-        "Preço premium",
-        "Lucro mínimo",
-        "Lucro ideal",
-        "Lucro premium"
-    ];
-
-    const rows =
-        historico.map(item => [
-
-            item.date,
-            item.name,
-            item.code,
-            item.weight,
-            item.hours,
-            item.totalCost,
-            item.minimumPrice,
-            item.idealPrice,
-            item.premiumPrice,
-            item.profitMinimum,
-            item.profitIdeal,
-            item.profitPremium
-
-        ]);
-
-    const csv = [
-
-        header,
-        ...rows
-
-    ]
-    .map(row =>
-        row.map(value =>
-            `"${String(value ?? "")
-                .replace(/"/g,'""')}"`
-        ).join(",")
-    )
-    .join("\n");
-
-    downloadText(
-        "\ufeff" + csv,
-        "bambucalc-historico.csv",
-        "text/csv;charset=utf-8"
-    );
-
-    toast(
-        "Histórico exportado."
-    );
-
-}
-
-
-/* =========================================================
-   SALES
-========================================================= */
-
-function populateVendaProdutos(){
-
-    const select =
-        $("vendaProduto");
-
-    if(!select) return;
-
-    select.innerHTML =
-        `<option value="">
-            Selecione...
-        </option>` +
-
-        catalogo.map(p => `
-
-            <option value="${p.id}">
-                ${escapeHTML(p.name)}
-                — ${money(p.idealPrice)}
-            </option>
-
-        `).join("");
-
-}
-
-function preencherPrecoVenda(){
-
-    const id =
-        $("vendaProduto").value;
-
-    const product =
-        catalogo.find(
-            p => p.id === id
-        );
-
-    if(!product) return;
-
-    $("vendaPreco").value =
-        Number(
-            product.idealPrice || 0
-        ).toFixed(2);
-
-}
-
-function adicionarItemPedido(){
-
-    const productId =
-        $("vendaProduto").value;
-
-    const qty =
-        Math.max(
-            1,
-            Number($("vendaQtd").value) || 1
-        );
-
-    const price =
-        Number($("vendaPreco").value) || 0;
-
-    if(!productId){
-
-        toast(
-            "Selecione um produto."
-        );
-
-        return;
-
-    }
-
-    const product =
-        catalogo.find(
-            p => p.id === productId
-        );
-
-    if(!product) return;
-
-    const existing =
-        pedidoItens.find(
-            item =>
-                item.productId ===
-                productId
-        );
-
-    if(existing){
-
-        existing.qty += qty;
-        existing.unitPrice = price;
-
-    }else{
-
-        pedidoItens.push({
-
-            id:uid(),
-
-            productId,
-
-            name:product.name,
-
-            qty,
-
-            unitPrice:price,
-
-            costUnit:
-                Number(
-                    product.totalCost || 0
-                )
-
-        });
-
-    }
-
-    $("vendaQtd").value = 1;
-
-    renderPedidoEditor();
-
-}
-
-function removerItemPedido(id){
-
-    pedidoItens =
-        pedidoItens.filter(
-            item => item.id !== id
-        );
-
-    renderPedidoEditor();
-
-}
-
-function alterarQuantidadePedido(
-    id,
-    value
-){
-
-    const item =
-        pedidoItens.find(
-            x => x.id === id
-        );
-
-    if(!item) return;
-
-    item.qty =
-        Math.max(
-            1,
-            Number(value) || 1
-        );
-
-    renderPedidoEditor();
-
-}
-
-function alterarPrecoPedido(
-    id,
-    value
-){
-
-    const item =
-        pedidoItens.find(
-            x => x.id === id
-        );
-
-    if(!item) return;
-
-    item.unitPrice =
-        Math.max(
-            0,
-            Number(value) || 0
-        );
-
-    renderPedidoEditor();
-
-}
-
-function getPedidoTotals(){
-
-    const subtotal =
-        pedidoItens.reduce(
-            (sum,item) =>
-                sum +
-                item.qty *
-                item.unitPrice,
-            0
-        );
-
-    const costProducts =
-        pedidoItens.reduce(
-            (sum,item) =>
-                sum +
-                item.qty *
-                item.costUnit,
-            0
-        );
-
-    const frete =
-        Number(
-            $("pedidoFrete").value
-        ) || 0;
-
-    const custoFrete =
-        Number(
-            $("pedidoCustoFrete").value
-        ) || 0;
-
-    const desconto =
-        Number(
-            $("pedidoDesconto").value
-        ) || 0;
-
-    const taxas =
-        Number(
-            $("pedidoTaxas").value
-        ) || 0;
-
-    const embalagem =
-        Number(
-            $("pedidoEmbalagem").value
-        ) || 0;
-
-    const total =
-        subtotal +
-        frete -
-        desconto;
-
-    const profit =
-        total -
-        costProducts -
-        custoFrete -
-        taxas -
-        embalagem;
-
-    return {
-
-        subtotal,
-        costProducts,
-
-        frete,
-        custoFrete,
-
-        desconto,
-        taxas,
-        embalagem,
-
-        total,
-        profit
-
-    };
-
-}
-
-function renderPedidoEditor(){
-
-    const container =
-        $("pedidoItens");
-
-    if(!container) return;
-
-    if(!pedidoItens.length){
-
-        container.innerHTML =
-            `<div class="empty">
-                Nenhum produto adicionado ao pedido.
-            </div>`;
-
-    }else{
-
-        container.innerHTML =
-            pedidoItens.map(item => `
-
-                <div class="order-item">
-
-                    <strong>
-                        ${escapeHTML(item.name)}
-                    </strong>
-
-                    <input
-                        type="number"
-                        min="1"
-                        value="${item.qty}"
-                        onchange="alterarQuantidadePedido(
-                            '${item.id}',
-                            this.value
-                        )">
-
-                    <input
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        value="${Number(item.unitPrice).toFixed(2)}"
-                        onchange="alterarPrecoPedido(
-                            '${item.id}',
-                            this.value
-                        )">
-
-                    <strong>
-                        ${money(
-                            item.qty *
-                            item.unitPrice
-                        )}
-                    </strong>
-
-                    <button
-                        class="btn btn-danger btn-small"
-                        onclick="removerItemPedido('${item.id}')">
-                        ×
-                    </button>
-
-                </div>
-
-            `).join("");
-
-    }
-
-    const totals =
-        getPedidoTotals();
-
-    $("pedidoResumo").innerHTML = `
-
-        <div class="order-summary-row">
-            <span>Produtos</span>
-            <strong>${money(totals.subtotal)}</strong>
-        </div>
-
-        <div class="order-summary-row">
-            <span>Frete cobrado</span>
-            <strong>${money(totals.frete)}</strong>
-        </div>
-
-        <div class="order-summary-row">
-            <span>Desconto</span>
-            <strong>− ${money(totals.desconto)}</strong>
-        </div>
-
-        <div class="order-summary-row total">
-            <span>Total do pedido</span>
-            <strong>${money(totals.total)}</strong>
-        </div>
-
-        <div class="order-summary-row">
-            <span>Custo dos produtos</span>
-            <strong>${money(totals.costProducts)}</strong>
-        </div>
-
-        <div class="order-summary-row">
-            <span>Custo do frete</span>
-            <strong>${money(totals.custoFrete)}</strong>
-        </div>
-
-        <div class="order-summary-row">
-            <span>Taxas</span>
-            <strong>${money(totals.taxas)}</strong>
-        </div>
-
-        <div class="order-summary-row">
-            <span>Embalagem</span>
-            <strong>${money(totals.embalagem)}</strong>
-        </div>
-
-        <div class="order-summary-row profit">
-            <span>💷 LUCRO DO PEDIDO</span>
-            <strong>${money(totals.profit)}</strong>
-        </div>
-
-    `;
-
-}
-
-async function salvarPedido(){
-
-    if(!pedidoItens.length){
-
-        toast(
-            "Adicione pelo menos um produto."
-        );
-
-        return;
-
-    }
-
-    const totals =
-        getPedidoTotals();
-
-    const order = {
-
-        id:uid(),
-
-        customer:
-            $("pedidoCliente").value.trim() ||
-            "Cliente",
-
-        channel:
-            $("pedidoCanal").value,
-
-        date:
-            $("pedidoData").value ||
-            todayISO(),
-
-        status:
-            $("pedidoStatus").value,
-
-        items:
-            pedidoItens.map(item => ({
-                ...item
-            })),
-
-        ...totals,
-
-        createdAt:
-            nowISO()
-
-    };
-
-    const ok =
-        await firestoreSet(
-            "orders",
-            order.id,
-            order
-        );
-
-    vendas.unshift(order);
-
-    if(ok){
-
-        toast(
-            "Pedido salvo."
-        );
-
-    }else{
-
-        toast(
-            "Pedido salvo localmente."
-        );
-
-    }
-
-    renderVendas();
-
-    limparPedidoEditor();
-
-}
-
-async function loadVendas(){
-
-    if(window.currentUser){
-
-        const cloud =
-            await firestoreGet(
-                "orders"
-            );
-
-        if(cloud.length){
-
-            vendas =
-                cloud.sort(
-                    (a,b) =>
-                        new Date(b.createdAt || b.date) -
-                        new Date(a.createdAt || a.date)
-                );
-
-        }
-
-    }
-
-    renderVendas();
-
-}
-
-async function excluirPedido(id){
-
-    if(
-        !confirm(
-            "Excluir este pedido?"
-        )
-    ){
-
-        return;
-
-    }
-
-    if(window.currentUser){
-
-        await firestoreDelete(
-            "orders",
-            id
-        );
-
-    }
-
-    vendas =
-        vendas.filter(
-            x => x.id !== id
-        );
-
-    renderVendas();
-
-    toast(
-        "Pedido excluído."
-    );
-
-}
-
-function statusClass(status){
-
-    const map = {
-
-        pendente:"status-pendente",
-        pago:"status-pago",
-        producao:"status-producao",
-        enviado:"status-enviado",
-        concluido:"status-concluido",
-        cancelado:"status-cancelado"
-
-    };
-
-    return map[status] ||
-        "status-pendente";
-
-}
-
-function statusLabel(status){
-
-    const map = {
-
-        pendente:"Pendente",
-        pago:"Pago",
-        producao:"Em produção",
-        enviado:"Enviado",
-        concluido:"Concluído",
-        cancelado:"Cancelado"
-
-    };
-
-    return map[status] || status;
-
-}
-
-function renderVendas(){
-
-    const list =
-        $("vendasLista");
-
-    if(!list) return;
-
-    let revenue = 0;
-    let profit = 0;
-    let items = 0;
-
-    vendas.forEach(order => {
-
-        revenue +=
-            Number(order.total || 0);
-
-        profit +=
-            Number(order.profit || 0);
-
-        items +=
-            (order.items || [])
-                .reduce(
-                    (s,item) =>
-                        s +
-                        Number(item.qty || 0),
-                    0
-                );
-
-    });
-
-    $("metricPedidos").textContent =
-        vendas.length;
-
-    $("metricVendas").textContent =
-        items;
-
-    $("metricFaturamento").textContent =
-        money(revenue);
-
-    $("metricLucro").textContent =
-        money(profit);
-
-    if(!vendas.length){
-
-        list.innerHTML =
-            `<div class="empty">
-                Nenhum pedido registrado.
-            </div>`;
-
-        return;
-
-    }
-
-    list.innerHTML =
-        vendas.map(order => `
-
-            <div class="list-item">
-
-                <div class="list-item-header">
-
-                    <div>
-
-                        <div class="list-item-title">
-                            ${escapeHTML(order.customer)}
-                        </div>
-
-                        <div class="list-item-meta">
-
-                            ${formatDate(
-                                order.date ||
-                                order.createdAt
-                            )}
-
-                            ·
-
-                            ${escapeHTML(
-                                order.channel
-                            )}
-
-                        </div>
-
-                    </div>
-
-                    <span class="status ${statusClass(order.status)}">
-                        ${statusLabel(order.status)}
-                    </span>
-
-                </div>
-
-                <div style="margin-top:12px">
-
-                    ${
-                        (order.items || [])
-                        .map(item => `
-                            <div style="
-                                display:flex;
-                                justify-content:space-between;
-                                gap:10px;
-                                padding:4px 0;
-                            ">
-                                <span>
-                                    ${item.qty} ×
-                                    ${escapeHTML(item.name)}
-                                </span>
-
-                                <strong>
-                                    ${money(
-                                        item.qty *
-                                        item.unitPrice
-                                    )}
-                                </strong>
-                            </div>
-                        `)
-                        .join("")
-                    }
-
-                </div>
-
-                <div class="order-summary">
-
-                    <div class="order-summary-row">
-                        <span>Total</span>
-                        <strong>
-                            ${money(order.total)}
-                        </strong>
-                    </div>
-
-                    <div class="order-summary-row profit">
-                        <span>Lucro</span>
-                        <strong>
-                            ${money(order.profit)}
-                        </strong>
-                    </div>
-
-                </div>
-
-                <div style="margin-top:10px">
-
-                    <button
-                        class="btn btn-danger btn-small"
-                        onclick="excluirPedido('${order.id}')">
-                        Excluir pedido
-                    </button>
-
-                </div>
-
-            </div>
-
-        `).join("");
-
-}
-
-function limparPedidoEditor(){
-
-    pedidoItens = [];
-
-    $("pedidoCliente").value = "";
-
-    $("pedidoCanal").value =
-        "Vinted";
-
-    $("pedidoData").value =
-        todayISO();
-
-    $("pedidoStatus").value =
-        "pendente";
-
-    $("vendaProduto").value =
-        "";
-
-    $("vendaQtd").value =
-        "1";
-
-    $("vendaPreco").value =
-        "";
-
-    $("pedidoFrete").value =
-        "0";
-
-    $("pedidoCustoFrete").value =
-        "0";
-
-    $("pedidoDesconto").value =
-        "0";
-
-    $("pedidoTaxas").value =
-        "0";
-
-    $("pedidoEmbalagem").value =
-        "0";
-
-    renderPedidoEditor();
-
-}
-
-
-/* =========================================================
-   VINTED
-========================================================= */
-
-function renderVinted(){
-
-    const list =
-        $("vintedLista");
-
-    if(!list) return;
-
-    const products =
-        catalogo.filter(
-            p => safeUrl(p.vintedLink)
-        );
-
-    if(!products.length){
-
-        list.innerHTML =
-            `<div class="empty">
-                Nenhum produto com link da Vinted.
-            </div>`;
-
-        return;
-
-    }
-
-    list.innerHTML =
-        products.map(p => {
-
-            const link =
-                safeUrl(
-                    p.vintedLink
-                );
-
-            return `
-
-                <div class="list-item">
-
-                    <div class="vinted-card">
-
-                        <div>
-
-                            <div class="list-item-title">
-                                ${escapeHTML(p.name)}
-                            </div>
-
-                            <div class="list-item-meta">
-
-                                Preço ideal:
-                                ${money(p.idealPrice)}
-
-                                ·
-
-                                Lucro:
-                                ${money(p.profitIdeal)}
-
-                            </div>
-
-                            ${
-                                p.vintedData
-                                    ? `
-                                        <div class="list-item-meta">
-                                            Publicado:
-                                            ${formatDate(p.vintedData)}
-                                        </div>
-                                      `
-                                    : ""
-                            }
-
-                        </div>
-
-                        <div class="actions">
-
-                            <a
-                                class="btn btn-secondary btn-small"
-                                href="${link}"
-                                target="_blank"
-                                rel="noopener">
-                                Abrir Vinted
-                            </a>
-
-                            <button
-                                class="btn btn-dark btn-small"
-                                onclick="editarProduto('${p.id}')">
-                                Editar
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            `;
-
-        }).join("");
-
-}
-
-
-/* =========================================================
-   ATENDIMENTO
-========================================================= */
-
-const scripts = {
-
-    saudacao:{
-
-        pt:
-`Olá! 👋
-Obrigado por entrar em contacto connosco.
-
-Como posso ajudar?`,
-
-        en:
-`Hi! 👋
-Thanks for getting in touch with us.
-
-How can I help you?`
-
-    },
-
-    pedido:{
-
-        pt:
-`Olá! 👋
-Obrigado pelo seu pedido.
-
-Já recebemos a sua encomenda e vamos preparar tudo com muito cuidado.`,
-
-        en:
-`Hi! 👋
-Thank you for your order.
-
-We have received your order and will prepare everything with care.`
-
-    },
-
-    producao:{
-
-        pt:
-`Olá! 👋
-O seu pedido já está em produção. 🖨️
-
-Estamos a preparar a sua peça e avisaremos assim que estiver pronta para envio.`,
-
-        en:
-`Hi! 👋
-Your order is now in production. 🖨️
-
-We are preparing your item and will let you know when it is ready to ship.`
-
-    },
-
-    envio:{
-
-        pt:
-`Olá! 👋
-A sua encomenda já foi enviada. 🚚
-
-Obrigado pela compra e esperamos que goste muito do produto!`,
-
-        en:
-`Hi! 👋
-Your order has now been shipped. 🚚
-
-Thank you for your purchase and we hope you love your item!`
-
-    },
-
-    obrigado:{
-
-        pt:
-`Muito obrigado pela sua compra! ❤️
-
-Foi um prazer preparar o seu pedido.
-Esperamos vê-lo novamente em breve!`,
-
-        en:
-`Thank you very much for your purchase! ❤️
-
-It was a pleasure preparing your order.
-We hope to see you again soon!`
-
-    }
-
-};
-
-function selecionarScript(type){
-
-    const item =
-        scripts[type];
-
-    if(!item) return;
-
-    $("scriptPT").value =
-        item.pt;
-
-    $("scriptEN").value =
-        item.en;
-
-}
-
-function copiarScript(){
-
-    const pt =
-        $("scriptPT").value;
-
-    const en =
-        $("scriptEN").value;
-
-    const text =
-        pt +
-        "\n\n--- ENGLISH ---\n\n" +
-        en;
-
-    if(
-        navigator.clipboard &&
-        navigator.clipboard.writeText
-    ){
-
-        navigator.clipboard
-            .writeText(text)
-            .then(
-                () =>
-                    toast(
-                        "Mensagem copiada."
-                    )
-            )
-            .catch(
-                () =>
-                    fallbackCopy(text)
-            );
-
-    }else{
-
-        fallbackCopy(text);
-
-    }
-
-}
-
-function fallbackCopy(text){
-
-    const textarea =
-        document.createElement("textarea");
-
-    textarea.value =
-        text;
-
-    document.body.appendChild(
-        textarea
-    );
-
-    textarea.select();
-
-    document.execCommand(
-        "copy"
-    );
-
-    textarea.remove();
-
-    toast(
-        "Mensagem copiada."
-    );
-
-}
-
-function abrirWhatsAppScript(){
-
-    const text =
-        $("scriptPT").value ||
-        $("scriptEN").value;
-
-    if(!text){
-
-        toast(
-            "Escreva uma mensagem primeiro."
-        );
-
-        return;
-
-    }
-
-    const url =
-        "https://wa.me/?text=" +
-        encodeURIComponent(text);
-
-    window.open(
-        url,
-        "_blank",
-        "noopener"
-    );
-
-}
-
-
-/* =========================================================
-   EXPORT QUOTE
-========================================================= */
-
-function exportarOrcamento(){
-
-    const result =
-        calc();
-
-    const name =
-        $("nomeProduto").value.trim() ||
-        "Produto";
-
-    const code =
-        $("codigoProduto").value.trim() ||
-        "-";
-
-    const html = `
-
-<!DOCTYPE html>
-
-<html lang="pt-BR">
-
-<head>
-
-<meta charset="UTF-8">
-
-<title>Orçamento - ${escapeHTML(name)}</title>
-
-<style>
-
-body{
-    font-family:Arial,sans-serif;
-    padding:40px;
-    max-width:800px;
-    margin:auto;
-    color:#111827;
-}
-
-h1{
-    margin-bottom:5px;
-}
-
-.meta{
-    color:#64748b;
-    margin-bottom:30px;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-td{
-    padding:10px;
-    border-bottom:1px solid #e5e7eb;
-}
-
-.total{
-    font-size:20px;
-    font-weight:bold;
-}
-
-.profit{
-    color:#16a34a;
-    font-weight:bold;
-}
-
-.price{
-    font-size:22px;
-    font-weight:bold;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<h1>uai 3D printing</h1>
-
-<h2>${escapeHTML(name)}</h2>
-
-<div class="meta">
-
-Código: ${escapeHTML(code)}
-<br>
-Data: ${formatDate(nowISO())}
-
-</div>
-
-<table>
-
-<tr>
-<td>Material</td>
-<td>${money(result.material)}</td>
-</tr>
-
-<tr>
-<td>Energia</td>
-<td>${money(result.energy)}</td>
-</tr>
-
-<tr>
-<td>Máquina</td>
-<td>${money(result.machine)}</td>
-</tr>
-
-<tr>
-<td>Extras + embalagem</td>
-<td>${money(result.extrasTotal)}</td>
-</tr>
-
-<tr>
-<td>Reserva de falhas</td>
-<td>${money(result.failureCost)}</td>
-</tr>
-
-<tr class="total">
-<td>Custo total</td>
-<td>${money(result.total)}</td>
-</tr>
-
-</table>
-
-<h3>Preços sugeridos</h3>
-
-<table>
-
-<tr>
-<td>Preço mínimo</td>
-<td class="price">${money(result.minimum)}</td>
-</tr>
-
-<tr>
-<td>Lucro</td>
-<td class="profit">${money(result.profitMinimum)}</td>
-</tr>
-
-<tr>
-<td>Preço ideal</td>
-<td class="price">${money(result.ideal)}</td>
-</tr>
-
-<tr>
-<td>Lucro</td>
-<td class="profit">${money(result.profitIdeal)}</td>
-</tr>
-
-<tr>
-<td>Preço premium</td>
-<td class="price">${money(result.premium)}</td>
-</tr>
-
-<tr>
-<td>Lucro</td>
-<td class="profit">${money(result.profitPremium)}</td>
-</tr>
-
-</table>
-
-<p>
-${escapeHTML(
-    $("observacoes").value
-)}
-</p>
-
-</body>
-
-</html>
-
-`;
-
-    downloadText(
-        html,
-        `orcamento-${name
-            .replace(/[^a-z0-9]+/gi,"-")
-            .toLowerCase()}.html`,
-        "text/html;charset=utf-8"
-    );
-
-    toast(
-        "Orçamento exportado."
-    );
-
-}
-
-
-/* =========================================================
-   CLEAR CALCULATOR
-========================================================= */
-
-function limparCalculadora(){
-
-    if(
-        !confirm(
-            "Limpar os dados atuais da calculadora?"
-        )
-    ){
-
-        return;
-
-    }
-
-    editingProductId = null;
-
-    currentFile = null;
-    currentThumbnailBase64 = null;
-    currentAnalysis = null;
-
-    $("arquivoProjeto").value = "";
-
-    $("arquivoTipoBadge").textContent =
-        "Aguardando arquivo";
-
-    $("analiseStatus").textContent =
-        "Nenhum arquivo analisado.";
-
-    $("analiseGrid").innerHTML = "";
-
-    $("analysisPreview").innerHTML = "";
-
-    $("nomeProduto").value = "";
-    $("codigoProduto").value = "";
-    $("categoriaProduto").value = "";
-
-    $("pesoPeca").value = "0";
-    $("tempoManual").value = "";
-    $("horasPeca").value = "0";
-
-    $("precoRolo").value = "18";
-    $("pesoRolo").value = "1000";
-
-    $("potenciaWatts").value = "80";
-    $("tarifaLuz").value = "0.25";
-    $("custoHora").value = "0.50";
-    $("margem").value = "60";
-    $("taxaFalha").value = "5";
-
-    $("custosExtras").value = "0";
-    $("embalagem").value = "0";
-
-    $("vintedLink").value = "";
-    $("vintedData").value = "";
-    $("fileDownloadLink").value = "";
-    $("observacoes").value = "";
-
-    localStorage.removeItem(
-        LOCAL_KEYS.draft
-    );
-
-    calc();
-
-    toast(
-        "Calculadora limpa."
-    );
-
-}
-
-
-/* =========================================================
-   LOAD ALL DATA
-========================================================= */
-
-async function loadAllData(){
-
-    await Promise.all([
-
-        carregarCatalogo(false),
-
-        loadHistorico(),
-
-        loadVendas(),
-
-        loadFilaments()
-
-    ]);
-
-    populateVendaProdutos();
-
-    renderPedidoEditor();
-
-}
-
-
-/* =========================================================
-   FIREBASE READY
-========================================================= */
-
-document.addEventListener(
-    "firebase-ready",
-    () => {
-
-        loadAllData();
-
-    }
-);
 
 
 /* =========================================================
    INITIALIZATION
 ========================================================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        initTheme();
-
-        $("pedidoData").value =
-            todayISO();
-
-        loadDraft();
-
-        loadLocalFilaments();
-
-        renderFilamentPresets();
-
-        renderCatalogo();
-
-        renderHistorico();
-
-        renderVendas();
-
-        renderVinted();
-
-        renderPedidoEditor();
-
-        selecionarScript(
-            "saudacao"
-        );
-
-        calc();
-
-        if(window.currentUser){
-
-            loadAllData();
-
-        }
-
-    }
-);
+document.addEventListener("DOMContentLoaded", () => {
+    initTheme();
+    $("pedidoData").value = todayISO();
+    loadDraft();
+    calc();
+});
 
 </script>
 
