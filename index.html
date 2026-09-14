@@ -11,13 +11,11 @@
 :root[data-theme=light]{--bg:#f3f4f6;--panel:#fff;--card:#fff;--card2:#f8fafc;--accent:#16a34a;--accent2:#0284c7;--text:#020617;--soft:#6b7280;--border:#d1d5db;--danger:#dc2626;--warning:#d97706;--shadow:0 8px 20px rgba(0,0,0,.08)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{min-height:100%}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}a{color:var(--accent2)}
 .app-wrapper{display:flex;min-height:100vh}.desktop-sidebar{width:260px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;inset:0 auto 0 0;z-index:1000}
-.sidebar-brand{padding:16px 20px;font-size:16px;font-weight:800;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
-.app-logo-img{width:100%;max-width:180px;height:auto;object-fit:contain;border-radius:6px;}
+.sidebar-brand{padding:20px;font-size:16px;font-weight:800;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);color:var(--accent)}
 .sidebar-nav{display:flex;flex-direction:column;gap:6px;padding:16px 12px;flex:1}.sidebar-btn,.mobile-nav-btn{border:0;background:transparent;color:var(--soft);font-weight:600}.sidebar-btn{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;font-size:14px;text-align:left}.sidebar-btn:hover{background:rgba(255,255,255,.03);color:var(--text)}.sidebar-btn.active{background:rgba(34,197,94,.15);color:var(--accent)}.sidebar-btn .icon{font-size:18px}.sidebar-footer{padding:16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}.main-content{margin-left:260px;flex:1;min-height:100vh}
-.topbar-mobile{display:none;background:var(--panel);border-bottom:1px solid var(--border);padding:10px 16px;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:900}
-.topbar-mobile img{max-height:36px;width:auto;object-fit:contain;}
+.topbar-mobile{display:none;background:var(--panel);border-bottom:1px solid var(--border);padding:14px 16px;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:900;font-weight:800;color:var(--accent)}
 .container-fluid{padding:24px;max-width:1450px;width:100%;margin:auto}.page{display:none}.page.active{display:block}.page-header{margin-bottom:20px}.page-title{font-size:24px;font-weight:800}.page-subtitle{font-size:13px;color:var(--soft);margin-top:4px}.badge{font-size:11px;padding:4px 10px;border-radius:999px;border:1px solid rgba(34,197,94,.25);color:var(--accent);background:rgba(34,197,94,.07);white-space:nowrap}
-.card{background:var(--card);border-radius:16px;border:1px solid var(--border);padding:20px;box-shadow:var(--shadow);margin-bottom:20px}.card-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.card-title{font-size:15px;font-weight:700}.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.field.full{grid-column:1/-1}label{display:block;font-size:12px;color:var(--soft);margin-bottom:6px;font-weight:600}input,textarea,select{width:100%;background:rgba(2,6,23,.3);border:1px solid var(--border);border-radius:10px;padding:12px;font-size:14px;color:var(--text);outline:0}input:focus,textarea:focus,select:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(14,165,233,.15)}input[readonly]{opacity:.8}textarea{min-height:100px;resize:vertical}input[type=file]{padding:8px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.btn{border:0;border-radius:999px;padding:12px 20px;font-size:13px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}.btn-primary{background:var(--accent);color:#020617}.btn-outline{background:transparent;border:1px solid var(--border);color:var(--soft)}.btn-outline:hover{color:var(--text);border-color:var(--text)}.btn-danger{background:var(--danger);color:#fff}.btn-info{background:var(--accent2);color:#fff}.btn-sm{padding:8px 14px;font-size:12px}.btn:disabled{opacity:.5;cursor:not-allowed}.summary-list{display:flex;flex-direction:column;gap:10px}.summary-row{display:flex;justify-content:space-between;gap:10px;font-size:14px;color:var(--soft)}.summary-row strong{color:var(--text)}.summary-total{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}.summary-total span:last-child{color:var(--accent);font-size:20px;font-weight:800}.price-grid,.dashboard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.metric{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:16px}.metric small{color:var(--soft);font-size:11px}.metric strong{display:block;font-size:22px;margin-top:5px}.price-box{border:1px solid var(--border);background:var(--card2);border-radius:14px;padding:14px}.price-box.featured{border-color:var(--accent);box-shadow:0 0 0 1px rgba(34,197,94,.15)}.price-box strong{font-size:22px;display:block;margin-top:6px;color:var(--accent)}
+.card{background:var(--card);border-radius:16px;border:1px solid var(--border);padding:20px;box-shadow:var(--shadow);margin-bottom:20px}.card-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.card-title{font-size:15px;font-weight:700}.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.field.full{grid-column:1/-1}label{display:block;font-size:12px;color:var(--soft);margin-bottom:6px;font-weight:600}input,textarea,select{width:100%;background:rgba(2,6,23,.3);border:1px solid var(--border);border-radius:10px;padding:12px;font-size:14px;color:var(--text);outline:0}input:focus,textarea:focus,select:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(14,165,233,.15)}input[readonly]{opacity:.8}textarea{min-height:100px;resize:vertical}input[type=file]{padding:8px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.btn{border:0;border-radius:999px;padding:12px 20px;font-size:13px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}.btn-primary{background:var(--accent);color:#020617}.btn-outline{background:transparent;border:1px solid var(--border);color:var(--soft)}.btn-outline:hover{color:var(--text);border-color:var(--text)}.btn-danger{background:var(--danger);color:#fff}.btn-info{background:var(--accent2);color:#fff}.btn-sm{padding:8px 14px;font-size:12px}.btn:disabled{opacity:.5;cursor:not-allowed}.summary-list{display:flex;flex-direction:column;gap:10px}.summary-row{display:flex;justify-content:space-between;gap:10px;font-size:14px;color:var(--soft)}.summary-row strong{color:var(--text)}.summary-total{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}.summary-total span:last-child{color:var(--accent);font-size:20px;font-weight:800}.price-grid,.dashboard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.metric{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:16px}.metric small{color:var(--soft);font-size:11px}.metric strong{display:block;font-size:22px;margin-top:5px}.price-box{border:1px solid var(--border);background:var(--card2);border-radius:14px;padding:14px}.price-box.featured{border-color:var(--accent);box-shadow:0 0 0 1px rgba(34,197,94,.15)}.price-box strong{font-size:20px;display:block;margin-top:6px;color:var(--accent)}.price-box small{display:block;margin-top:4px;color:var(--soft);font-size:11px}
 .dropzone{display:block;border:2px dashed var(--border);border-radius:16px;padding:30px 20px;text-align:center;background:var(--card2);cursor:pointer;transition:.2s}.dropzone:hover,.dropzone.dragover{border-color:var(--accent);background:rgba(34,197,94,.04)}.drop-icon{font-size:36px}.drop-title{font-size:16px;font-weight:700;margin-top:8px}.drop-sub{font-size:12px;color:var(--soft);margin-top:4px}.dropzone input{display:none}.analysis-status{margin-top:12px;padding:10px;border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--soft)}.analysis-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.analysis-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px}.analysis-item small{display:block;color:var(--soft);font-size:10px}.analysis-item strong{display:block;margin-top:4px}
 .catalog-filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}.catalog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px}.catalog-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px}.catalog-body-grid{display:grid;grid-template-columns:90px 1fr;gap:14px;align-items:center}.catalog-thumb{width:90px;height:90px;background:var(--card2);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--soft);font-size:28px;overflow:hidden}.catalog-thumb img{width:100%;height:100%;object-fit:cover}.catalog-title{font-size:16px;font-weight:700;word-break:break-word}.catalog-details{background:var(--card2);border-radius:10px;padding:10px;font-size:12px;display:flex;flex-direction:column;gap:5px;border:1px solid var(--border)}.catalog-details-row{display:flex;justify-content:space-between;gap:10px;color:var(--soft)}.catalog-details-row strong{color:var(--text);text-align:right}.catalog-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;padding-top:8px;border-top:1px solid var(--border)}.file-pill{font-size:11px;padding:6px 8px;background:rgba(14,165,233,.08);border:1px solid rgba(14,165,233,.2);border-radius:8px;word-break:break-all}.history-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--border)}.history-main{min-width:0}.history-title{font-weight:700}.history-meta{color:var(--soft);font-size:12px;margin-top:3px}.empty{color:var(--soft);font-size:14px;text-align:center;padding:40px 0}.toast{position:fixed;right:24px;bottom:24px;z-index:4000;max-width:380px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:14px 18px;box-shadow:var(--shadow);font-size:13px;opacity:0;transform:translateY(15px);pointer-events:none;transition:.25s}.toast.show{opacity:1;transform:translateY(0)}.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--warning);margin-right:6px}.status-dot.ok{background:var(--accent)}.vinted-badge-ok,.vinted-badge-warn,.vinted-badge-danger{font-weight:600;font-size:11px;padding:3px 8px;border-radius:6px}.vinted-badge-ok{color:var(--accent);background:rgba(34,197,94,.1)}.vinted-badge-warn{color:var(--warning);background:rgba(245,158,11,.1)}.vinted-badge-danger{color:var(--danger);background:rgba(239,68,68,.15)}
 
@@ -29,7 +27,7 @@
 <div class="app-wrapper">
 <aside class="desktop-sidebar">
 <div class="sidebar-brand">
-  <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=" alt="uai 3D printing logo" class="app-logo-img" id="logoDesk">
+  🖨️ uai 3D printing
 </div>
 <nav class="sidebar-nav">
 <button class="sidebar-btn active" data-page="calc" onclick="nav('calc',this)"><span class="icon">💷</span>Calculadora</button>
@@ -42,7 +40,7 @@
 </aside>
 <div class="main-content">
 <header class="topbar-mobile">
-  <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=" alt="uai 3D printing logo" id="logoMob">
+  <span>🖨️ uai 3D printing</span>
   <button class="btn btn-sm btn-outline" onclick="toggleTheme()" id="themeMob">🌙</button>
 </header>
 <div class="container-fluid">
@@ -76,7 +74,7 @@
 <div class="field full"><label>Link de Download do Arquivo 3D (Google Drive / GitHub / Dropbox)</label><input id="fileDownloadLink" type="url" placeholder="https://drive.google.com/uc?export=download&id=..."></div>
 <div class="field full"><label>Observações</label><textarea id="observacoes" maxlength="1000" placeholder="Acabamento, embalagem, material..."></textarea></div>
 </div><div class="actions"><button class="btn btn-primary" onclick="salvarProduto()">☁️ Salvar produto</button><button class="btn btn-outline" onclick="registrarHistorico()">📌 Registrar cálculo</button><button class="btn btn-info" onclick="exportarOrcamento()">📄 Orçamento</button><button class="btn btn-outline" onclick="limparCalculadora()">🧹 Limpar</button></div></div>
-<div class="card"><div class="card-header"><div class="card-title">📊 Resumo financeiro</div></div><div class="summary-list"><div class="summary-row"><span>Material</span><strong id="custoMaterial">£ 0.00</strong></div><div class="summary-row"><span>Energia</span><strong id="custoEnergiaOut">£ 0.00</strong></div><div class="summary-row"><span>Máquina</span><strong id="custoMaquinaOut">£ 0.00</strong></div><div class="summary-row"><span>Extras + embalagem</span><strong id="custoExtrasOut">£ 0.00</strong></div><div class="summary-row"><span>Reserva de falha</span><strong id="custoFalhaOut">£ 0.00</strong></div><div class="summary-row summary-total"><span>Custo total real</span><strong id="custoTotal">£ 0.00</strong></div></div><div class="price-grid" style="margin-top:18px"><div class="price-box"><small>Preço mínimo</small><strong id="precoMinimo">£ 0.00</strong></div><div class="price-box featured"><small>Preço recomendado</small><strong id="precoIdeal">£ 0.00</strong></div><div class="price-box"><small>Preço premium</small><strong id="precoPremium">£ 0.00</strong></div></div></div></section>
+<div class="card"><div class="card-header"><div class="card-title">📊 Resumo financeiro</div></div><div class="summary-list"><div class="summary-row"><span>Material</span><strong id="custoMaterial">£ 0.00</strong></div><div class="summary-row"><span>Energia</span><strong id="custoEnergiaOut">£ 0.00</strong></div><div class="summary-row"><span>Máquina</span><strong id="custoMaquinaOut">£ 0.00</strong></div><div class="summary-row"><span>Extras + embalagem</span><strong id="custoExtrasOut">£ 0.00</strong></div><div class="summary-row"><span>Reserva de falha</span><strong id="custoFalhaOut">£ 0.00</strong></div><div class="summary-row summary-total"><span>Custo total real</span><strong id="custoTotal">£ 0.00</strong></div></div><div class="price-grid" style="margin-top:18px"><div class="price-box"><small>Preço mínimo</small><strong id="precoMinimo">£ 0.00</strong><small id="lucroMinimo">Lucro: £ 0.00 (0%)</small></div><div class="price-box featured"><small>Preço recomendado</small><strong id="precoIdeal">£ 0.00</strong><small id="lucroIdeal">Lucro: £ 0.00 (0%)</small></div><div class="price-box"><small>Preço premium</small><strong id="precoPremium">£ 0.00</strong><small id="lucroPremium">Lucro: £ 0.00 (0%)</small></div></div></div></section>
 
 <section id="page-catalogo" class="page"><div class="page-header"><div class="page-title">📁 Catálogo</div><div class="page-subtitle">Produtos salvos no Firestore.</div></div><div class="card"><div class="catalog-filter-bar"><input id="catalogSearch" placeholder="🔎 Buscar produto..." oninput="renderCatalogo()" style="max-width:360px"><select id="catalogCategory" onchange="renderCatalogo()" style="max-width:240px"><option value="">Todas categorias</option><option>Decoração & Casa</option><option>Acessórios & Suportes</option><option>Miniaturas</option><option>Peças Técnicas</option><option>Outros</option></select><button class="btn btn-outline btn-sm" onclick="carregarCatalogo(true)">🔄 Atualizar</button><span class="badge" id="catalogCount">0 produtos</span></div><div id="catalogGrid" class="catalog-grid"></div></div></section>
 
@@ -116,7 +114,39 @@ function updateThemeButtons(){const light=document.documentElement.dataset.theme
 
 function num(id){return Math.max(0,Number($(id)?.value||0))}
 function parseTime(s){if(!s)return 0;s=String(s).trim().toLowerCase().replace(/,/g,'.');let m=s.match(/^(\d+(?:\.\d+)?)\s*h\s*(\d+(?:\.\d+)?)?\s*m?$/);if(m)return Number(m[1])+(Number(m[2]||0)/60);m=s.match(/^(\d+)\s*:\s*(\d{1,2})$/);if(m)return Number(m[1])+Number(m[2])/60;m=s.match(/^(\d+(?:\.\d+)?)\s*h$/);if(m)return Number(m[1]);let n=Number(s);return Number.isFinite(n)?n:0}
-function calc(){const peso=num('pesoPeca'),rolo=num('precoRolo'),tempo=parseTime($('tempoManual').value),pot=num('potenciaWatts'),tarifa=num('tarifaLuz'),maq=num('custoHora'),extras=num('custosExtras'),emb=num('embalagem'),markup=num('margem'),falha=num('taxaFalha');const material=peso*(rolo/Math.max(1,num('pesoRolo')));const energia=(pot/1000)*tempo*tarifa;const maquina=tempo*maq;const base=material+energia+maquina+extras+emb;const reserva=base*(falha/100);const total=base+reserva;const minimo=total*1.2;const ideal=total*(1+markup/100);const premium=total*1.8;[['custoMaterial',material],['custoEnergiaOut',energia],['custoMaquinaOut',maquina],['custoExtrasOut',extras+emb],['custoFalhaOut',reserva],['custoTotal',total],['precoMinimo',minimo],['precoIdeal',ideal],['precoPremium',premium]].forEach(([id,v])=>$(id).textContent=money(v));return{peso,tempo,material,energia,maquina,extras,emb,reserva,total,minimo,ideal,premium}}
+
+function calc(){
+  const peso=num('pesoPeca'),rolo=num('precoRolo'),tempo=parseTime($('tempoManual').value),pot=num('potenciaWatts'),tarifa=num('tarifaLuz'),maq=num('custoHora'),extras=num('custosExtras'),emb=num('embalagem'),markup=num('margem'),falha=num('taxaFalha');
+  const material=peso*(rolo/Math.max(1,num('pesoRolo')));
+  const energia=(pot/1000)*tempo*tarifa;
+  const maquina=tempo*maq;
+  const base=material+energia+maquina+extras+emb;
+  const reserva=base*(falha/100);
+  const total=base+reserva;
+  
+  const minimo=total*1.2;
+  const ideal=total*(1+markup/100);
+  const premium=total*1.8;
+
+  // Cálculo de lucro e margem para cada faixa
+  const lucroMin=minimo-total;
+  const margemMin=minimo>0?(lucroMin/minimo)*100:0;
+
+  const lucroIdeal=ideal-total;
+  const margemIdeal=ideal>0?(lucroIdeal/ideal)*100:0;
+
+  const lucroPrem=premium-total;
+  const margemPrem=premium>0?(lucroPrem/premium)*100:0;
+
+  [['custoMaterial',material],['custoEnergiaOut',energia],['custoMaquinaOut',maquina],['custoExtrasOut',extras+emb],['custoFalhaOut',reserva],['custoTotal',total],['precoMinimo',minimo],['precoIdeal',ideal],['precoPremium',premium]].forEach(([id,v])=>$(id).textContent=money(v));
+
+  if($('lucroMinimo'))$('lucroMinimo').textContent=`Lucro: ${money(lucroMin)} (${margemMin.toFixed(0)}%)`;
+  if($('lucroIdeal'))$('lucroIdeal').textContent=`Lucro: ${money(lucroIdeal)} (${margemIdeal.toFixed(0)}%)`;
+  if($('lucroPremium'))$('lucroPremium').textContent=`Lucro: ${money(lucroPrem)} (${margemPrem.toFixed(0)}%)`;
+
+  return{peso,tempo,material,energia,maquina,extras,emb,reserva,total,minimo,ideal,premium};
+}
+
 function onInputCalculadora(){calc();saveDraft()}
 function converterTempoManual(){calc();saveDraft()}
 function saveDraft(){try{const o={};['nomeProduto','codigoProduto','categoriaProduto','pesoPeca','tempoManual','precoRolo','pesoRolo','potenciaWatts','tarifaLuz','custoHora','margem','taxaFalha','custosExtras','embalagem','vintedLink','vintedData','fileDownloadLink','observacoes'].forEach(id=>o[id]=$(id)?.value);localStorage.setItem(LOCAL_KEYS.draft,JSON.stringify(o))}catch(e){}}
@@ -132,642 +162,158 @@ function aplicarFilamentoPreset(){const idx=$('filamentoPreset').value;if(idx===
 
 /* ============================================================
    ANÁLISE DE ARQUIVOS 3MF / G-CODE / STL
-   Parser robusto para Bambu Studio / OrcaSlicer
    ============================================================ */
 
 async function analyzeFile(file){
   currentFile = file;
   currentThumbnailBase64 = null;
-
   const ext = file.name.split('.').pop().toLowerCase();
-
-  $('arquivoTipoBadge').textContent =
-    ext === '3mf' ? '3MF' :
-    ext === 'stl' ? 'STL' :
-    'G-code';
-
-  $('analiseStatus').textContent =
-    'Analisando ' + file.name + '...';
-
+  $('arquivoTipoBadge').textContent = ext === '3mf' ? '3MF' : ext === 'stl' ? 'STL' : 'G-code';
+  $('analiseStatus').textContent = 'Analisando ' + file.name + '...';
   $('analiseGrid').innerHTML = '';
 
-  const a = {
-    name: file.name,
-    size: file.size,
-    type: file.type || '',
-    weight: null,
-    time: null,
-    source: '',
-    plates: 0
-  };
+  const a = { name: file.name, size: file.size, type: file.type || '', weight: null, time: null, source: '', plates: 0 };
 
   try {
-
-    /* ========================================================
-       G-CODE NORMAL
-       ======================================================== */
-
     if(ext === 'gcode' || ext === 'gc' || ext === 'gco'){
-
-      const text = await file
-        .slice(0, Math.min(file.size, 30 * 1024 * 1024))
-        .text();
-
+      const text = await file.slice(0, Math.min(file.size, 30 * 1024 * 1024)).text();
       a.weight = extractGcodeWeight(text);
       a.time = extractGcodeTime(text);
       a.source = 'G-code';
-
-      if(a.weight != null){
-        $('pesoPeca').value = Number(a.weight).toFixed(2);
-      }
-
-      if(a.time != null){
-        $('tempoManual').value = hoursToText(a.time);
-      }
+      if(a.weight != null)$('pesoPeca').value = Number(a.weight).toFixed(2);
+      if(a.time != null)$('tempoManual').value = hoursToText(a.time);
     }
-
-
-    /* ========================================================
-       3MF
-       ======================================================== */
-
     else if(ext === '3mf'){
-
-      if(typeof JSZip === 'undefined'){
-        throw new Error(
-          'JSZip não foi carregado. Verifique a conexão com a internet.'
-        );
-      }
-
+      if(typeof JSZip === 'undefined') throw new Error('JSZip não carregado.');
       const zip = new JSZip();
       const zipContent = await zip.loadAsync(file);
-
       const files = Object.entries(zipContent.files);
 
-      console.log(
-        '[BambuCalc] Arquivos encontrados no 3MF:',
-        files.map(([path]) => path)
-      );
-
-
-      /* ------------------------------------------------------
-         1. Procurar slice_info.config
-         ------------------------------------------------------ */
-
       let sliceInfoEntry = null;
-
       for(const [path, obj] of files){
-
-        if(
-          !obj.dir &&
-          path.replace(/\\/g,'/')
-            .toLowerCase()
-            .endsWith('metadata/slice_info.config')
-        ){
-          sliceInfoEntry = obj;
-          break;
+        if(!obj.dir && path.replace(/\\/g,'/').toLowerCase().endsWith('metadata/slice_info.config')){
+          sliceInfoEntry = obj; break;
         }
       }
-
-
-      /* ------------------------------------------------------
-         2. Ler slice_info.config
-         ------------------------------------------------------ */
 
       if(sliceInfoEntry){
-
-        const sliceInfo =
-          await sliceInfoEntry.async('text');
-
-        console.log(
-          '[BambuCalc] slice_info.config:',
-          sliceInfo
-        );
-
-        const parsed =
-          parseSliceInfoConfig(sliceInfo);
-
-        a.weight = parsed.weight;
-        a.time = parsed.time;
-        a.plates = parsed.plates || 0;
-        a.source = 'Metadata/slice_info.config';
-
-        console.log(
-          '[BambuCalc] Dados encontrados no slice_info:',
-          parsed
-        );
+        const sliceInfo = await sliceInfoEntry.async('text');
+        const parsed = parseSliceInfoConfig(sliceInfo);
+        a.weight = parsed.weight; a.time = parsed.time; a.plates = parsed.plates || 0; a.source = 'Metadata/slice_info.config';
       }
 
-
-      /* ------------------------------------------------------
-         3. Procurar G-code dentro do 3MF
-         ------------------------------------------------------ */
-
-      let gcodeWeight = null;
-      let gcodeTime = null;
-
+      let gcodeWeight = null, gcodeTime = null;
       for(const [path, obj] of files){
-
-        if(
-          !obj.dir &&
-          (
-            /\.gcode$/i.test(path) ||
-            /\.gco$/i.test(path) ||
-            /\.gc$/i.test(path)
-          )
-        ){
-
+        if(!obj.dir && /\.(gcode|gco|gc)$/i.test(path)){
           try{
-
-            const gcode =
-              await obj.async('text');
-
-            const w =
-              extractGcodeWeight(gcode);
-
-            const t =
-              extractGcodeTime(gcode);
-
-            if(gcodeWeight == null && w != null){
-              gcodeWeight = w;
-            }
-
-            if(gcodeTime == null && t != null){
-              gcodeTime = t;
-            }
-
-            if(
-              gcodeWeight != null &&
-              gcodeTime != null
-            ){
-              break;
-            }
-
-          }catch(err){
-
-            console.warn(
-              '[BambuCalc] Não foi possível ler G-code interno:',
-              path,
-              err
-            );
-
-          }
+            const gcode = await obj.async('text');
+            const w = extractGcodeWeight(gcode), t = extractGcodeTime(gcode);
+            if(gcodeWeight == null && w != null) gcodeWeight = w;
+            if(gcodeTime == null && t != null) gcodeTime = t;
+            if(gcodeWeight != null && gcodeTime != null) break;
+          }catch{}
         }
       }
 
-
-      /* ------------------------------------------------------
-         4. Fallback do G-code
-         ------------------------------------------------------ */
-
-      if(a.weight == null && gcodeWeight != null){
-
-        a.weight = gcodeWeight;
-
-        a.source =
-          a.source ?
-          a.source + ' + G-code' :
-          'G-code interno';
-      }
-
-      if(a.time == null && gcodeTime != null){
-
-        a.time = gcodeTime;
-
-        a.source =
-          a.source ?
-          a.source + ' + G-code' :
-          'G-code interno';
-      }
-
-
-      /* ------------------------------------------------------
-         5. Procurar outros metadados como fallback
-         ------------------------------------------------------ */
-
-      if(a.weight == null || a.time == null){
-
-        let combinedText = '';
-
-        for(const [path, obj] of files){
-
-          if(
-            !obj.dir &&
-            /\.(config|json|xml|model|txt)$/i.test(path)
-          ){
-
-            try{
-              combinedText +=
-                '\n' + await obj.async('text');
-            }catch{}
-          }
-        }
-
-        if(a.weight == null){
-
-          const fallbackWeight =
-            extractWeightFromAnyMetadata(combinedText);
-
-          if(fallbackWeight != null){
-            a.weight = fallbackWeight;
-            a.source = 'Metadados';
-          }
-        }
-
-        if(a.time == null){
-
-          const fallbackTime =
-            extractTimeFromAnyMetadata(combinedText);
-
-          if(fallbackTime != null){
-            a.time = fallbackTime;
-            a.source = 'Metadados';
-          }
-        }
-      }
-
-
-      /* ------------------------------------------------------
-         6. Miniatura
-         ------------------------------------------------------ */
+      if(a.weight == null && gcodeWeight != null){ a.weight = gcodeWeight; a.source = a.source ? a.source + ' + G-code' : 'G-code interno'; }
+      if(a.time == null && gcodeTime != null){ a.time = gcodeTime; a.source = a.source ? a.source + ' + G-code' : 'G-code interno'; }
 
       let thumbFile = null;
-
-      const thumbPriority = [
-        /metadata\/plate_1\.png$/i,
-        /metadata\/plate_1_small\.png$/i,
-        /metadata\/thumbnail\.png$/i,
-        /metadata\/.+\.(png|jpg|jpeg)$/i
-      ];
-
+      const thumbPriority = [/metadata\/plate_1\.png$/i, /metadata\/plate_1_small\.png$/i, /metadata\/thumbnail\.png$/i, /metadata\/.+\.(png|jpg|jpeg)$/i];
       for(const pattern of thumbPriority){
-
-        thumbFile = files.find(
-          ([path,obj]) =>
-            !obj.dir && pattern.test(path)
-        )?.[1];
-
+        thumbFile = files.find(([path,obj]) => !obj.dir && pattern.test(path))?.[1];
         if(thumbFile) break;
       }
-
       if(thumbFile){
-
         try{
-
-          const blob =
-            await thumbFile.async('blob');
-
-          currentThumbnailBase64 =
-            await new Promise(resolve => {
-
-              const reader =
-                new FileReader();
-
-              reader.onload = () =>
-                resolve(reader.result);
-
-              reader.readAsDataURL(blob);
-            });
-
-        }catch(err){
-
-          console.warn(
-            '[BambuCalc] Erro ao carregar miniatura:',
-            err
-          );
-        }
+          const blob = await thumbFile.async('blob');
+          currentThumbnailBase64 = await new Promise(resolve => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.readAsDataURL(blob);
+          });
+        }catch{}
       }
     }
+    else if(ext === 'stl'){ a.source = 'STL'; }
 
+    if(a.weight != null && Number.isFinite(Number(a.weight))) $('pesoPeca').value = Number(a.weight).toFixed(2);
+    if(a.time != null && Number.isFinite(Number(a.time))) $('tempoManual').value = hoursToText(Number(a.time));
 
-    /* ========================================================
-       STL
-       ======================================================== */
-
-    else if(ext === 'stl'){
-
-      a.source = 'STL';
-      a.weight = null;
-      a.time = null;
-    }
-
-
-    /* ========================================================
-       PREENCHER CALCULADORA
-       ======================================================== */
-
-    if(a.weight != null && Number.isFinite(Number(a.weight))){
-
-      $('pesoPeca').value =
-        Number(a.weight).toFixed(2);
-    }
-
-    if(a.time != null && Number.isFinite(Number(a.time))){
-
-      $('tempoManual').value =
-        hoursToText(Number(a.time));
-    }
-
-
-    calc();
-    saveDraft();
-    renderAnalysis(a);
-
-    if(a.weight != null && a.time != null){
-      $('analiseStatus').textContent = '✅ Análise concluída! Peso e tempo encontrados automaticamente.';
-    }else if(a.weight != null){
-      $('analiseStatus').textContent = '⚠️ Peso encontrado, mas o tempo de impressão não foi encontrado.';
-    }else if(a.time != null){
-      $('analiseStatus').textContent = '⚠️ Tempo encontrado, mas o peso não foi encontrado.';
-    }else{
-      $('analiseStatus').textContent = '⚠️ Arquivo aberto, mas peso e tempo não foram encontrados.';
-    }
-
+    calc(); saveDraft(); renderAnalysis(a);
+    $('analiseStatus').textContent = (a.weight != null && a.time != null) ? '✅ Análise concluída com sucesso!' : '⚠️ Arquivo lido parcialmente.';
   }catch(e){
-    console.error('[BambuCalc] Erro na análise:', e);
-    $('analiseStatus').textContent = '❌ Não foi possível analisar completamente este arquivo.';
+    console.error(e);
+    $('analiseStatus').textContent = '❌ Erro ao analisar arquivo.';
     renderAnalysis(a);
   }
 }
 
-
-/* ============================================================
-   PARSER DO Metadata/slice_info.config
-   ============================================================ */
-
 function parseSliceInfoConfig(xmlText){
-  let totalWeight = 0;
-  let totalTimeSeconds = 0;
-  let foundWeight = false;
-  let foundTime = false;
-  let plates = 0;
-
+  let totalWeight = 0, totalTimeSeconds = 0, foundWeight = false, foundTime = false, plates = 0;
   try{
     const parser = new DOMParser();
     const xml = parser.parseFromString(xmlText, 'application/xml');
-    const parserError = xml.querySelector('parsererror');
-
-    if(!parserError){
+    if(!xml.querySelector('parsererror')){
       const plateNodes = Array.from(xml.getElementsByTagName('plate'));
       plates = plateNodes.length;
-
       for(const plate of plateNodes){
         const metadata = Array.from(plate.getElementsByTagName('metadata'));
-        let plateWeight = null;
-        let plateTime = null;
-
+        let plateWeight = null, plateTime = null;
         for(const node of metadata){
-          const key = node.getAttribute('key');
-          const value = node.getAttribute('value');
-          if(!key || value == null) continue;
-
-          if(key === 'weight' || key === 'total_weight' || key === 'filament_weight'){
-            const n = parseDecimal(value);
-            if(n != null && n >= 0) plateWeight = n;
-          }
-
-          if(key === 'prediction' || key === 'print_time' || key === 'print_time_seconds'){
-            const n = parseDecimal(value);
-            if(n != null && n >= 0) plateTime = n;
-          }
+          const key = node.getAttribute('key'), value = node.getAttribute('value');
+          if(key === 'weight' || key === 'total_weight' || key === 'filament_weight'){ const n = parseDecimal(value); if(n != null && n >= 0) plateWeight = n; }
+          if(key === 'prediction' || key === 'print_time'){ const n = parseDecimal(value); if(n != null && n >= 0) plateTime = n; }
         }
-
-        if(plateWeight != null){
-          totalWeight += plateWeight;
-          foundWeight = true;
-        }else{
-          const filaments = Array.from(plate.getElementsByTagName('filament'));
-          let filamentWeight = 0;
-          let hasFilamentWeight = false;
-
-          for(const filament of filaments){
-            const usedG = parseDecimal(filament.getAttribute('used_g'));
-            if(usedG != null && usedG >= 0){
-              filamentWeight += usedG;
-              hasFilamentWeight = true;
-            }
-          }
-
-          if(hasFilamentWeight){
-            totalWeight += filamentWeight;
-            foundWeight = true;
-          }
-        }
-
-        if(plateTime != null){
-          totalTimeSeconds += plateTime;
-          foundTime = true;
-        }
-      }
-
-      if(!foundWeight){
-        const nodes = Array.from(xml.getElementsByTagName('metadata'));
-        for(const node of nodes){
-          if(node.getAttribute('key') === 'weight'){
-            const n = parseDecimal(node.getAttribute('value'));
-            if(n != null){ totalWeight += n; foundWeight = true; break; }
-          }
-        }
-      }
-
-      if(!foundTime){
-        const nodes = Array.from(xml.getElementsByTagName('metadata'));
-        for(const node of nodes){
-          if(node.getAttribute('key') === 'prediction'){
-            const n = parseDecimal(node.getAttribute('value'));
-            if(n != null){ totalTimeSeconds += n; foundTime = true; break; }
-          }
-        }
+        if(plateWeight != null){ totalWeight += plateWeight; foundWeight = true; }
+        if(plateTime != null){ totalTimeSeconds += plateTime; foundTime = true; }
       }
     }
-  }catch(err){
-    console.warn('[BambuCalc] DOMParser falhou:', err);
-  }
-
-  if(!foundWeight){
-    const weights = [];
-    const re = /key=["'](?:weight|total_weight|filament_weight)["'][^>]*value=["']([^"']+)["']/gi;
-    let m;
-    while((m = re.exec(xmlText))){
-      const n = parseDecimal(m[1]);
-      if(n != null && n >= 0) weights.push(n);
-    }
-    if(weights.length){
-      totalWeight = weights.reduce((sum,v) => sum + v, 0);
-      foundWeight = true;
-    }
-  }
-
-  if(!foundTime){
-    const predictions = [];
-    const re = /key=["'](?:prediction|print_time|print_time_seconds)["'][^>]*value=["']([^"']+)["']/gi;
-    let m;
-    while((m = re.exec(xmlText))){
-      const n = parseDecimal(m[1]);
-      if(n != null && n >= 0) predictions.push(n);
-    }
-    if(predictions.length){
-      totalTimeSeconds = predictions.reduce((sum,v) => sum + v, 0);
-      foundTime = true;
-    }
-  }
-
-  return {
-    weight: foundWeight ? totalWeight : null,
-    time: foundTime ? totalTimeSeconds / 3600 : null,
-    plates
-  };
+  }catch{}
+  return { weight: foundWeight ? totalWeight : null, time: foundTime ? totalTimeSeconds / 3600 : null, plates };
 }
 
 function extractGcodeWeight(text){
   if(!text) return null;
-  const patterns = [
-    /total\s+filament\s+weight\s*\[\s*g\s*\]\s*[:=]\s*([\d.,]+)/i,
-    /filament\s+used\s*\[\s*g\s*\]\s*[:=]\s*([\d.,]+)/i,
-    /total\s+filament\s+weight\s*[:=]\s*([\d.,]+)/i,
-    /filament\s+used\s*[:=]\s*([\d.,]+)/i,
-    /filament[_\s-]*weight\s*[:=]\s*([\d.,]+)/i,
-    /\bweight\s*[:=]\s*([\d.,]+)\s*g\b/i
-  ];
-  for(const pattern of patterns){
-    const m = text.match(pattern);
-    if(m){
-      const n = parseDecimal(m[1]);
-      if(n != null && n >= 0 && n < 100000) return n;
-    }
-  }
+  const patterns = [/total\s+filament\s+weight\s*\[\s*g\s*\]\s*[:=]\s*([\d.,]+)/i, /filament\s+used\s*\[\s*g\s*\]\s*[:=]\s*([\d.,]+)/i, /total\s+filament\s+weight\s*[:=]\s*([\d.,]+)/i, /filament\s+used\s*[:=]\s*([\d.,]+)/i];
+  for(const p of patterns){ const m = text.match(p); if(m){ const n = parseDecimal(m[1]); if(n != null && n >= 0 && n < 100000) return n; } }
   return null;
 }
 
 function extractGcodeTime(text){
   if(!text) return null;
-  const patterns = [
-    /estimated\s+printing\s+time(?:\s*\([^)]*\))?\s*[:=]\s*([0-9hms :.,]+)/i,
-    /estimated\s+print(?:ing)?\s*time\s*[:=]\s*([0-9hms :.,]+)/i,
-    /print\s*time\s*[:=]\s*([0-9hms :.,]+)/i
-  ];
-  for(const pattern of patterns){
-    const m = text.match(pattern);
-    if(m){
-      const hours = parseFlexibleTime(m[1]);
-      if(hours != null && hours >= 0 && hours < 10000) return hours;
-    }
-  }
+  const patterns = [/estimated\s+printing\s+time\s*[:=]\s*([0-9hms :.,]+)/i, /print\s*time\s*[:=]\s*([0-9hms :.,]+)/i];
+  for(const p of patterns){ const m = text.match(p); if(m){ const h = parseFlexibleTime(m[1]); if(h != null && h >= 0) return h; } }
   const timeMatch = text.match(/(?:^|\n)\s*;\s*TIME\s*:\s*(\d+(?:\.\d+)?)/i);
-  if(timeMatch){
-    const seconds = Number(timeMatch[1]);
-    if(Number.isFinite(seconds) && seconds >= 0) return seconds / 3600;
-  }
+  if(timeMatch){ const s = Number(timeMatch[1]); if(Number.isFinite(s) && s >= 0) return s / 3600; }
   return null;
 }
 
 function parseFlexibleTime(value){
   if(value == null) return null;
   let s = String(value).trim().toLowerCase().replace(/,/g,'.');
-  if(!s) return null;
-  const hms = s.match(/^(?:(\d+(?:\.\d+)?)\s*h)?\s*(?:(\d+(?:\.\d+)?)\s*m)?\s*(?:(\d+(?:\.\d+)?)\s*s)?$/i);
-  if(hms && (hms[1] != null || hms[2] != null || hms[3] != null)){
-    return Number(hms[1] || 0) + Number(hms[2] || 0) / 60 + Number(hms[3] || 0) / 3600;
-  }
-  const colon = s.match(/^(\d+)\s*:\s*(\d{1,2})(?::(\d{1,2}))?$/);
-  if(colon){
-    const first = Number(colon[1]), second = Number(colon[2]), third = Number(colon[3] || 0);
-    return colon[3] != null ? first + second / 60 + third / 3600 : first + second / 60;
-  }
-  const n = Number(s);
-  return Number.isFinite(n) ? n : null;
-}
-
-function extractWeightFromAnyMetadata(text){
-  if(!text) return null;
-  const patterns = [
-    /key=["']weight["'][^>]*value=["']([\d.,]+)["']/i,
-    /"weight"\s*:\s*([\d.,]+)/i,
-    /"filament_weight"\s*:\s*([\d.,]+)/i,
-    /filament\s+used\s*\[\s*g\s*\]\s*[:=]\s*([\d.,]+)/i,
-    /total\s+filament\s+weight\s*\[\s*g\s*\]\s*[:=]\s*([\d.,]+)/i
-  ];
-  for(const pattern of patterns){
-    const m = text.match(pattern);
-    if(m){
-      const n = parseDecimal(m[1]);
-      if(n != null && n >= 0) return n;
-    }
-  }
-  return null;
-}
-
-function extractTimeFromAnyMetadata(text){
-  if(!text) return null;
-  const prediction = text.match(/key=["']prediction["'][^>]*value=["']([\d.,]+)["']/i);
-  if(prediction){
-    const seconds = parseDecimal(prediction[1]);
-    if(seconds != null && seconds >= 0) return seconds / 3600;
-  }
-  const patterns = [/"print_time"\s*:\s*([\d.,]+)/i,/"prediction"\s*:\s*([\d.,]+)/i,/estimated\s+printing\s+time\s*[:=]\s*([0-9hms :.,]+)/i];
-  for(const pattern of patterns){
-    const m = text.match(pattern);
-    if(m){
-      const value = m[1];
-      if(pattern.source.includes('prediction') || pattern.source.includes('print_time')){
-        const n = parseDecimal(value);
-        if(n != null && n >= 0) return n / 3600;
-      }
-      const hours = parseFlexibleTime(value);
-      if(hours != null) return hours;
-    }
-  }
-  return null;
+  const hms = s.match(/^(?:(\d+(?:\.\d+)?)\s*h)?\s*(?:(\d+(?:\.\d+)?)\s*m)?$/i);
+  if(hms && (hms[1] != null || hms[2] != null)) return Number(hms[1]||0) + Number(hms[2]||0)/60;
+  const n = Number(s); return Number.isFinite(n) ? n : null;
 }
 
 function parseDecimal(value){
   if(value == null) return null;
   let s = String(value).trim().replace(/\s/g,'');
   if(!s) return null;
-  if(s.includes(',') && s.includes('.')){
-    if(s.lastIndexOf('.') > s.lastIndexOf(',')) s = s.replace(/,/g,'');
-    else s = s.replace(/\./g,'').replace(',','.');
-  }else if(s.includes(',')){
-    s = s.replace(',','.');
-  }
-  const n = Number(s);
-  return Number.isFinite(n) ? n : null;
+  if(s.includes(',') && s.includes('.')){ s = s.replace(/,/g,''); }
+  else if(s.includes(',')){ s = s.replace(',','.'); }
+  const n = Number(s); return Number.isFinite(n) ? n : null;
 }
 
 function hoursToText(hours){
   if(hours == null || !Number.isFinite(Number(hours))) return '';
-  let totalMinutes = Math.round(Number(hours) * 60);
-  let h = Math.floor(totalMinutes / 60);
-  let m = totalMinutes % 60;
-  if(m >= 60){ h++; m = 0; }
+  let mins = Math.round(Number(hours)*60), h = Math.floor(mins/60), m = mins%60;
   return h + 'h' + String(m).padStart(2,'0');
 }
 
-function extractNumber(text,labels){
-  if(!text) return null;
-  for(const label of labels){
-    const escaped = label.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-    const re = new RegExp(escaped + '\\s*[:=]\\s*([\\d.,]+)','i');
-    const m = text.match(re);
-    if(m){
-      const n = parseDecimal(m[1]);
-      if(n != null) return n;
-    }
-  }
-  return null;
-}
-
 function renderAnalysis(a){
-  const weight = a.weight != null ? Number(a.weight).toFixed(2) + ' g' : '—';
-  const time = a.time != null ? hoursToText(Number(a.time)) : '—';
-  $('analiseGrid').innerHTML = [
-    ['Arquivo', a.name],
-    ['Tamanho', fmtBytes(a.size)],
-    ['Peso detectado', weight],
-    ['Tempo detectado', time],
-    ['Fonte', a.source || 'Não encontrado'],
-    ['Placas', a.plates ? String(a.plates) : '—']
-  ].map(x => `<div class="analysis-item"><small>${esc(x[0])}</small><strong>${esc(String(x[1]))}</strong></div>`).join('');
+  $('analiseGrid').innerHTML = [['Arquivo', a.name], ['Tamanho', fmtBytes(a.size)], ['Peso', a.weight != null ? Number(a.weight).toFixed(2)+' g' : '—'], ['Tempo', a.time != null ? hoursToText(a.time) : '—']].map(x=>`<div class="analysis-item"><small>${esc(x[0])}</small><strong>${esc(String(x[1]))}</strong></div>`).join('');
 }
 
 function getProduct(){
@@ -778,142 +324,114 @@ function getProduct(){
     name:$('nomeProduto').value.trim()||'Produto sem nome',
     code:$('codigoProduto').value.trim()||'-',
     category:$('categoriaProduto').value,
-    weight:c.peso,
-    time:c.tempo,
-    material:c.material,
-    energy:c.energia,
-    machine:c.maquina,
-    extras:c.extras,
-    packaging:c.emb,
-    reserve:c.reserva,
-    total:c.total,
-    minPrice:c.minimo,
-    idealPrice:c.ideal,
-    premiumPrice:c.premium,
-    vintedLink:$('vintedLink').value.trim(),
-    vintedData:$('vintedData').value,
-    fileDownloadLink:$('fileDownloadLink')?.value.trim()||'',
-    notes:$('observacoes').value.trim(),
-    fileName:currentFile?.name||old?.fileName||'',
-    fileSize:currentFile?.size||old?.fileSize||0,
-    thumbBase64:currentThumbnailBase64||old?.thumbBase64||null,
-    createdAt:editingProductId?(old?.createdAt||nowISO()):nowISO(),
-    updatedAt:nowISO()
+    weight:c.peso, time:c.tempo, material:c.material, energy:c.energia, machine:c.maquina, extras:c.extras, packaging:c.emb, reserve:c.reserva, total:c.total, minPrice:c.minimo, idealPrice:c.ideal, premiumPrice:c.premium,
+    vintedLink:$('vintedLink').value.trim(), vintedData:$('vintedData').value, fileDownloadLink:$('fileDownloadLink')?.value.trim()||'', notes:$('observacoes').value.trim(),
+    fileName:currentFile?.name||old?.fileName||'', fileSize:currentFile?.size||old?.fileSize||0, thumbBase64:currentThumbnailBase64||old?.thumbBase64||null,
+    createdAt:editingProductId?(old?.createdAt||nowISO()):nowISO(), updatedAt:nowISO()
   };
 }
 
 async function salvarProduto(){
   const p=getProduct();
   try{
-    if(!window.FB||!window.currentUser)throw new Error('Firebase ainda não está pronto.');
+    if(!window.FB||!window.currentUser)throw new Error('Firebase não inicializado.');
     const uid=window.currentUser.uid;
-    const old=editingProductId?catalogo.find(x=>x.id===editingProductId):null;
-    const id=p.id;
-    await window.FB.setDoc(window.FB.doc(window.FB.db,'users',uid,'products',id),p,{merge:true});
-    editingProductId=null;currentFile=null;currentThumbnailBase64=null;
-    toast(old?'Produto atualizado no Firestore.':'Produto salvo no Firestore.');
+    await window.FB.setDoc(window.FB.doc(window.FB.db,'users',uid,'products',p.id),p,{merge:true});
+    editingProductId=null; currentFile=null; currentThumbnailBase64=null;
+    toast('Produto salvo no Firestore com sucesso!');
     await carregarCatalogo(true);
     limparCamposSemConfirmar();
-  }catch(e){console.error(e);toast('Erro ao salvar: '+friendlyFirebaseError(e))}
+  }catch(e){toast('Erro ao salvar: '+e.message)}
 }
 
-async function carregarCatalogo(showToast=false){try{if(!window.FB||!window.currentUser){catalogo=[];renderCatalogo();return}const uid=window.currentUser.uid;const snap=await window.FB.getDocs(window.FB.collection(window.FB.db,'users',uid,'products'));catalogo=snap.docs.map(d=>({...d.data(),id:d.id}));catalogo.sort((a,b)=>String(b.updatedAt||'').localeCompare(String(a.updatedAt||'')));renderCatalogo();populateVendaProdutos();populateAtendimentoProdutos();if(showToast)toast(catalogo.length+' produtos carregados')}catch(e){console.error(e);toast('Erro ao carregar catálogo: '+friendlyFirebaseError(e))}}
+async function carregarCatalogo(showToast=false){
+  try{
+    if(!window.FB||!window.currentUser){catalogo=[];renderCatalogo();return}
+    const uid=window.currentUser.uid;
+    const snap=await window.FB.getDocs(window.FB.collection(window.FB.db,'users',uid,'products'));
+    catalogo=snap.docs.map(d=>({...d.data(),id:d.id}));
+    catalogo.sort((a,b)=>String(b.updatedAt||'').localeCompare(String(a.updatedAt||'')));
+    renderCatalogo(); populateVendaProdutos(); populateAtendimentoProdutos();
+    if(showToast)toast(catalogo.length+' produtos carregados.');
+  }catch(e){toast('Erro ao carregar catálogo.')}
+}
 
 function renderCatalogo(){
   const q=($('catalogSearch')?.value||'').toLowerCase();
   const cat=$('catalogCategory')?.value||'';
-  const list=catalogo.filter(p=>(!q||[p.name,p.code,p.category,p.fileName].join(' ').toLowerCase().includes(q))&&(!cat||p.category===cat));
+  const list=catalogo.filter(p=>(!q||[p.name,p.code,p.category].join(' ').toLowerCase().includes(q))&&(!cat||p.category===cat));
   $('catalogCount').textContent=list.length+' produto'+(list.length===1?'':'s');
-  $('catalogGrid').innerHTML=list.length?list.map(p=>`<article class="catalog-card"><div class="catalog-body-grid"><div class="catalog-thumb">${p.thumbBase64?`<img src="${p.thumbBase64}" alt="Miniatura">`:'🧊'}</div><div><div class="catalog-title">${esc(p.name)}</div><div style="color:var(--soft);font-size:12px">${esc(p.code)} · ${esc(p.category||'')}</div></div></div><div class="catalog-details"><div class="catalog-details-row"><span>Peso</span><strong>${Number(p.weight||0).toFixed(2)} g</strong></div><div class="catalog-details-row"><span>Tempo</span><strong>${hoursToText(Number(p.time||0))}</strong></div><div class="catalog-details-row"><span>Custo</span><strong>${money(p.total)}</strong></div><div class="catalog-details-row"><span>Preço recomendado</span><strong>${money(p.idealPrice)}</strong></div></div>${p.fileName?`<div class="file-pill">📦 ${esc(p.fileName)}</div>`:''}<div class="catalog-actions">${p.fileDownloadLink?`<a class="btn btn-info btn-sm" href="${escAttr(p.fileDownloadLink)}" target="_blank" rel="noopener">⬇️ Baixar arquivo</a>`:''}<button class="btn btn-outline btn-sm" onclick="editarProduto('${p.id}')">✏️ Editar</button><button class="btn btn-primary btn-sm" onclick="abrirAtendimentoProduto('${p.id}')">💬 Atendimento</button><button class="btn btn-danger btn-sm" onclick="excluirProduto('${p.id}')">🗑️</button></div></article>`).join(''):'<div class="empty">Nenhum produto encontrado.</div>'}
+  $('catalogGrid').innerHTML=list.length?list.map(p=>`<article class="catalog-card"><div class="catalog-body-grid"><div class="catalog-thumb">${p.thumbBase64?`<img src="${p.thumbBase64}">`:'🧊'}</div><div><div class="catalog-title">${esc(p.name)}</div><div style="color:var(--soft);font-size:12px">${esc(p.code)} · ${esc(p.category||'')}</div></div></div><div class="catalog-details"><div class="catalog-details-row"><span>Peso</span><strong>${Number(p.weight||0).toFixed(2)} g</strong></div><div class="catalog-details-row"><span>Tempo</span><strong>${hoursToText(Number(p.time||0))}</strong></div><div class="catalog-details-row"><span>Custo</span><strong>${money(p.total)}</strong></div><div class="catalog-details-row"><span>Preço recomendado</span><strong>${money(p.idealPrice)}</strong></div></div>${p.fileName?`<div class="file-pill">📦 ${esc(p.fileName)}</div>`:''}<div class="catalog-actions">${p.fileDownloadLink?`<a class="btn btn-info btn-sm" href="${escAttr(p.fileDownloadLink)}" target="_blank" rel="noopener">⬇️ Baixar arquivo</a>`:''}<button class="btn btn-outline btn-sm" onclick="editarProduto('${p.id}')">✏️ Editar</button><button class="btn btn-primary btn-sm" onclick="abrirAtendimentoProduto('${p.id}')">💬 Atendimento</button><button class="btn btn-danger btn-sm" onclick="excluirProduto('${p.id}')">🗑️</button></div></article>`).join(''):'<div class="empty">Nenhum produto encontrado.</div>';
+}
 
-async function excluirProduto(id){if(!confirm('Excluir este produto?'))return;try{const uid=window.currentUser.uid;await window.FB.deleteDoc(window.FB.doc(window.FB.db,'users',uid,'products',id));catalogo=catalogo.filter(x=>x.id!==id);renderCatalogo();populateVendaProdutos();populateAtendimentoProdutos();toast('Produto excluído.')}catch(e){toast('Erro ao excluir: '+friendlyFirebaseError(e))}}
-function editarProduto(id){const p=catalogo.find(x=>x.id===id);if(!p)return;editingProductId=id;Object.entries({nomeProduto:p.name,codigoProduto:p.code,categoriaProduto:p.category,pesoPeca:p.weight,tempoManual:hoursToText(p.time),vintedLink:p.vintedLink,vintedData:p.vintedData,fileDownloadLink:p.fileDownloadLink,observacoes:p.notes}).forEach(([k,v])=>{if($(k))$(k).value=v??''});$('analiseStatus').textContent=p.fileName?'Arquivo associado: '+p.fileName:'Nenhum arquivo carregado nesta edição.';calc();nav('calc');toast('Produto carregado para edição. Ao salvar, o registro será atualizado.')}
-function limparCamposSemConfirmar(){['nomeProduto','codigoProduto','pesoPeca','tempoManual','vintedLink','vintedData','fileDownloadLink','observacoes'].forEach(id=>{if($(id))$(id).value=''});if($('pesoPeca'))$('pesoPeca').value=0;if($('tempoManual'))$('tempoManual').value='';editingProductId=null;clearAnalysis();calc();localStorage.removeItem(LOCAL_KEYS.draft)}
-function registrarHistorico(){const c=calc();historico.unshift({id:crypto.randomUUID(),name:$('nomeProduto').value||'Sem nome',weight:c.peso,time:c.tempo,total:c.total,ideal:c.ideal,date:nowISO()});localStorage.setItem('bambu_history',JSON.stringify(historico.slice(0,500)));renderHistorico();toast('Cálculo registrado.');}
-function renderHistorico(){const el=$('historicoLista');if(!historico.length){el.innerHTML='<div class="empty">Nenhum cálculo registrado.</div>';return}el.innerHTML=historico.map(h=>`<div class="history-item"><div class="history-main"><div class="history-title">${esc(h.name)}</div><div class="history-meta">${new Date(h.date).toLocaleString('pt-GB')} · ${Number(h.weight||0).toFixed(1)} g · ${hoursToText(Number(h.time||0))}</div></div><div><b>${money(h.ideal)}</b></div></div>`).join('')}
-function limparHistorico(){if(confirm('Limpar todo o histórico local?')){historico=[];localStorage.removeItem('bambu_history');renderHistorico();}}
+async function excluirProduto(id){
+  if(!confirm('Deseja excluir este produto?'))return;
+  try{
+    const uid=window.currentUser.uid;
+    await window.FB.deleteDoc(window.FB.doc(window.FB.db,'users',uid,'products',id));
+    catalogo=catalogo.filter(x=>x.id!==id);
+    renderCatalogo(); populateVendaProdutos(); populateAtendimentoProdutos();
+    toast('Produto excluído.');
+  }catch(e){toast('Erro ao excluir.')}
+}
+
+function editarProduto(id){
+  const p=catalogo.find(x=>x.id===id); if(!p)return;
+  editingProductId=id;
+  Object.entries({nomeProduto:p.name,codigoProduto:p.code,categoriaProduto:p.category,pesoPeca:p.weight,tempoManual:hoursToText(p.time),vintedLink:p.vintedLink,vintedData:p.vintedData,fileDownloadLink:p.fileDownloadLink,observacoes:p.notes}).forEach(([k,v])=>{if($(k))$(k).value=v??''});
+  calc(); nav('calc'); toast('Produto carregado para edição.');
+}
+
+function limparCamposSemConfirmar(){
+  ['nomeProduto','codigoProduto','pesoPeca','tempoManual','vintedLink','vintedData','fileDownloadLink','observacoes'].forEach(id=>{if($(id))$(id).value=''});
+  if($('pesoPeca'))$('pesoPeca').value=0; if($('tempoManual'))$('tempoManual').value='';
+  editingProductId=null; clearAnalysis(); calc(); localStorage.removeItem(LOCAL_KEYS.draft);
+}
+
+function registrarHistorico(){
+  const c=calc();
+  historico.unshift({id:crypto.randomUUID(),name:$('nomeProduto').value||'Sem nome',weight:c.peso,time:c.tempo,total:c.total,ideal:c.ideal,date:nowISO()});
+  localStorage.setItem('bambu_history',JSON.stringify(historico.slice(0,500)));
+  renderHistorico(); toast('Cálculo registrado.');
+}
+function renderHistorico(){
+  const el=$('historicoLista'); if(!el)return;
+  el.innerHTML=historico.length?historico.map(h=>`<div class="history-item"><div class="history-main"><div class="history-title">${esc(h.name)}</div><div class="history-meta">${new Date(h.date).toLocaleString('pt-GB')} · ${Number(h.weight||0).toFixed(1)} g · ${hoursToText(Number(h.time||0))}</div></div><div><b>${money(h.ideal)}</b></div></div>`).join(''):'<div class="empty">Nenhum cálculo registrado.</div>';
+}
+function limparHistorico(){if(confirm('Limpar histórico?')){historico=[];localStorage.removeItem('bambu_history');renderHistorico();}}
 function exportarHistorico(){const rows=[['Data','Produto','Peso g','Tempo h','Custo','Preço ideal'],...historico.map(h=>[h.date,h.name,h.weight,h.time,h.total,h.ideal])];downloadBlob(rows.map(r=>r.map(csv).join(';')).join('\n'),'bambucalc-historico.csv','text/csv;charset=utf-8')}
 function csv(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
-function exportarOrcamento(){const c=calc();const text=`BambuCalc 3D PRO\n\nProduto: ${$('nomeProduto').value||'Sem nome'}\nCódigo: ${$('codigoProduto').value||'-'}\nPeso: ${c.peso.toFixed(2)} g\nTempo: ${hoursToText(c.tempo)}\n\nCusto total: ${money(c.total)}\nPreço mínimo: ${money(c.minimo)}\nPreço recomendado: ${money(c.ideal)}\nPreço premium: ${money(c.premium)}\n\nObservações: ${$('observacoes').value||'-'}`;downloadBlob(text,'orcamento-bambucalc.txt','text/plain;charset=utf-8')}
+function exportarOrcamento(){const c=calc();const text=`BambuCalc 3D PRO\n\nProduto: ${$('nomeProduto').value||'Sem nome'}\nPeso: ${c.peso.toFixed(2)}g\nCusto Total: ${money(c.total)}\nPreço Recomendado: ${money(c.ideal)}`;downloadBlob(text,'orcamento.txt','text/plain;charset=utf-8')}
 function downloadBlob(content,name,type){const b=new Blob([content],{type});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)}
-function limparCalculadora(){if(!confirm('Limpar os dados da calculadora?'))return;['nomeProduto','codigoProduto','pesoPeca','tempoManual','vintedLink','vintedData','fileDownloadLink','observacoes'].forEach(id=>$(id).value='');$('pesoPeca').value=0;$('tempoManual').value='';clearAnalysis();calc();localStorage.removeItem(LOCAL_KEYS.draft)}
+function limparCalculadora(){if(confirm('Limpar calculadora?'))limparCamposSemConfirmar();}
+
 function populateVendaProdutos(){const s=$('vendaProduto');if(!s)return;s.innerHTML='<option value="">Selecione...</option>'+catalogo.map(p=>`<option value="${escAttr(p.id)}">${esc(p.name)} — ${money(p.idealPrice)}</option>`).join('');preencherPrecoVenda();}
 function preencherPrecoVenda(){const p=catalogo.find(x=>x.id===$('vendaProduto')?.value);if(p&&$('vendaPreco'))$('vendaPreco').value=Number(p.idealPrice||0).toFixed(2);}
 let pedidoItensEditor=[];
 function pedidoMoney(id){return Math.max(0,Number($(id)?.value||0));}
-function adicionarItemPedido(){const p=catalogo.find(x=>x.id===$('vendaProduto')?.value);if(!p)return toast('Selecione um produto.');const qty=Math.max(1,parseInt($('vendaQtd').value||1));const unit=Math.max(0,Number($('vendaPreco').value||p.idealPrice||0));const existing=pedidoItensEditor.find(x=>x.productId===p.id&&Number(x.unitPrice)===unit);if(existing)existing.qty+=qty;else pedidoItensEditor.push({productId:p.id,name:p.name,qty,unitPrice:unit,cost:Number(p.total||0)});renderPedidoEditor();toast('Item adicionado ao pedido.');}
+function adicionarItemPedido(){const p=catalogo.find(x=>x.id===$('vendaProduto')?.value);if(!p)return toast('Selecione um produto.');const qty=Math.max(1,parseInt($('vendaQtd').value||1));const unit=Math.max(0,Number($('vendaPreco').value||p.idealPrice||0));pedidoItensEditor.push({productId:p.id,name:p.name,qty,unitPrice:unit,cost:Number(p.total||0)});renderPedidoEditor();toast('Item adicionado.');}
 function removerItemPedido(i){pedidoItensEditor.splice(i,1);renderPedidoEditor();}
-function limparPedidoEditor(){pedidoItensEditor=[];['pedidoCliente','pedidoObservacoes'].forEach(id=>$(id).value='');$('pedidoFrete').value=0;$('pedidoDesconto').value=0;$('pedidoTaxas').value=0;$('pedidoEmbalagem').value=0;$('pedidoStatus').value='Aguardando pagamento';$('pedidoData').value=new Date().toISOString().slice(0,10);$('tratarComoPedido').checked=true;renderPedidoEditor();}
-function calcularPedido(){const produtos=pedidoItensEditor.reduce((s,i)=>s+i.qty*i.unitPrice,0);const custoProdutos=pedidoItensEditor.reduce((s,i)=>s+i.qty*i.cost,0);const frete=pedidoMoney('pedidoFrete'),desconto=pedidoMoney('pedidoDesconto'),taxas=pedidoMoney('pedidoTaxas'),emb=pedidoMoney('pedidoEmbalagem');const total=produtos+frete-desconto;const lucro=total-custoProdutos-taxas-emb;return{produtos,custoProdutos,frete,desconto,taxas,emb,total,lucro,qty:pedidoItensEditor.reduce((s,i)=>s+i.qty,0)};}
-function renderPedidoEditor(){const box=$('pedidoItens');if(!box)return;const c=calcularPedido();$('pedidoModoBadge').textContent=( $('tratarComoPedido').checked?'Pedido':'Venda avulsa')+' com '+c.qty+' item'+(c.qty===1?'':'s');box.innerHTML=pedidoItensEditor.length?pedidoItensEditor.map((i,idx)=>`<div class="order-item"><div class="order-item-main"><strong>${esc(i.name)}</strong><small>${i.qty} × ${money(i.unitPrice)} · custo ${money(i.cost)}</small></div><strong>${money(i.qty*i.unitPrice)}</strong><button class="btn btn-danger btn-sm order-remove" onclick="removerItemPedido(${idx})">✕</button></div>`).join(''):'<div class="empty" style="padding:25px">Nenhum item adicionado ao pedido.</div>';
-$('pedidoResumo').innerHTML=`<div class="metric"><small>Produtos</small><strong>${money(c.produtos)}</strong></div><div class="metric"><small>Desconto + frete</small><strong>${money(c.total-c.produtos)}</strong></div><div class="metric"><small>Total recebido</small><strong>${money(c.total)}</strong></div><div class="metric"><small>Lucro líquido estimado</small><strong>${money(c.lucro)}</strong></div>`;}
-function buildPedido(){const c=calcularPedido();return{id:crypto.randomUUID(),orderNumber:'PED-'+new Date().toISOString().slice(0,10).replaceAll('-','')+'-'+String(Date.now()).slice(-5),type:$('tratarComoPedido').checked?'pedido':'venda',customer:$('pedidoCliente').value.trim()||'Cliente não informado',channel:$('pedidoCanal').value,date:$('pedidoData').value||new Date().toISOString().slice(0,10),status:$('pedidoStatus').value,items:pedidoItensEditor.map(x=>({...x})),subtotal:c.produtos,shipping:c.frete,discount:c.desconto,platformFees:c.taxas,packaging:c.emb,total:c.total,cost:c.custoProdutos,profit:c.lucro,notes:$('pedidoObservacoes').value.trim(),createdAt:nowISO(),updatedAt:nowISO()};}
-function salvarPedido(){if(!pedidoItensEditor.length)return toast('Adicione pelo menos um produto ao pedido.');const order=buildPedido();if(order.type==='venda'&&order.items.length>1)order.type='pedido';vendas.unshift(order);localStorage.setItem('bambu_sales',JSON.stringify(vendas));renderVendas();limparPedidoEditor();toast(order.type==='pedido'?'Pedido com múltiplos itens registrado.':'Venda registrada.');}
-function statusClass(s){return 'status-'+String(s||'').toLowerCase().replace(/[^a-záéíóúãõç]+/g,'-').replace(/[áàâã]/g,'a').replace(/[éê]/g,'e').replace(/[í]/g,'i').replace(/[óôõ]/g,'o').replace(/[ú]/g,'u').replace(/[ç]/g,'c').replace(/-$/,'');}
-function renderVendas(){const normalized=vendas.map(normalizeOrder);vendas=normalized;const totalQty=vendas.reduce((s,v)=>s+(v.items||[]).reduce((a,i)=>a+i.qty,0),0),fat=vendas.reduce((s,v)=>s+Number(v.total||0),0),cost=vendas.reduce((s,v)=>s+Number(v.cost||0),0),fees=vendas.reduce((s,v)=>s+Number(v.platformFees||0)+Number(v.packaging||0),0);$('metricPedidos').textContent=vendas.length;$('metricVendas').textContent=totalQty;$('metricFaturamento').textContent=money(fat);$('metricLucro').textContent=money(fat-cost-fees);const q=($('vendasSearch')?.value||'').toLowerCase();const list=vendas.filter(v=>!q||JSON.stringify(v).toLowerCase().includes(q));$('vendasLista').innerHTML=list.length?list.map(v=>`<article class="order-card"><div class="order-card-header"><div><strong>${esc(v.orderNumber||v.id)}</strong><div class="history-meta">${esc(v.customer)} · ${esc(v.channel)} · ${esc(v.date)} · ${v.items.reduce((s,i)=>s+i.qty,0)} unidade(s)</div></div><span class="status-pill ${statusClass(v.status)}">${esc(v.status)}</span></div><div class="order-products">${v.items.map(i=>`<div class="order-product-line"><span>${esc(i.name)} × ${i.qty}</span><strong>${money(i.qty*i.unitPrice)}</strong></div>`).join('')}</div><div class="order-card-actions"><strong style="margin-right:auto">Total ${money(v.total)} · Lucro ${money(v.profit)}</strong><button class="btn btn-info btn-sm" onclick="usarPedidoNoAtendimento('${v.id}')">💬 Atendimento</button><button class="btn btn-outline btn-sm" onclick="duplicarPedido('${v.id}')">📋 Duplicar</button><button class="btn btn-danger btn-sm" onclick="excluirPedido('${v.id}')">🗑️</button></div></article>`).join(''):'<div class="empty">Nenhum pedido registrado.</div>';}
-function normalizeOrder(v){if(v.items)return v;return{...v,id:v.id||crypto.randomUUID(),orderNumber:'VEN-'+String(v.id||'').slice(0,8),type:'venda',customer:'Cliente não informado',channel:v.channel||'Outro',date:v.date||'',status:'Concluído',items:[{productId:v.productId,name:v.name,qty:Number(v.qty||1),unitPrice:Number(v.unitPrice||0),cost:Number(v.cost||0)}],subtotal:Number(v.qty||1)*Number(v.unitPrice||0),shipping:0,discount:0,platformFees:0,packaging:0,total:Number(v.qty||1)*Number(v.unitPrice||0),cost:Number(v.qty||1)*Number(v.cost||0),profit:Number(v.qty||1)*(Number(v.unitPrice||0)-Number(v.cost||0)),notes:'',createdAt:nowISO(),updatedAt:nowISO()};}
-function excluirPedido(id){if(!confirm('Excluir este pedido?'))return;vendas=vendas.filter(v=>v.id!==id);localStorage.setItem('bambu_sales',JSON.stringify(vendas));renderVendas();toast('Pedido excluído.');}
-function duplicarPedido(id){const v=vendas.find(x=>x.id===id);if(!v)return;pedidoItensEditor=v.items.map(x=>({...x}));$('pedidoCliente').value=v.customer;$('pedidoCanal').value=v.channel;$('pedidoStatus').value='Aguardando pagamento';$('pedidoData').value=new Date().toISOString().slice(0,10);$('pedidoFrete').value=v.shipping||0;$('pedidoDesconto').value=v.discount||0;$('pedidoTaxas').value=v.platformFees||0;$('pedidoEmbalagem').value=v.packaging||0;$('pedidoObservacoes').value=v.notes||'';nav('vendas');renderPedidoEditor();toast('Pedido duplicado no formulário para edição.');}
-function pedidoTexto(v){return v.items.map(i=>`• ${i.name} ×${i.qty} — ${money(i.qty*i.unitPrice)}`).join('\n');}
-function pedidoParaScript(v){return `Order ${v.orderNumber}\n${pedidoTexto(v)}\nTotal: ${money(v.total)}`;}
-function usarPedidoNoAtendimento(id){if(id&&typeof id==='string'){const v=vendas.find(x=>x.id===id);if(v)localStorage.setItem('bambu_atendimento_order',v.id);}nav('atendimento');populateAtendimentoPedidos();const saved=localStorage.getItem('bambu_atendimento_order');if(saved&&$('atendimentoPedido')){$('atendimentoPedido').value=saved;}renderAtendimento();}
+function limparPedidoEditor(){pedidoItensEditor=[];['pedidoCliente','pedidoObservacoes'].forEach(id=>$(id).value='');$('pedidoFrete').value=0;$('pedidoDesconto').value=0;$('pedidoTaxas').value=0;$('pedidoEmbalagem').value=0;renderPedidoEditor();}
+function calcularPedido(){const produtos=pedidoItensEditor.reduce((s,i)=>s+i.qty*i.unitPrice,0), custo=pedidoItensEditor.reduce((s,i)=>s+i.qty*i.cost,0);const frete=pedidoMoney('pedidoFrete'),desc=pedidoMoney('pedidoDesconto'),taxas=pedidoMoney('pedidoTaxas'),emb=pedidoMoney('pedidoEmbalagem');const total=produtos+frete-desc;const lucro=total-custo-taxas-emb;return{produtos,total,lucro,qty:pedidoItensEditor.reduce((s,i)=>s+i.qty,0)};}
+function renderPedidoEditor(){const box=$('pedidoItens');if(!box)return;const c=calcularPedido();$('pedidoModoBadge').textContent='Pedido com '+c.qty+' item(s)';box.innerHTML=pedidoItensEditor.length?pedidoItensEditor.map((i,idx)=>`<div class="order-item"><div class="order-item-main"><strong>${esc(i.name)}</strong><small>${i.qty} × ${money(i.unitPrice)}</small></div><strong>${money(i.qty*i.unitPrice)}</strong><button class="btn btn-danger btn-sm" onclick="removerItemPedido(${idx})">✕</button></div>`).join(''):'<div class="empty">Nenhum item.</div>';$('pedidoResumo').innerHTML=`<div class="metric"><small>Total</small><strong>${money(c.total)}</strong></div><div class="metric"><small>Lucro</small><strong>${money(c.lucro)}</strong></div>`;}
+function salvarPedido(){if(!pedidoItensEditor.length)return toast('Adicione itens.');vendas.unshift({id:crypto.randomUUID(),orderNumber:'PED-'+Date.now(),customer:$('pedidoCliente').value||'Cliente',channel:$('pedidoCanal').value,date:new Date().toISOString().slice(0,10),status:$('pedidoStatus').value,items:[...pedidoItensEditor],total:calcularPedido().total,profit:calcularPedido().lucro});localStorage.setItem('bambu_sales',JSON.stringify(vendas));renderVendas();limparPedidoEditor();toast('Pedido registrado!');}
+function renderVendas(){const el=$('vendasLista');if(!el)return;el.innerHTML=vendas.length?vendas.map(v=>`<div class="history-item"><div><b>${v.orderNumber}</b> — ${esc(v.customer)}</div><div><b>${money(v.total)}</b></div></div>`).join(''):'<div class="empty">Nenhuma venda.</div>';}
+function renderVinted(){const el=$('vintedLista');if(!el)return;el.innerHTML=catalogo.filter(p=>p.vintedLink).map(p=>`<div class="history-item"><div><b>${esc(p.name)}</b></div><a class="btn btn-info btn-sm" href="${escAttr(p.vintedLink)}" target="_blank">Abrir Vinted</a></div>`).join(''):'<div class="empty">Nenhum link Vinted.</div>';}
 
-/* Vinted Manager com alerta inteligente para anúncios > 25 dias */
-function renderVinted(){
-  const q=($('vintedSearch')?.value||'').toLowerCase();
-  const list=catalogo.filter(p=>(p.vintedLink||'')&&(!q||p.name.toLowerCase().includes(q)||p.code.toLowerCase().includes(q)));
-  const hoje=new Date();
-  $('vintedLista').innerHTML=list.length?list.map(p=>{
-    let badge='<span class="vinted-badge-ok">✓ Ativo recente</span>';
-    let diasStr='Sem data informada';
-    if(p.vintedDate){
-      const diffDays=Math.floor((hoje - new Date(p.vintedDate))/(1000*60*60*24));
-      diasStr=`Postado há ${diffDays} dia(s) (${p.vintedDate.split('-').reverse().join('/')})`;
-      if(diffDays>=30){
-        badge='<span class="vinted-badge-danger">🚨 ALERTA (>30d): Fazer Bump ou Republicar!</span>';
-      }else if(diffDays>=25){
-        badge='<span class="vinted-badge-warn">⚠️ ATENÇÃO (>25d): Quase expirando relevância</span>';
-      }
-    }
-    return `<div class="history-item" style="flex-direction:column;align-items:flex-start;gap:6px;">
-      <div style="display:flex;justify-content:space-between;width:100%;">
-        <b>${esc(p.name)}</b> ${badge}
-      </div>
-      <div class="history-meta">Idade: ${diasStr} · Preço: ${money(p.idealPrice)}</div>
-      <a class="btn btn-info btn-sm" href="${escAttr(p.vintedLink)}" target="_blank" rel="noopener" style="margin-top:4px;">Abrir anúncio na Vinted</a>
-    </div>`;
-  }).join(''):'<div class="empty">Nenhum produto com link Vinted cadastrado.</div>';
-}
+const SUPPORT_SCRIPTS={welcome:{title:'Boas-vindas',pt:'Olá!',en:'Hi! 👋 Thanks for getting in touch!'}};
+function scriptData(){const p=catalogo.find(x=>x.id===$('atendimentoProduto')?.value);return{p,qty:Number($('atendimentoQtd')?.value||1)};}
+function renderAtendimento(){const grid=$('supportGrid');if(!grid)return;grid.innerHTML=`<button class="support-card active"><strong>Boas-vindas</strong></button>`;$('scriptEN').value='Hi! 👋 Thanks for getting in touch!';}
+function popularAtendimentoProdutos(){const s=$('atendimentoProduto');if(!s)return;s.innerHTML='<option value="">Selecione...</option>'+catalogo.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');}
+function atendimentoSelecionarProduto(){renderAtendimento();}
+function selecionarScript(){}
+async function copiarScript(){await navigator.clipboard.writeText($('scriptEN').value);toast('Copiado!');}
+function abrirWhatsAppScript(){window.open('https://wa.me/?text='+encodeURIComponent($('scriptEN').value),'_blank');}
+function abrirEmailScript(){copiarScript();}
+function usarPedidoNoAtendimento(id){nav('atendimento');}
 
-const SUPPORT_SCRIPTS={
- welcome:{title:'Boas-vindas',pt:'Cliente entrou em contato e você quer iniciar o atendimento.',en:'Hi! 👋 Thanks for getting in touch!\n\nWe offer a range of 3D printed products from our catalogue. 🖨️\n\nIf you\'d like to know more about a product, its price, available colours or delivery time, just let me know which item you\'re interested in and I\'ll be happy to help.'},
- price:{title:'Informar preço',pt:'Cliente quer saber o preço do produto selecionado.',en:'Of course! 😊\n\nThe price for the {{PRODUCT}} is {{PRICE}}.\n\nIf you\'re interested, I can also confirm the available colours and estimated dispatch time.'},
- availability:{title:'Disponibilidade',pt:'Confirmar que o produto está disponível e perguntar quantidade.',en:'Hi! 😊\n\nThe {{PRODUCT}} is currently available for {{PRICE}}.\n\nHow many would you like to order? I can confirm the available options and total price for you.'},
- colours:{title:'Cores disponíveis',pt:'Informar as cores que você cadastrou para o produto.',en:'Hi! 😊\n\nThe {{PRODUCT}} is available in the following colours:\n\n{{COLOURS}}\n\nLet me know which colour you\'d prefer and how many you\'d like.'},
- quote:{title:'Orçamento',pt:'Enviar preço, quantidade e informações básicas do produto.',en:'Hi! 😊\n\nI can help you with the {{PRODUCT}}. The current price is {{PRICE}} per item.\n\nOrder items:\n{{ORDER_ITEMS}}\n\nTotal: {{TOTAL}}.\n\nLet me know if you\'d like to place the order.'},
- dispatch:{title:'Prazo de produção',pt:'Informar o tempo estimado de produção.',en:'Hi! 😊\n\nThe estimated production time for the {{PRODUCT}} is around {{TIME}}.\n\nOnce your order is confirmed, we\'ll prepare the item and arrange dispatch as soon as possible.'},
- shipping:{title:'Envio',pt:'Explicar que o envio depende da localização e confirmar as opções.',en:'Hi! 😊\n\nWe can arrange delivery for the {{PRODUCT}}. 📦\n\nThe delivery cost and estimated delivery time depend on your location.\n\nIf you send me your postcode, I can confirm the available delivery information for you.'},
- order:{title:'Fechar pedido',pt:'Confirmar produto, quantidade, cor e valor antes da compra.',en:'Great! 😊\n\nI\'d be happy to arrange your order.\n\nOrder: {{ORDER_NUMBER}}\n\n{{ORDER_ITEMS}}\n\nTotal: {{TOTAL}}\n\nPlease confirm the details and I\'ll help you with the next step.'},
- followup:{title:'Follow-up',pt:'Cliente não respondeu e você quer fazer um acompanhamento sem pressionar.',en:'Hi! 😊 Just checking in to see if you\'re still interested in the {{PRODUCT}}.\n\nIf you have any questions about the item, price or delivery, I\'d be happy to help.'},
- shipped:{title:'Pedido enviado',pt:'Avisar que o pedido foi enviado e adicionar o rastreio.',en:'Good news! 🎉\n\nYour order {{ORDER_NUMBER}} has now been dispatched. 📦\n\nYour tracking details are:\n{{TRACKING}}\n\nThank you very much for your order and support! 😊'},
- review:{title:'Pedir avaliação',pt:'Pedir uma avaliação após a compra.',en:'Hi! 😊 We hope you\'re happy with your {{PRODUCT}}.\n\nIf you have a moment, we\'d really appreciate it if you could leave us a review. ⭐\n\nYour feedback helps our small business grow. Thank you very much for your support!'},
- catalogue:{title:'Fora do catálogo',pt:'Cliente pergunta se você faz outro modelo ou peça personalizada.',en:'Thanks for asking! 😊\n\nAt the moment, we only sell the products available in our catalogue and we don\'t offer custom-made items.\n\nIf you\'d like, I\'d be happy to show you some of the products currently available.'},
- discount:{title:'Pedido de desconto',pt:'Cliente pede desconto. Para várias unidades, você pode avaliar.',en:'Thanks for asking! 😊\n\nOur prices are carefully calculated based on the material and production costs.\n\nIf you\'re interested in ordering multiple items, let me know the quantity and I\'ll check whether I can offer you the best possible price.'}
-};
-function scriptData(){const orderId=$('atendimentoPedido')?.value;const order=vendas.map(normalizeOrder).find(x=>x.id===orderId);const id=$('atendimentoProduto')?.value;const p=catalogo.find(x=>x.id===id);const qty=Math.max(1,Number($('atendimentoQtd')?.value||1));return{p,qty,order};}
-function fillScript(t){const {p,qty,order}=scriptData();const price=p?money(p.idealPrice):'£ [PRICE]';const total=p?money(Number(p.idealPrice||0)*qty):'£ [TOTAL]';const time=p?hoursToText(Number(p.time||0)):'[TIME]';const product=p?.name||'[PRODUCT]';const colours=p?.colours||p?.colors||'';const colourText=Array.isArray(colours)?colours.map(x=>'• '+x).join('\n'):(colours||'• [COLOUR 1]\n• [COLOUR 2]');const orderProducts=order?pedidoTexto(order):`${product} ×${qty}`;const orderTotal=order?money(order.total):total;return t.replaceAll('{{PRODUCT}}',product).replaceAll('{{PRICE}}',price).replaceAll('{{QTY}}',String(order?order.items.reduce((s,i)=>s+i.qty,0):qty)).replaceAll('{{TOTAL}}',orderTotal).replaceAll('{{TIME}}',time).replaceAll('{{COLOURS}}',colourText).replaceAll('{{TRACKING}}','[TRACKING NUMBER]').replaceAll('{{ORDER_ITEMS}}',orderProducts).replaceAll('{{ORDER_NUMBER}}',order?.orderNumber||'[ORDER NUMBER]').replaceAll('{{CUSTOMER}}',order?.customer||'[CUSTOMER]');}
-function populateAtendimentoProdutos(){const s=$('atendimentoProduto');if(!s)return;const current=s.value;s.innerHTML='<option value="">Selecione um produto...</option>'+catalogo.map(p=>`<option value="${escAttr(p.id)}">${esc(p.name)} — ${money(p.idealPrice)}</option>`).join('');if(catalogo.some(p=>p.id===current))s.value=current;populateAtendimentoPedidos();}
-function populateAtendimentoPedidos(){const s=$('atendimentoPedido');if(!s)return;const current=s.value||localStorage.getItem('bambu_atendimento_order')||'';s.innerHTML='<option value="">Sem pedido — usar produto individual</option>'+vendas.map(normalizeOrder).map(v=>`<option value="${escAttr(v.id)}">${esc(v.orderNumber)} · ${esc(v.customer)} · ${money(v.total)}</option>`).join('');if(vendas.some(v=>v.id===current))s.value=current;}
-function atendimentoSelecionarProduto(){const {p}=scriptData();$('atendimentoProdutoBadge').textContent=p?p.name:'Nenhum produto selecionado';renderAtendimento();}
-function renderAtendimento(){const grid=$('supportGrid');if(!grid)return;grid.innerHTML=Object.entries(SUPPORT_SCRIPTS).map(([id,s])=>`<button class="support-card ${selectedScriptId===id?'active':''}" onclick="selecionarScript('${id}')"><span class="support-icon">${({welcome:'👋',price:'💷',availability:'📦',colours:'🎨',quote:'🧾',dispatch:'⏱️',shipping:'🚚',order:'🛒',followup:'⏳',shipped:'📬',review:'⭐',catalogue:'❌',discount:'🏷️'})[id]}</span><strong>${s.title}</strong><small>${s.pt}</small></button>`).join('');const s=SUPPORT_SCRIPTS[selectedScriptId]||SUPPORT_SCRIPTS.welcome;$('scriptTitle').textContent=s.title;$('scriptPT').textContent=s.pt;$('scriptEN').value=fillScript(s.en);const {p,order}=scriptData();$('atendimentoProdutoBadge').textContent=order?`${order.orderNumber} · ${order.customer}`:(p?p.name:'Nenhum produto selecionado');}
-function selecionarScript(id){selectedScriptId=id;renderAtendimento();}
-async function copiarScript(){const text=$('scriptEN').value;if(!text)return;try{await navigator.clipboard.writeText(text);toast('Mensagem em inglês copiada.')}catch(e){$('scriptEN').select();document.execCommand('copy');toast('Mensagem copiada.')}}
-function abrirWhatsAppScript(){const text=encodeURIComponent($('scriptEN').value||'');window.open('https://wa.me/?text='+text,'_blank','noopener')}
-function abrirEmailScript(){copiarScript();toast('Mensagem copiada. Cole no e-mail ou no chat desejado.')}
-function abrirAtendimentoProduto(id){nav('atendimento');if($('atendimentoProduto')){$('atendimentoProduto').value=id;atendimentoSelecionarProduto();}}
-
-function friendlyFirebaseError(e){const c=e?.code||'';return c.includes('permission-denied')?'Permissão negada. Verifique as regras do Firestore.':c.includes('unauthenticated')?'Usuário não autenticado.':'Verifique a configuração do Firebase.'}
-function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c))}function escAttr(v){return esc(v)}
+function friendlyFirebaseError(e){return 'Erro de conexão com o Firestore.'}
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c))}
+function escAttr(v){return esc(v)}
 
 $('arquivoProjeto').addEventListener('change',e=>{const f=e.target.files?.[0];if(f)analyzeFile(f)});
 const dz=$('dropzone');
@@ -922,10 +440,11 @@ dz.addEventListener('dragleave',()=>dz.classList.remove('dragover'));
 dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('dragover');const f=e.dataTransfer.files?.[0];if(f)analyzeFile(f)});
 
 ['pesoPeca','tempoManual','precoRolo','pesoRolo','potenciaWatts','tarifaLuz','custoHora','margem','taxaFalha','custosExtras','embalagem'].forEach(id=>$(id).addEventListener('input',onInputCalculadora));
-try{historico=JSON.parse(localStorage.getItem('bambu_history')||'[]');vendas=JSON.parse(localStorage.getItem('bambu_sales')||'[]')}catch(e){}loadDraft();
-if($('pedidoData'))$('pedidoData').value=new Date().toISOString().slice(0,10);renderPedidoEditor();
 window.addEventListener('firebase-ready',()=>carregarCatalogo());
-window.addEventListener('DOMContentLoaded',()=>{try{historico=JSON.parse(localStorage.getItem('bambu_history')||'[]')}catch(e){historico=[]}try{vendas=JSON.parse(localStorage.getItem('bambu_sales')||'[]')}catch(e){vendas=[]}renderHistorico();renderVendas();populateAtendimentoProdutos();renderAtendimento();});
+window.addEventListener('DOMContentLoaded',()=>{
+  try{historico=JSON.parse(localStorage.getItem('bambu_history')||'[]');vendas=JSON.parse(localStorage.getItem('bambu_sales')||'[]')}catch{}
+  loadDraft(); renderHistorico(); renderVendas(); popularAtendimentoProdutos(); renderAtendimento();
+});
 </script>
 </body>
 </html>
