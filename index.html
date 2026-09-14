@@ -2,1094 +2,354 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="BambuCalc 3D PRO - Download Otimizado">
-<title>BambuCalc 3D PRO</title>
-
-<link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22BambuCalc%203D%20PRO%22%2C%22short_name%22%3A%22BambuCalc%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23090d16%22%2C%22theme_color%22%3A%22%2322c55e%22%7D">
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, getDocs, setDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyCD0oMZ8Lkb-Tow1kPw2GPMu2IW6MEGyxY",
-    authDomain: "bambucalc3d.firebaseapp.com",
-    projectId: "bambucalc3d",
-    storageBucket: "bambucalc3d.firebasestorage.app",
-    messagingSenderId: "296605014403",
-    appId: "1:296605014403:web:54d77e49d1a02053183eb6",
-    measurementId: "G-5QLJHQVZQY"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  window.FB = { db, collection, getDocs, setDoc, doc, deleteDoc };
-  window.dispatchEvent(new Event('firebase-ready'));
-</script>
-
-<script src="https://unpkg.com/@zxing/library@latest"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="BambuCalc 3D PRO — calculadora, catálogo, vendas e arquivos 3D">
+<meta name="theme-color" content="#22c55e">
+<title>BambuCalc 3D PRO — uai 3D printing</title>
 <style>
-:root{
-    --bg:#090d16;
-    --panel:#111827;
-    --card:#1f2937;
-    --card2:#0b1220;
-    --accent:#22c55e;
-    --accent2:#0ea5e9;
-    --text:#f3f4f6;
-    --soft:#9ca3af;
-    --border:#374151;
-    --danger:#ef4444;
-    --warning:#f59e0b;
-    --shadow:0 10px 25px rgba(0,0,0,.3);
-}
+:root{--bg:#090d16;--panel:#111827;--card:#1f2937;--card2:#0b1220;--accent:#22c55e;--accent2:#0ea5e9;--text:#f3f4f6;--soft:#9ca3af;--border:#374151;--danger:#ef4444;--warning:#f59e0b;--shadow:0 10px 25px rgba(0,0,0,.3)}
+:root[data-theme=light]{--bg:#f3f4f6;--panel:#fff;--card:#fff;--card2:#f8fafc;--accent:#16a34a;--accent2:#0284c7;--text:#020617;--soft:#6b7280;--border:#d1d5db;--danger:#dc2626;--warning:#d97706;--shadow:0 8px 20px rgba(0,0,0,.08)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{min-height:100%}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}a{color:var(--accent2)}
+.app-wrapper{display:flex;min-height:100vh}.desktop-sidebar{width:260px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;inset:0 auto 0 0;z-index:1000}
+.sidebar-brand{padding:16px 20px;font-size:16px;font-weight:800;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.app-logo-img{width:100%;max-width:180px;height:auto;object-fit:contain;border-radius:6px;}
+.sidebar-nav{display:flex;flex-direction:column;gap:6px;padding:16px 12px;flex:1}.sidebar-btn,.mobile-nav-btn{border:0;background:transparent;color:var(--soft);font-weight:600}.sidebar-btn{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;font-size:14px;text-align:left}.sidebar-btn:hover{background:rgba(255,255,255,.03);color:var(--text)}.sidebar-btn.active{background:rgba(34,197,94,.15);color:var(--accent)}.sidebar-btn .icon{font-size:18px}.sidebar-footer{padding:16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}.main-content{margin-left:260px;flex:1;min-height:100vh}
+.topbar-mobile{display:none;background:var(--panel);border-bottom:1px solid var(--border);padding:10px 16px;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:900}
+.topbar-mobile img{max-height:36px;width:auto;object-fit:contain;}
+.container-fluid{padding:24px;max-width:1450px;width:100%;margin:auto}.page{display:none}.page.active{display:block}.page-header{margin-bottom:20px}.page-title{font-size:24px;font-weight:800}.page-subtitle{font-size:13px;color:var(--soft);margin-top:4px}.badge{font-size:11px;padding:4px 10px;border-radius:999px;border:1px solid rgba(34,197,94,.25);color:var(--accent);background:rgba(34,197,94,.07);white-space:nowrap}
+.card{background:var(--card);border-radius:16px;border:1px solid var(--border);padding:20px;box-shadow:var(--shadow);margin-bottom:20px}.card-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.card-title{font-size:15px;font-weight:700}.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.field.full{grid-column:1/-1}label{display:block;font-size:12px;color:var(--soft);margin-bottom:6px;font-weight:600}input,textarea,select{width:100%;background:rgba(2,6,23,.3);border:1px solid var(--border);border-radius:10px;padding:12px;font-size:14px;color:var(--text);outline:0}input:focus,textarea:focus,select:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(14,165,233,.15)}input[readonly]{opacity:.8}textarea{min-height:100px;resize:vertical}input[type=file]{padding:8px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.btn{border:0;border-radius:999px;padding:12px 20px;font-size:13px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}.btn-primary{background:var(--accent);color:#020617}.btn-outline{background:transparent;border:1px solid var(--border);color:var(--soft)}.btn-outline:hover{color:var(--text);border-color:var(--text)}.btn-danger{background:var(--danger);color:#fff}.btn-info{background:var(--accent2);color:#fff}.btn-sm{padding:8px 14px;font-size:12px}.btn:disabled{opacity:.5;cursor:not-allowed}.summary-list{display:flex;flex-direction:column;gap:10px}.summary-row{display:flex;justify-content:space-between;gap:10px;font-size:14px;color:var(--soft)}.summary-row strong{color:var(--text)}.summary-total{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}.summary-total span:last-child{color:var(--accent);font-size:20px;font-weight:800}.price-grid,.dashboard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.metric{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:16px}.metric small{color:var(--soft);font-size:11px}.metric strong{display:block;font-size:22px;margin-top:5px}.price-box{border:1px solid var(--border);background:var(--card2);border-radius:14px;padding:14px}.price-box.featured{border-color:var(--accent);box-shadow:0 0 0 1px rgba(34,197,94,.15)}.price-box strong{font-size:22px;display:block;margin-top:6px;color:var(--accent)}
+.dropzone{display:block;border:2px dashed var(--border);border-radius:16px;padding:30px 20px;text-align:center;background:var(--card2);cursor:pointer;transition:.2s}.dropzone:hover,.dropzone.dragover{border-color:var(--accent);background:rgba(34,197,94,.04)}.drop-icon{font-size:36px}.drop-title{font-size:16px;font-weight:700;margin-top:8px}.drop-sub{font-size:12px;color:var(--soft);margin-top:4px}.dropzone input{display:none}.analysis-status{margin-top:12px;padding:10px;border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--soft)}.analysis-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.analysis-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px}.analysis-item small{display:block;color:var(--soft);font-size:10px}.analysis-item strong{display:block;margin-top:4px}
+.catalog-filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}.catalog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px}.catalog-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px}.catalog-body-grid{display:grid;grid-template-columns:90px 1fr;gap:14px;align-items:center}.catalog-thumb{width:90px;height:90px;background:var(--card2);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--soft);font-size:28px;overflow:hidden}.catalog-thumb img{width:100%;height:100%;object-fit:cover}.catalog-title{font-size:16px;font-weight:700;word-break:break-word}.catalog-details{background:var(--card2);border-radius:10px;padding:10px;font-size:12px;display:flex;flex-direction:column;gap:5px;border:1px solid var(--border)}.catalog-details-row{display:flex;justify-content:space-between;gap:10px;color:var(--soft)}.catalog-details-row strong{color:var(--text);text-align:right}.catalog-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;padding-top:8px;border-top:1px solid var(--border)}.file-pill{font-size:11px;padding:6px 8px;background:rgba(14,165,233,.08);border:1px solid rgba(14,165,233,.2);border-radius:8px;word-break:break-all}.history-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--border)}.history-main{min-width:0}.history-title{font-weight:700}.history-meta{color:var(--soft);font-size:12px;margin-top:3px}.empty{color:var(--soft);font-size:14px;text-align:center;padding:40px 0}.toast{position:fixed;right:24px;bottom:24px;z-index:4000;max-width:380px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:14px 18px;box-shadow:var(--shadow);font-size:13px;opacity:0;transform:translateY(15px);pointer-events:none;transition:.25s}.toast.show{opacity:1;transform:translateY(0)}.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--warning);margin-right:6px}.status-dot.ok{background:var(--accent)}.vinted-badge-ok,.vinted-badge-warn,.vinted-badge-danger{font-weight:600;font-size:11px;padding:3px 8px;border-radius:6px}.vinted-badge-ok{color:var(--accent);background:rgba(34,197,94,.1)}.vinted-badge-warn{color:var(--warning);background:rgba(245,158,11,.1)}.vinted-badge-danger{color:var(--danger);background:rgba(239,68,68,.15)}
 
-:root[data-theme="light"]{
-    --bg:#f3f4f6;
-    --panel:#ffffff;
-    --card:#ffffff;
-    --card2:#f8fafc;
-    --accent:#16a34a;
-    --accent2:#0284c7;
-    --text:#020617;
-    --soft:#6b7280;
-    --border:#d1d5db;
-    --danger:#dc2626;
-    --warning:#d97706;
-    --shadow:0 8px 20px rgba(0,0,0,.08);
-}
-
-*{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
-html, body{ min-height:100%; }
-body{ margin:0; background:var(--bg); color:var(--text); font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-button, input, textarea, select{ font:inherit; }
-button{ cursor:pointer; }
-
-.app-wrapper { display: flex; min-height: 100vh; width: 100%; }
-
-.desktop-sidebar {
-    width: 260px; background: var(--panel); border-right: 1px solid var(--border);
-    display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 1000;
-}
-.sidebar-brand { padding: 20px; font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); }
-.app-brand-icon { width: 28px; height: 28px; border-radius: 50%; background: conic-gradient(from 180deg, var(--accent), var(--accent2), var(--accent)); }
-.sidebar-nav { display: flex; flex-direction: column; gap: 6px; padding: 16px 12px; flex: 1; }
-.sidebar-btn {
-    display: flex; align-items: center; gap: 12px; background: transparent; border: none;
-    color: var(--soft); padding: 12px 16px; border-radius: 10px; font-size: 14px; font-weight: 600; text-align: left; transition: 0.2s;
-}
-.sidebar-btn:hover { background: rgba(255,255,255,0.03); color: var(--text); }
-.sidebar-btn.active { background: rgba(34,197,94,0.15); color: var(--accent); }
-.sidebar-btn .icon { font-size: 18px; }
-.sidebar-footer { padding: 16px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-
-.main-content { margin-left: 260px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; background: var(--bg); }
-.topbar-mobile { display: none; background: var(--panel); border-bottom: 1px solid var(--border); padding: 12px 16px; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 900; }
-.container-fluid { padding: 24px; max-width: 1400px; width: 100%; margin: 0 auto; flex: 1; }
-
-.page{ display:none; }
-.page.active{ display:block; }
-.page-header{ margin-bottom: 20px; }
-.page-title{ font-size: 24px; font-weight: 800; }
-.page-subtitle{ font-size: 13px; color: var(--soft); margin-top: 4px; }
-
-.badge{ font-size: 11px; padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(34,197,94,.25); color: var(--accent); background: rgba(34,197,94,.07); white-space: nowrap; }
-
-.card{ background: var(--card); border-radius: 16px; border: 1px solid var(--border); padding: 20px; box-shadow: var(--shadow); margin-bottom: 20px; }
-.card-header{ display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
-.card-title{ font-size: 15px; font-weight: 700; }
-
-.form-grid{ display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
-.field.full{ grid-column: 1 / -1; }
-label{ display: block; font-size: 12px; color: var(--soft); margin-bottom: 6px; font-weight: 500; }
-input, textarea, select{ width: 100%; background: rgba(2,6,23,.3); border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-size: 14px; color: var(--text); outline: none; }
-input:focus, textarea:focus, select:focus{ border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(14,165,233,.15); }
-input[readonly]{ opacity: .8; }
-textarea{ min-height: 100px; resize: vertical; }
-input[type="file"]{ padding: 8px; }
-
-.actions{ display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
-.btn{ border: none; border-radius: 999px; padding: 12px 20px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; }
-.btn-primary{ background: var(--accent); color: #020617; }
-.btn-outline{ background: transparent; border: 1px solid var(--border); color: var(--soft); }
-.btn-outline:hover{ color: var(--text); border-color: var(--text); }
-.btn-danger{ background: var(--danger); color: white; flex: none; }
-.btn-sm{ padding: 8px 14px; font-size: 12px; min-width: auto; }
-
-/* NOVO BOTÃO DE DOWNLOAD ESTILIZADO */
-.btn-download-pro {
-    background: linear-gradient(135deg, #0ea5e9, #2563eb);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 12px;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(14,165,233,0.3);
-    transition: 0.2s;
-    width: 100%;
-}
-.btn-download-pro:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(14,165,233,0.4);
-}
-
-.summary-list{ display: flex; flex-direction: column; gap: 10px; }
-.summary-row{ display: flex; justify-content: space-between; gap: 10px; font-size: 14px; color: var(--soft); }
-.summary-row strong{ color: var(--text); }
-.summary-total{ margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
-.summary-total span:last-child{ color: var(--accent); font-size: 20px; font-weight: 800; }
-
-.catalog-filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
-.filter-chip { background: var(--card); border: 1px solid var(--border); color: var(--soft); padding: 8px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-.filter-chip:hover { border-color: var(--accent); color: var(--text); }
-.filter-chip.active { background: var(--accent); color: #020617; border-color: var(--accent); }
-
-.catalog-grid{ display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
-.catalog-card{ background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 10px; }
-.catalog-body-grid{ display: grid; grid-template-columns: 100px 1fr; gap: 14px; align-items: center; }
-.catalog-thumb{ width: 100px; height: 100px; background: var(--card2); border: 1px solid var(--border); border-radius: 12px; display: flex; align-items:center; justify-content:center; color: var(--soft); font-size: 24px; overflow: hidden; }
-.catalog-thumb img{ width: 100%; height: 100%; object-fit: cover; }
-.catalog-qrcode-box{ width: 80px; height: 80px; background: #fff; padding: 4px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
-.catalog-title{ font-size: 16px; font-weight: 700; word-break: break-word; }
-.catalog-details{ background: var(--card2); border-radius: 10px; padding: 10px; font-size: 12px; display: flex; flex-direction: column; gap: 4px; border: 1px solid var(--border); }
-.catalog-details-row{ display: flex; justify-content: space-between; color: var(--soft); }
-.catalog-details-row strong{ color: var(--text); }
-.catalog-actions{ display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--border); }
-
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
-.modal-overlay.active { display: flex; }
-.modal-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; width: 100%; max-width: 420px; box-shadow: var(--shadow); }
-
-.history-item{ display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-.history-main{ min-width: 0; }
-.history-title{ font-weight: 600; font-size: 14px; }
-.history-meta{ color: var(--soft); font-size: 12px; margin-top: 2px; }
-.empty{ color: var(--soft); font-size: 14px; text-align: center; padding: 40px 0; }
-
-.toast{ position: fixed; right: 24px; bottom: 24px; z-index: 4000; max-width: 350px; background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; box-shadow: var(--shadow); font-size: 13px; opacity: 0; transform: translateY(15px); pointer-events: none; transition: .25s ease; }
-.toast.show{ opacity: 1; transform: translateY(0); }
-
-.dropzone{ display: block; border: 2px dashed var(--border); border-radius: 16px; padding: 30px 20px; text-align: center; background: var(--card2); cursor: pointer; transition: border-color 0.2s; }
-.dropzone:hover{ border-color: var(--accent); }
-.drop-icon{ font-size: 36px; }
-.drop-title{ font-size: 16px; font-weight: 700; margin-top: 8px; }
-.drop-sub{ font-size: 12px; color: var(--soft); margin-top: 4px; }
-.dropzone input{ display: none; }
-.analysis-status{ margin-top: 12px; padding: 10px; border: 1px solid var(--border); border-radius: 10px; font-size: 12px; color: var(--soft); }
-
-#videoScanner { width: 100%; max-height: 250px; object-fit: cover; border-radius: 12px; display: none; background: #000; margin-bottom: 12px; }
-.vinted-badge-ok { color: var(--accent); font-weight: 600; font-size: 11px; background: rgba(34,197,94,0.1); padding: 3px 8px; border-radius: 6px; }
-.vinted-badge-warn { color: var(--warning); font-weight: 600; font-size: 11px; background: rgba(245,158,11,0.1); padding: 3px 8px; border-radius: 6px; }
-
-@media (max-width: 868px) {
-    .desktop-sidebar { display: none; }
-    .main-content { margin-left: 0; padding-bottom: 90px; }
-    .topbar-mobile { display: flex; }
-    .container-fluid { padding: 14px; }
-    .mobile-bottom-nav {
-        position: fixed; bottom: 0; left: 0; right: 0; height: 75px;
-        background: var(--panel); border-top: 1px solid var(--border);
-        display: flex; justify-content: space-around; align-items: center;
-        z-index: 1000; padding: 0 4px; box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
-    }
-    .mobile-nav-btn {
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        gap: 4px; color: var(--soft); border: none; background: transparent; font-size: 11px; font-weight: 500; padding: 4px; flex: 1;
-    }
-    .mobile-nav-btn.active { color: var(--accent); font-weight: 700; }
-    .mobile-nav-btn .icon { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-    .mobile-nav-btn.active .icon { background: rgba(34,197,94,0.2); }
-}
-@media (min-width: 869px) {
-    .mobile-bottom-nav { display: none; }
-}
+.support-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.support-card{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:14px;cursor:pointer;transition:.2s}.support-card:hover{transform:translateY(-2px);border-color:var(--accent)}.support-card .support-icon{font-size:24px}.support-card strong{display:block;margin-top:6px}.support-card small{color:var(--soft)}.script-box{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-top:14px}.script-box textarea{min-height:150px;width:100%;resize:vertical}.script-preview{white-space:pre-wrap;line-height:1.55;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:10px}.script-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.channel-tabs{display:flex;gap:8px;flex-wrap:wrap}.channel-tabs button.active{border-color:var(--accent);color:var(--accent)}.edit-badge{display:inline-flex;align-items:center;gap:6px;color:var(--warning);font-size:12px;margin-top:8px}
+@media(max-width:1000px){.metric-grid{grid-template-columns:repeat(2,1fr)}.analysis-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:868px){.desktop-sidebar{display:none}.main-content{margin-left:0;padding-bottom:90px}.topbar-mobile{display:flex}.container-fluid{padding:14px}.mobile-bottom-nav{position:fixed;bottom:0;left:0;right:0;height:75px;background:var(--panel);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;z-index:1000;padding:0 4px;box-shadow:0 -4px 20px rgba(0,0,0,.3)}.mobile-nav-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:10px;padding:4px;flex:1}.mobile-nav-btn.active{color:var(--accent)}.mobile-nav-btn .icon{font-size:18px}.catalog-grid{grid-template-columns:1fr}.price-grid,.dashboard-grid{grid-template-columns:1fr}}@media(min-width:869px){.mobile-bottom-nav{display:none}}@media(max-width:600px){.metric-grid{grid-template-columns:1fr}.analysis-grid{grid-template-columns:1fr}.catalog-body-grid{grid-template-columns:70px 1fr}.catalog-thumb{width:70px;height:70px}.actions .btn{width:100%}}
 </style>
 </head>
 <body>
-
-<script>
-  const SENHA_MESTRA = "272822";
-  if (sessionStorage.getItem("autenticado") !== "true") {
-    let tentativa = prompt("🔒 Área Restrita - Digite a senha mestre de acesso:");
-    if (tentativa === SENHA_MESTRA) {
-      sessionStorage.setItem("autenticado", "true");
-    } else {
-      document.body.innerHTML = "<div style='display:flex;justify-content:center;align-items:center;height:100vh;background:#090d16;color:#f3f4f6;font-family:sans-serif;text-align:center;'><div><h2>Acesso Negado 🚫</h2><p>Senha incorreta.</p></div></div>";
-      throw new Error("Acesso negado.");
-    }
-  }
-</script>
-
 <div class="app-wrapper">
-  
-  <aside class="desktop-sidebar">
-    <div class="sidebar-brand">
-      <div class="app-brand-icon"></div> BambuCalc 3D
-    </div>
-    <div class="sidebar-nav">
-      <button class="sidebar-btn active" data-page="calc" onclick="nav('calc',this)"><span class="icon">💷</span> Calculadora</button>
-      <button class="sidebar-btn" data-page="catalogo" onclick="nav('catalogo',this)"><span class="icon">📁</span> Catálogo</button>
-      <button class="sidebar-btn" data-page="vendas" onclick="nav('vendas',this)"><span class="icon">🛒</span> Controle de Vendas</button>
-      <button class="sidebar-btn" data-page="vinted" onclick="nav('vinted',this)"><span class="icon">🛍️</span> Vinted Manager</button>
-      <button class="sidebar-btn" data-page="historico" onclick="nav('historico',this)"><span class="icon">📜</span> Histórico</button>
-    </div>
-    <div class="sidebar-footer">
-      <span style="font-size: 12px; color: var(--soft);">Tema</span>
-      <button class="btn btn-sm btn-outline" onclick="toggleTheme()" id="btnThemeDesktop" style="border-radius:999px;">🌙</button>
-    </div>
-  </aside>
-
-  <div class="main-content">
-    
-    <header class="topbar-mobile">
-      <div style="font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
-        <div class="app-brand-icon"></div> BambuCalc 3D
-      </div>
-      <button class="btn btn-sm btn-outline" onclick="toggleTheme()" id="btnThemeMobile" style="border-radius:999px;">🌙</button>
-    </header>
-
-    <div class="container-fluid">
-      
-      <section id="page-calc" class="page active">
-        <div class="page-header">
-          <div class="page-title">Calculadora Automática</div>
-          <div class="page-subtitle">Envie seu arquivo .3mf ou .gcode (A1 Mini).</div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div><div class="card-title">🚀 Enviar Arquivo 3MF ou GCODE</div></div>
-            <span class="badge" id="arquivoTipoBadge">Pronto</span>
-          </div>
-          <label class="dropzone" for="arquivoProjeto">
-            <div class="drop-icon">📦</div>
-            <div class="drop-title">Toque ou arraste o arquivo aqui</div>
-            <div class="drop-sub">Extração automática de peso e tempo de impressão</div>
-            <input id="arquivoProjeto" type="file" accept=".3mf,.gcode,application/vnd.ms-package.3dmanufacturing-3dmodel+xml">
-          </label>
-          <div id="analiseStatus" class="analysis-status">Nenhum arquivo enviado.</div>
-        </div>
-
-        <div class="card">
-          <div class="card-header"><div class="card-title">⚙️ Parâmetros da Peça & Energia (UK)</div></div>
-          <div class="form-grid">
-            <div class="field full"><label for="nomeProduto">Nome do Produto</label><input id="nomeProduto" type="text" placeholder="Ex.: Vaso Espiral"></div>
-            <div class="field"><label for="codigoProduto">Código / Ref / Barcode</label><input id="codigoProduto" type="text" placeholder="Ex.: VAS-01"></div>
-            <div class="field"><label for="categoriaProduto">Categoria</label>
-              <select id="categoriaProduto">
-                <option value="Decoração & Casa">Decoração & Casa</option>
-                <option value="Acessórios & Suportes">Acessórios & Suportes</option>
-                <option value="Miniaturas">Miniaturas</option>
-                <option value="Peças Técnicas">Peças Técnicas</option>
-                <option value="Outros">Outros</option>
-              </select>
-            </div>
-            <div class="field"><label for="pesoPeca">Peso total (g)</label><input id="pesoPeca" type="number" min="0" step="0.01" value="0" oninput="onInputCalculadora()"></div>
-            <div class="field"><label for="tempoManual">Tempo (ex: 2h30)</label><input id="tempoManual" type="text" placeholder="Ex.: 2h30" oninput="converterTempoManual(false)"></div>
-            <div class="field" style="display:none;"><label for="horasPeca">Horas (h)</label><input id="horasPeca" type="number" value="0" readonly></div>
-            <div class="field"><label for="precoRolo">Preço Rolo (£/kg)</label><input id="precoRolo" type="number" min="0" step="0.01" value="18.00" oninput="onInputCalculadora()"></div>
-            <div class="field"><label for="pesoRolo">Peso Rolo (g)</label><input id="pesoRolo" type="number" min="1" value="1000" oninput="onInputCalculadora()"></div>
-            
-            <div class="field"><label for="potenciaWatts">Potência A1 (W)</label><input id="potenciaWatts" type="number" min="0" value="80" oninput="onInputCalculadora()"></div>
-            <div class="field"><label for="tarifaLuz">Tarifa (£/kWh)</label><input id="tarifaLuz" type="number" min="0" step="0.01" value="0.25" oninput="onInputCalculadora()"></div>
-            
-            <div class="field" style="display:none;"><label for="custoHora">Custo Maq (£/h)</label><input id="custoHora" type="number" value="0.50" oninput="onInputCalculadora()"></div>
-            <div class="field"><label for="margem">Markup (%)</label><input id="margem" type="number" min="0" value="60" oninput="onInputCalculadora()"></div>
-            <div class="field full"><label for="custosExtras">Custos Extras (£)</label><input id="custosExtras" type="number" min="0" step="0.01" value="0" oninput="onInputCalculadora()"></div>
-            
-            <div class="field full"><label for="vintedLink">Link do Anúncio na Vinted (Opcional)</label><input id="vintedLink" type="url" placeholder="https://www.vinted.co.uk/items/..."></div>
-            <div class="field"><label for="vintedData">Data da Postagem Vinted</label><input id="vintedData" type="date"></div>
-
-            <div class="field full"><label for="observacoes">Observações</label><textarea id="observacoes" placeholder="Acabamento, embalagem..."></textarea></div>
-          </div>
-          <div class="actions">
-            <button class="btn btn-primary" onclick="adicionarAoCatalogo()">💾 Salvar na Nuvem</button>
-            <button class="btn btn-outline" onclick="registrarHistorico()">📌 Histórico</button>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header"><div class="card-title">📊 Resumo Financeiro & Lucro Real</div></div>
-          <div class="summary-list">
-            <div class="summary-row"><span>Material</span><strong id="custoMaterial">£ 0.00</strong></div>
-            <div class="summary-row"><span>Energia (A1 Mini)</span><strong id="custoEnergiaOut">£ 0.00</strong></div>
-            <div class="summary-row"><span>Outros Custos</span><strong id="custoExtrasOut">£ 0.00</strong></div>
-            <div class="summary-row"><span>Subtotal (Custo Total)</span><strong id="subtotal">£ 0.00</strong></div>
-            <div class="summary-row"><span>Preço Ideal de Venda</span><strong id="precoFinal" style="color:var(--accent2);">£ 0.00</strong></div>
-            <div class="summary-row summary-total"><span>Lucro Real Estimado</span><span id="lucroRealOut">£ 0.00</span></div>
-            <div class="summary-row"><span>Margem de Lucro Efetiva</span><strong id="margemEfetivaOut" style="color:var(--accent);">0.0%</strong></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="page-catalogo" class="page">
-        <div class="page-header">
-          <div class="page-title">Catálogo & Categorias Detalhadas</div>
-          <div class="page-subtitle">Busque, filtre e gerencie todos los detalhes dos seus produtos impressos em 3D.</div>
-        </div>
-
-        <div class="card" style="padding: 14px; margin-bottom: 16px;">
-          <div class="form-grid" style="grid-template-columns: 1fr; margin-bottom: 10px;">
-            <div class="field full" style="margin:0;">
-              <input type="text" id="inputBuscaCatalogo" placeholder="🔍 Buscar por nome, código ou observação..." oninput="filtrarCatalogo()">
-            </div>
-          </div>
-          <div class="catalog-filter-bar" id="filtroCategoriasContainer">
-            <button class="filter-chip active" data-cat="todos" onclick="selecionarFiltroCategoria('todos', this)">📂 Todas</button>
-            <button class="filter-chip" data-cat="Decoração & Casa" onclick="selecionarFiltroCategoria('Decoração & Casa', this)">🏡 Decoração & Casa</button>
-            <button class="filter-chip" data-cat="Acessórios & Suportes" onclick="selecionarFiltroCategoria('Acessórios & Suportes', this)">🔌 Acessórios</button>
-            <button class="filter-chip" data-cat="Miniaturas" onclick="selecionarFiltroCategoria('Miniaturas', this)">👾 Miniaturas</button>
-            <button class="filter-chip" data-cat="Peças Técnicas" onclick="selecionarFiltroCategoria('Peças Técnicas', this)">⚙️ Técnicas</button>
-            <button class="filter-chip" data-cat="Outros" onclick="selecionarFiltroCategoria('Outros', this)">📦 Outros</button>
-          </div>
-        </div>
-
-        <div class="catalog-toolbar"><div class="catalog-count" id="catalogoCount">0 produtos encontrados</div></div>
-        <div class="catalog-grid" id="catalogoCards"></div>
-      </section>
-
-      <section id="page-vendas" class="page">
-        <div class="page-header">
-          <div class="page-title">Controle de Vendas</div>
-          <div class="page-subtitle">Escaneie códigos ou registre vendas na nuvem.</div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">📷 Scanner de Produto (QR / Barcode)</div>
-            <button class="btn btn-outline btn-sm" id="btnToggleScanner" onclick="toggleScanner()">Iniciar Câmera</button>
-          </div>
-          <video id="videoScanner" autoplay playsinline></video>
-          <div id="scannerStatus" style="font-size:12px; color:var(--soft); text-align:center;">Câmera desligada.</div>
-        </div>
-
-        <div class="card">
-          <div class="card-header"><div class="card-title">Registrar Venda</div></div>
-          <div class="form-grid">
-            <div class="field full"><label for="vendaProdutoSelect">Produto do Catálogo</label><select id="vendaProdutoSelect" onchange="preencherDadosVenda()"><option value="">-- Venda avulsa --</option></select></div>
-            <div class="field full"><label for="vendaNome">Nome / Cliente</label><input id="vendaNome" type="text" placeholder="Nome do cliente"></div>
-            <div class="field"><label for="vendaQtd">Qtd</label><input id="vendaQtd" type="number" min="1" value="1" oninput="calcularTotalVendaForm()"></div>
-            <div class="field"><label for="vendaPrecoUnit">Preço Unit (£)</label><input id="vendaPrecoUnit" type="number" min="0" step="0.01" value="0" oninput="calcularTotalVendaForm()"></div>
-            <div class="field" style="display:none;"><label for="vendaCustoUnit">Custo</label><input id="vendaCustoUnit" type="number" value="0"></div>
-            <div class="field full"><label><strong>Total: <span id="vendaTotalPreview" style="color:var(--accent);">£ 0.00</span></strong></label></div>
-          </div>
-          <div class="actions" style="margin-top:10px;"><button class="btn btn-primary" onclick="registrarVenda()">✅ Concluir Venda</button></div>
-        </div>
-
-        <div class="card">
-          <div class="card-header"><div class="card-title">Filtro por Período</div></div>
-          <div class="form-grid">
-            <div class="field"><label for="filtroPeriodo">Período</label>
-              <select id="filtroPeriodo" onchange="atualizarPainelVendas()">
-                <option value="todos">Todas as Vendas</option>
-                <option value="mes">Este Mês</option>
-                <option value="hoje">Hoje</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header"><div class="card-title">Resumo & Histórico de Vendas</div><button class="btn btn-danger btn-sm" onclick="limparVendas()">Limpar</button></div>
-          <div class="summary-list" style="margin-bottom:12px;">
-            <div class="summary-row"><span>Faturamento</span><strong id="resumoFaturamento">£ 0.00</strong></div>
-            <div class="summary-row"><span>Lucro Líquido</span><strong id="resumoLucro" style="color:var(--accent);">£ 0.00</strong></div>
-          </div>
-          <div id="listaVendasContainer"></div>
-        </div>
-      </section>
-
-      <section id="page-vinted" class="page">
-        <div class="page-header">
-          <div class="page-title">Vinted Manager 🛍️</div>
-          <div class="page-subtitle">Monitore a idade dos anúncios para Bump ou Republicação.</div>
-        </div>
-        <div class="card">
-          <div class="card-header"><div class="card-title">Anúncios Ativos na Vinted</div></div>
-          <div id="vintedListaContainer"></div>
-        </div>
-      </section>
-
-      <section id="page-historico" class="page">
-        <div class="page-header">
-          <div class="page-title">Histórico de Cálculos</div>
-          <div class="page-subtitle">Últimos cálculos feitos.</div>
-        </div>
-        <div class="card"><div id="historicoCalc"></div></div>
-      </section>
-
-    </div>
-  </div>
-
-  <aside class="mobile-bottom-nav">
-    <button class="mobile-nav-btn active" data-page="calc" onclick="nav('calc',this)"><span class="icon">💷</span>Calc</button>
-    <button class="mobile-nav-btn" data-page="catalogo" onclick="nav('catalogo',this)"><span class="icon">📁</span>Catálogo</button>
-    <button class="mobile-nav-btn" data-page="vendas" onclick="nav('vendas',this)"><span class="icon">🛒</span>Vendas</button>
-    <button class="mobile-nav-btn" data-page="vinted" onclick="nav('vinted',this)"><span class="icon">🛍️</span>Vinted</button>
-    <button class="mobile-nav-btn" data-page="historico" onclick="nav('historico',this)"><span class="icon">📜</span>Hist</button>
-  </aside>
-
+<aside class="desktop-sidebar">
+<div class="sidebar-brand">
+  <img src="87240.jpg" alt="uai 3D printing logo" class="app-logo-img">
 </div>
+<nav class="sidebar-nav">
+<button class="sidebar-btn active" data-page="calc" onclick="nav('calc',this)"><span class="icon">💷</span>Calculadora</button>
+<button class="sidebar-btn" data-page="catalogo" onclick="nav('catalogo',this)"><span class="icon">📁</span>Catálogo</button>
+<button class="sidebar-btn" data-page="vendas" onclick="nav('vendas',this)"><span class="icon">🛒</span>Vendas</button>
+<button class="sidebar-btn" data-page="vinted" onclick="nav('vinted',this)"><span class="icon">🛍️</span>Vinted</button>
+<button class="sidebar-btn" data-page="atendimento" onclick="nav('atendimento',this)"><span class="icon">💬</span>Atendimento</button>
+<button class="sidebar-btn" data-page="historico" onclick="nav('historico',this)"><span class="icon">📜</span>Histórico</button>
+</nav><div class="sidebar-footer"><span style="font-size:12px;color:var(--soft)">Tema</span><button class="btn btn-sm btn-outline" onclick="toggleTheme()" id="themeDesk">🌙</button></div>
+</aside>
+<div class="main-content">
+<header class="topbar-mobile">
+  <img src="87240.jpg" alt="uai 3D printing logo">
+  <button class="btn btn-sm btn-outline" onclick="toggleTheme()" id="themeMob">🌙</button>
+</header>
+<div class="container-fluid">
+<section id="page-calc" class="page active"><div class="page-header"><div class="page-title">Calculadora PRO</div><div class="page-subtitle">Envie 3MF/G-code, confira os custos e salve o produto no Firestore.</div></div>
+<div class="card"><div class="card-header"><div class="card-title">🚀 Análise automática</div><span class="badge" id="arquivoTipoBadge">Pronto</span></div><label class="dropzone" id="dropzone" for="arquivoProjeto"><div class="drop-icon">📦</div><div class="drop-title">Toque ou arraste o arquivo</div><div class="drop-sub">3MF, G-code ou STL. Extração de peso, tempo e miniatura 3MF.</div><input id="arquivoProjeto" type="file" accept=".3mf,.gcode,.gc,.gco,.stl"></label><div id="analiseStatus" class="analysis-status">Nenhum arquivo analisado.</div><div id="analiseGrid" class="analysis-grid"></div></div>
 
-<div class="modal-overlay" id="modalVendaRapida">
-  <div class="modal-card">
-    <div class="card-header"><div class="card-title" id="modalTituloProduto">Registrar Venda Rápida</div></div>
-    <input type="hidden" id="modalProdutoIndex">
-    <div class="form-grid">
-      <div class="field full"><label for="modalCliente">Nome do Cliente</label><input id="modalCliente" type="text" placeholder="Nome do cliente"></div>
-      <div class="field"><label for="modalQtd">Qtd</label><input id="modalQtd" type="number" min="1" value="1" oninput="calcularTotalModal()"></div>
-      <div class="field"><label>Preço Unit.</label><input id="modalPrecoUnit" type="text" readonly style="background:transparent;"></div>
-      <div class="field full"><label><strong>Total: <span id="modalTotalPreview" style="color:var(--accent);">£ 0.00</span></strong></label></div>
-    </div>
-    <div class="actions" style="margin-top:16px;">
-      <button class="btn btn-primary" onclick="confirmarVendaRapida()">✅ Vender Agora</button>
-      <button class="btn btn-outline" onclick="fecharModalVenda()">Cancelar</button>
-    </div>
-  </div>
-</div>
+<div class="card">
+<div class="card-header"><div class="card-title">🧵 Gestão Rápida de Filamentos</div></div>
+<div class="form-grid">
+<div class="field"><label>Selecionar filamento salvo</label><select id="filamentoPreset" onchange="aplicarFilamentoPreset()"><option value="">-- Personalizado / Manual --</option></select></div>
+<div class="field" style="display:flex;align-items:end"><button class="btn btn-outline btn-sm" style="width:100%" onclick="salvarNovoFilamento()">💾 Salvar rolo atual</button></div>
+</div></div>
 
-<div class="modal-overlay" id="modalEditarVenda">
-  <div class="modal-card">
-    <div class="card-header"><div class="card-title">✏️ Editar Venda Registrada</div></div>
-    <input type="hidden" id="editVendaId">
-    <div class="form-grid">
-      <div class="field full"><label for="editVendaNome">Descrição / Cliente</label><input id="editVendaNome" type="text"></div>
-      <div class="field"><label for="editVendaQtd">Qtd</label><input id="editVendaQtd" type="number" min="1"></div>
-      <div class="field"><label for="editVendaTotal">Total (£)</label><input id="editVendaTotal" type="number" min="0" step="0.01"></div>
-    </div>
-    <div class="actions" style="margin-top:16px;">
-      <button class="btn btn-primary" onclick="salvarEdicaoVenda()">💾 Salvar Alterações</button>
-      <button class="btn btn-outline" onclick="fecharModalEdicaoVenda()">Cancelar</button>
-    </div>
-  </div>
-</div>
+<div class="card"><div class="card-header"><div class="card-title">⚙️ Produto e custos</div></div><div class="form-grid">
+<div class="field full"><label>Nome do Produto</label><input id="nomeProduto" maxlength="120" placeholder="Ex.: Vaso Espiral"></div>
+<div class="field"><label>Código / Referência</label><input id="codigoProduto" maxlength="60" placeholder="Ex.: VAS-001"></div>
+<div class="field"><label>Categoria</label><select id="categoriaProduto"><option>Decoração & Casa</option><option>Acessórios & Suportes</option><option>Miniaturas</option><option>Peças Técnicas</option><option>Outros</option></select></div>
+<div class="field"><label>Peso total (g)</label><input id="pesoPeca" type="number" min="0" step="0.01" value="0"></div>
+<div class="field"><label>Tempo de impressão</label><input id="tempoManual" placeholder="Ex.: 2h30 ou 2:30"></div>
+<div class="field"><label>Preço filamento (£/kg)</label><input id="precoRolo" type="number" min="0" step="0.01" value="18"></div>
+<div class="field"><label>Peso do rolo (g)</label><input id="pesoRolo" type="number" min="1" value="1000"></div>
+<div class="field"><label>Potência A1 Mini (W)</label><input id="potenciaWatts" type="number" min="0" step="1" value="80"></div>
+<div class="field"><label>Tarifa elétrica (£/kWh)</label><input id="tarifaLuz" type="number" min="0" step="0.01" value="0.25"></div>
+<div class="field"><label>Custo máquina (£/h)</label><input id="custoHora" type="number" min="0" step="0.01" value="0.50"></div>
+<div class="field"><label>Markup (%)</label><input id="margem" type="number" min="0" step="1" value="60"></div>
+<div class="field"><label>Taxa/falha (%)</label><input id="taxaFalha" type="number" min="0" step="1" value="5"></div>
+<div class="field"><label>Custos extras (£)</label><input id="custosExtras" type="number" min="0" step="0.01" value="0"></div>
+<div class="field"><label>Embalagem (£)</label><input id="embalagem" type="number" min="0" step="0.01" value="0"></div>
+<div class="field full"><label>Link Vinted</label><input id="vintedLink" type="url" placeholder="https://www.vinted.co.uk/items/..."></div>
+<div class="field"><label>Data Vinted</label><input id="vintedData" type="date"></div>
+<div class="field full"><label>Observações</label><textarea id="observacoes" maxlength="1000" placeholder="Acabamento, embalagem, material..."></textarea></div>
+</div><div class="actions"><button class="btn btn-primary" onclick="salvarProduto()">☁️ Salvar produto</button><button class="btn btn-outline" onclick="registrarHistorico()">📌 Registrar cálculo</button><button class="btn btn-info" onclick="exportarOrcamento()">📄 Orçamento</button><button class="btn btn-outline" onclick="limparCalculadora()">🧹 Limpar</button></div></div>
+<div class="card"><div class="card-header"><div class="card-title">📊 Resumo financeiro</div></div><div class="summary-list"><div class="summary-row"><span>Material</span><strong id="custoMaterial">£ 0.00</strong></div><div class="summary-row"><span>Energia</span><strong id="custoEnergiaOut">£ 0.00</strong></div><div class="summary-row"><span>Máquina</span><strong id="custoMaquinaOut">£ 0.00</strong></div><div class="summary-row"><span>Extras + embalagem</span><strong id="custoExtrasOut">£ 0.00</strong></div><div class="summary-row"><span>Reserva de falha</span><strong id="custoFalhaOut">£ 0.00</strong></div><div class="summary-row summary-total"><span>Custo total real</span><strong id="custoTotal">£ 0.00</strong></div></div><div class="price-grid" style="margin-top:18px"><div class="price-box"><small>Preço mínimo</small><strong id="precoMinimo">£ 0.00</strong></div><div class="price-box featured"><small>Preço recomendado</small><strong id="precoIdeal">£ 0.00</strong></div><div class="price-box"><small>Preço premium</small><strong id="precoPremium">£ 0.00</strong></div></div></div></section>
 
-<input type="file" id="inputArquivoCatalogo" style="display:none;" accept=".3mf,.gcode" onchange="vincularArquivoDiretoCatalogo(this)">
+<section id="page-catalogo" class="page"><div class="page-header"><div class="page-title">📁 Catálogo</div><div class="page-subtitle">Produtos salvos no Firestore.</div></div><div class="card"><div class="catalog-filter-bar"><input id="catalogSearch" placeholder="🔎 Buscar produto..." oninput="renderCatalogo()" style="max-width:360px"><select id="catalogCategory" onchange="renderCatalogo()" style="max-width:240px"><option value="">Todas categorias</option><option>Decoração & Casa</option><option>Acessórios & Suportes</option><option>Miniaturas</option><option>Peças Técnicas</option><option>Outros</option></select><button class="btn btn-outline btn-sm" onclick="carregarCatalogo(true)">🔄 Atualizar</button><span class="badge" id="catalogCount">0 produtos</span></div><div id="catalogGrid" class="catalog-grid"></div></div></section>
 
-<div class="toast" id="toast"></div>
+<section id="page-vendas" class="page"><div class="page-header"><div class="page-title">🛒 Controle de Vendas</div><div class="page-subtitle">Registre vendas avulsas ou transforme vários itens do mesmo cliente em um único pedido.</div></div><div class="metric-grid"><div class="metric"><small>Pedidos</small><strong id="metricPedidos">0</strong></div><div class="metric"><small>Itens vendidos</small><strong id="metricVendas">0</strong></div><div class="metric"><small>Faturamento</small><strong id="metricFaturamento">£ 0.00</strong></div><div class="metric"><small>Lucro líquido</small><strong id="metricLucro">£ 0.00</strong></div></div><div class="card" style="margin-top:20px"><div class="card-header"><div><div class="card-title">➕ Novo pedido / venda</div><div class="page-subtitle">Adicione um ou vários produtos ao mesmo pedido.</div></div><span class="badge" id="pedidoModoBadge">Pedido com 0 itens</span></div><div class="form-grid"><div class="field"><label>Nome do cliente</label><input id="pedidoCliente" maxlength="120" placeholder="Ex.: John Smith"></div><div class="field"><label>Canal</label><select id="pedidoCanal"><option>Vinted</option><option>WhatsApp</option><option>Instagram</option><option>Facebook Marketplace</option><option>Etsy</option><option>Venda direta</option><option>Outro</option></select></div><div class="field"><label>Data</label><input id="pedidoData" type="date"></div><div class="field"><label>Status</label><select id="pedidoStatus"><option value="Aguardando pagamento">🟡 Aguardando pagamento</option><option value="Pago">🟢 Pago</option><option value="Em produção">🔵 Em produção</option><option value="Pronto">🟣 Pronto</option><option value="Enviado">🚚 Enviado</option><option value="Concluído">✅ Concluído</option><option value="Cancelado">🔴 Cancelado</option></select></div><div class="field"><label>Produto</label><select id="vendaProduto" onchange="preencherPrecoVenda()"></select></div><div class="field"><label>Quantidade</label><input id="vendaQtd" type="number" min="1" value="1"></div><div class="field"><label>Preço unitário (£)</label><input id="vendaPreco" type="number" min="0" step="0.01"></div><div class="field" style="display:flex;align-items:end"><button class="btn btn-info" style="width:100%" onclick="adicionarItemPedido()">➕ Adicionar item</button></div><div class="field full"><label>☑️ Tratar como pedido</label><div style="display:flex;align-items:center;gap:10px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px"><input id="tratarComoPedido" type="checkbox" checked style="width:auto;transform:scale(1.2)" onchange="renderPedidoEditor()"><span style="font-size:13px;color:var(--soft)">Agrupa vários produtos do mesmo cliente em um único pedido. Para uma única peça, também pode deixar ativado.</span></div></div></div><div id="pedidoItens" class="order-items" style="margin-top:16px"></div><div class="form-grid" style="margin-top:16px"><div class="field"><label>Frete cobrado (£)</label><input id="pedidoFrete" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="field"><label>Desconto (£)</label><input id="pedidoDesconto" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="field"><label>Taxas da plataforma (£)</label><input id="pedidoTaxas" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="field"><label>Embalagem (£)</label><input id="pedidoEmbalagem" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="field full"><label>Observações do pedido</label><textarea id="pedidoObservacoes" maxlength="1000" placeholder="Rastreamento, observações do cliente, embalagem, etc."></textarea></div></div><div class="order-summary" id="pedidoResumo"></div><div class="actions"><button class="btn btn-primary" onclick="salvarPedido()">💷 Registrar pedido</button><button class="btn btn-outline" onclick="limparPedidoEditor()">🧹 Limpar</button><button class="btn btn-info" onclick="usarPedidoNoAtendimento()">💬 Atendimento deste pedido</button></div></div><div class="card"><div class="card-header"><div class="card-title">📋 Pedidos registrados</div><input id="vendasSearch" oninput="renderVendas()" placeholder="🔎 Buscar pedido, cliente ou produto..." style="max-width:330px"></div><div id="vendasLista"></div></div></section>
 
+<section id="page-vinted" class="page"><div class="page-header"><div class="page-title">🛍️ Vinted Manager</div><div class="page-subtitle">Centralize links, datas e preços dos produtos publicados com alerta de republicação.</div></div><div class="card"><div class="catalog-filter-bar"><input id="vintedSearch" placeholder="🔎 Buscar..." oninput="renderVinted()"><button class="btn btn-outline btn-sm" onclick="renderVinted()">🔄 Atualizar</button></div><div id="vintedLista"></div></div></section>
+
+<section id="page-atendimento" class="page"><div class="page-header"><div class="page-title">💬 Atendimento rápido</div><div class="page-subtitle">Scripts em português para você entender e inglês natural para enviar ao cliente.</div></div><div class="card"><div class="card-header"><div class="card-title">🎯 Produto</div><span class="badge" id="atendimentoProdutoBadge">Nenhum produto selecionado</span></div><div class="form-grid"><div class="field full"><label>Pedido do cliente (opcional)</label><select id="atendimentoPedido" onchange="renderAtendimento()"><option value="">Sem pedido — usar produto individual</option></select></div><div class="field"><label>Produto do catálogo</label><select id="atendimentoProduto" onchange="atendimentoSelecionarProduto()"><option value="">Selecione um produto...</option></select></div><div class="field"><label>Canal</label><select id="atendimentoCanal" onchange="renderAtendimento()"><option>WhatsApp</option><option>Instagram</option><option>Vinted</option><option>Facebook Marketplace</option></select></div><div class="field"><label>Quantidade</label><input id="atendimentoQtd" type="number" min="1" value="1" oninput="renderAtendimento()"></div></div></div><div class="card"><div class="card-header"><div class="card-title">💬 Escolha uma resposta</div></div><div id="supportGrid" class="support-grid"></div><div class="script-box"><div><strong id="scriptTitle">Selecione um script</strong></div><div class="script-preview" id="scriptPT">Escolha uma opção acima.</div><div style="margin-top:12px"><label>🇬🇧 Mensagem pronta em inglês</label><textarea id="scriptEN" readonly></textarea></div><div class="script-actions"><button class="btn btn-primary" onclick="copiarScript()">📋 Copiar mensagem</button><button class="btn btn-outline" onclick="abrirWhatsAppScript()">💬 Abrir WhatsApp</button><button class="btn btn-outline" onclick="abrirEmailScript()">✉️ Copiar para e-mail</button></div></div></div></section>
+
+<section id="page-historico" class="page"><div class="page-header"><div class="page-title">📜 Histórico</div><div class="page-subtitle">Cálculos registrados e exportações.</div></div><div class="card"><div class="actions" style="margin-top:0"><button class="btn btn-outline btn-sm" onclick="exportarHistorico()">📤 Exportar CSV</button><button class="btn btn-danger btn-sm" onclick="limparHistorico()">🗑️ Limpar histórico</button></div><div id="historicoLista" style="margin-top:10px"></div></div></section>
+</div></div></div>
+<div class="mobile-bottom-nav"><button class="mobile-nav-btn active" data-page="calc" onclick="nav('calc',this)"><span class="icon">💷</span>Calcular</button><button class="mobile-nav-btn" data-page="catalogo" onclick="nav('catalogo',this)"><span class="icon">📁</span>Catálogo</button><button class="mobile-nav-btn" data-page="vendas" onclick="nav('vendas',this)"><span class="icon">🛒</span>Vendas</button><button class="mobile-nav-btn" data-page="vinted" onclick="nav('vinted',this)"><span class="icon">🛍️</span>Vinted</button><button class="mobile-nav-btn" data-page="atendimento" onclick="nav('atendimento',this)"><span class="icon">💬</span>Atend.</button><button class="mobile-nav-btn" data-page="historico" onclick="nav('historico',this)"><span class="icon">📜</span>Hist.</button></div>
+<div id="toast" class="toast"></div>
+
+<!-- JSZip incluído para permitir extração e leitura de miniaturas de arquivos .3MF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<script type="module">
+import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+import {getAuth,onAuthStateChanged,signInAnonymously} from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+import {getFirestore,collection,getDocs,setDoc,doc,deleteDoc,query,orderBy} from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+const firebaseConfig={apiKey:'AIzaSyCD0oMZ8Lkb-Tow1kPw2GPMu2IW6MEGyxY',authDomain:'bambucalc3d.firebaseapp.com',projectId:'bambucalc3d',storageBucket:'bambucalc3d.firebasestorage.app',messagingSenderId:'296605014403',appId:'1:296605014403:web:54d77e49d1a02053183eb6',measurementId:'G-5QLJHQVZQY'};
+const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);
+window.FB={db,auth,collection,getDocs,setDoc,doc,deleteDoc,query,orderBy};
+try{await signInAnonymously(auth)}catch(e){console.warn('Firebase Auth:',e)}
+onAuthStateChanged(auth,u=>{window.currentUser=u;window.dispatchEvent(new Event('firebase-ready'));});
+</script>
 <script>
-"use strict";
+const $=id=>document.getElementById(id), money=v=>'£ '+Number(v||0).toFixed(2), nowISO=()=>new Date().toISOString();
+let catalogo=[],historico=[],vendas=[],currentFile=null,currentThumbnailBase64=null,editingProductId=null,selectedScriptId="welcome";
+const LOCAL_KEYS={theme:'bambu_theme',draft:'bambu_draft',filaments:'bambu_filaments'};
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove('show'),2800)}
+function nav(page,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$('page-'+page).classList.add('active');document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===page));if(page==='catalogo')renderCatalogo();if(page==='vendas'){renderVendas();populateVendaProdutos()}if(page==='vinted')renderVinted();if(page==='historico')renderHistorico();if(page==='atendimento'){populateAtendimentoProdutos();renderAtendimento();}}
+function toggleTheme(){const root=document.documentElement;const light=root.dataset.theme==='light';root.dataset.theme=light?'':'light';localStorage.setItem(LOCAL_KEYS.theme,light?'dark':'light');updateThemeButtons()}
+function updateThemeButtons(){const light=document.documentElement.dataset.theme==='light';['themeDesk','themeMob'].forEach(id=>{if($(id))$(id).textContent=light?'☀️':'🌙'})}
+(function(){const t=localStorage.getItem(LOCAL_KEYS.theme);if(t==='light')document.documentElement.dataset.theme='light';updateThemeButtons();popularFilamentosSelect();})();
 
-const STORAGE={config:"config3d",theme:"theme3d",historico:"historicoCalc3d",vendas:"vendas3d"};
-let catalogo=[], historicoCalc=[], vendasLista=[], itemEditandoIndex=null, arquivoGlobalMemoria=null, idProdutoAlvoCache=null;
-let categoriaAtivaFiltro = "todos";
-let codeReader = null, isScanning = false;
+function num(id){return Math.max(0,Number($(id)?.value||0))}
+function parseTime(s){if(!s)return 0;s=String(s).trim().toLowerCase().replace(/,/g,'.');let m=s.match(/^(\d+(?:\.\d+)?)\s*h\s*(\d+(?:\.\d+)?)?\s*m?$/);if(m)return Number(m[1])+(Number(m[2]||0)/60);m=s.match(/^(\d+)\s*:\s*(\d{1,2})$/);if(m)return Number(m[1])+Number(m[2])/60;m=s.match(/^(\d+(?:\.\d+)?)\s*h$/);if(m)return Number(m[1]);let n=Number(s);return Number.isFinite(n)?n:0}
+function calc(){const peso=num('pesoPeca'),rolo=num('precoRolo'),tempo=parseTime($('tempoManual').value),pot=num('potenciaWatts'),tarifa=num('tarifaLuz'),maq=num('custoHora'),extras=num('custosExtras'),emb=num('embalagem'),markup=num('margem'),falha=num('taxaFalha');const material=peso*(rolo/Math.max(1,num('pesoRolo')));const energia=(pot/1000)*tempo*tarifa;const maquina=tempo*maq;const base=material+energia+maquina+extras+emb;const reserva=base*(falha/100);const total=base+reserva;const minimo=total*1.2;const ideal=total*(1+markup/100);const premium=total*1.8;[['custoMaterial',material],['custoEnergiaOut',energia],['custoMaquinaOut',maquina],['custoExtrasOut',extras+emb],['custoFalhaOut',reserva],['custoTotal',total],['precoMinimo',minimo],['precoIdeal',ideal],['precoPremium',premium]].forEach(([id,v])=>$(id).textContent=money(v));return{peso,tempo,material,energia,maquina,extras,emb,reserva,total,minimo,ideal,premium}}
+function onInputCalculadora(){calc();saveDraft()}
+function converterTempoManual(){calc();saveDraft()}
+function saveDraft(){try{const o={};['nomeProduto','codigoProduto','categoriaProduto','pesoPeca','tempoManual','precoRolo','pesoRolo','potenciaWatts','tarifaLuz','custoHora','margem','taxaFalha','custosExtras','embalagem','vintedLink','vintedData','observacoes'].forEach(id=>o[id]=$(id)?.value);localStorage.setItem(LOCAL_KEYS.draft,JSON.stringify(o))}catch(e){}}
+function loadDraft(){try{const o=JSON.parse(localStorage.getItem(LOCAL_KEYS.draft)||'null');if(o)Object.entries(o).forEach(([id,v])=>{if($(id)&&v!=null)$(id).value=v});}catch(e){}calc()}
+function clearAnalysis(){currentFile=null;currentThumbnailBase64=null;$('arquivoTipoBadge').textContent='Pronto';$('analiseStatus').textContent='Nenhum arquivo analisado.';$('analiseGrid').innerHTML=''}
+function fmtBytes(n){if(!n)return '0 B';const u=['B','KB','MB','GB'];let i=0,x=n;while(x>=1024&&i<u.length-1){x/=1024;i++}return x.toFixed(i?1:0)+' '+u[i]}
 
-function $(id){return document.getElementById(id)}
-function uid(){return (crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2))}
-function dinheiro(v){v=Number(v);return Number.isFinite(v)?`£ ${v.toFixed(2)}`:"£ 0.00"}
-function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
-function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("show"),2800)}
-function safeGet(k,d=null){try{const x=localStorage.getItem(k);return x===null?d:x}catch{return d}}
-function safeSet(k,v){try{localStorage.setItem(k,v);return true}catch{false}}
+/* Gestão de Filamentos */
+function getFilamentosSalvos(){try{return JSON.parse(localStorage.getItem(LOCAL_KEYS.filaments)||'[]')}catch{return[]}}
+function popularFilamentosSelect(){const sel=$('filamentoPreset');if(!sel)return;const lista=getFilamentosSalvos();sel.innerHTML='<option value="">-- Personalizado / Manual --</option>'+lista.map((f,idx)=>`<option value="${idx}">${f.nome} (£${f.preco}/kg)</option>`).join('');}
+function salvarNovoFilamento(){const nome=prompt('Nome do filamento (Ex: PLA Preto, PETG Branco):');if(!nome)return;const preco=$('precoRolo').value;const peso=$('pesoRolo').value;const lista=getFilamentosSalvos();lista.push({nome,preco,peso});localStorage.setItem(LOCAL_KEYS.filaments,JSON.stringify(lista));popularFilamentosSelect();toast('Filamento salvo com sucesso!');}
+function aplicarFilamentoPreset(){const idx=$('filamentoPreset').value;if(idx==='')return;const lista=getFilamentosSalvos();const f=lista[idx];if(f){$('precoRolo').value=f.preco;$('pesoRolo').value=f.peso;calc();saveDraft();toast('Filamento aplicado: '+f.nome);}}
 
-function nav(page,el){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  $("page-"+page)?.classList.add("active");
-  document.querySelectorAll(".sidebar-btn").forEach(b=>b.classList.remove("active"));
-  document.querySelector(`.sidebar-btn[data-page="${page}"]`)?.classList.add("active");
-  document.querySelectorAll(".mobile-nav-btn").forEach(b=>b.classList.remove("active"));
-  document.querySelector(`.mobile-nav-btn[data-page="${page}"]`)?.classList.add("active");
+/* Análise de Arquivos e Miniaturas 3MF */
+async function analyzeFile(file){
+  currentFile=file;
+  currentThumbnailBase64=null;
+  const ext=file.name.split('.').pop().toLowerCase();
+  $('arquivoTipoBadge').textContent=ext==='3mf'?'3MF':ext==='stl'?'STL':'G-code';
+  $('analiseStatus').textContent='Analisando '+file.name+'...';
+  $('analiseGrid').innerHTML='';
+  let a={name:file.name,size:file.size,type:file.type||'',weight:null,time:null};
 
-  if(page==='vendas'){atualizarSelectCatalogoVendas();atualizarPainelVendas();}
-  if(page==='vinted'){renderVintedManager();}
-  if(page==='catalogo'){renderCatalogo();}
-  if(page!=='vendas' && isScanning){ pararScanner(); }
-}
-
-function applyTheme(theme){
-  theme=theme==="light"?"light":"dark";
-  document.documentElement.setAttribute("data-theme",theme);
-  const icon = theme==="light"?"☀️":"🌙";
-  $("btnThemeDesktop").textContent = icon;
-  $("btnThemeMobile").textContent = icon;
-}
-function toggleTheme(){
-  const n=(document.documentElement.getAttribute("data-theme")||"dark")==="dark"?"light":"dark";
-  applyTheme(n); safeSet(STORAGE.theme,n);
-}
-
-async function blobToBase64(blob){
-  return new Promise((res, rej)=>{
-    const reader = new FileReader();
-    reader.onload = () => res(reader.result);
-    reader.onerror = rej;
-    reader.readAsDataURL(blob);
-  });
-}
-
-async function cloudGetProducts(){
-  if(!window.FB)return [];
-  const querySnapshot = await window.FB.getDocs(window.FB.collection(window.FB.db, "produtos"));
-  const arr = [];
-  querySnapshot.forEach((doc) => { arr.push(doc.data()); });
-  arr.sort((a,b)=>String(b.atualizadoEm||b.criadoEm).localeCompare(String(a.atualizadoEm||a.criadoEm)));
-  return arr;
-}
-async function cloudSaveProduct(item){
-  if(!window.FB)return;
-  await window.FB.setDoc(window.FB.doc(window.FB.db, "produtos", item.id), item);
-}
-async function cloudDeleteProduct(id){
-  if(!window.FB)return;
-  await window.FB.deleteDoc(window.FB.doc(window.FB.db, "produtos", id));
-}
-
-function parseTempo(v){
-  if(!v) return 0;
-  v = String(v).trim().toLowerCase();
-  if(/^\d+$/.test(v) && parseInt(v) > 1000) return parseInt(v) / 3600;
-  let mTime = v.match(/(?:(\d+(?:\.\d+)?)\s*h)?\s*(?:(\d+(?:\.\d+)?)\s*m)?\s*(?:(\d+(?:\.\d+)?)\s*s)?/);
-  if(mTime && (mTime[1] || mTime[2] || mTime[3])) return +(mTime[1]||0) + (+mTime[2]||0)/60 + (+mTime[3]||0)/3600;
-  let m = v.match(/^(\d+(?:\.\d+)?)\s*:\s*(\d{1,2})(?:\s*:\s*(\d{1,2}))?$/);
-  if(m) return +m[1] + +m[2]/60 + (m[3]?+m[3]:0)/3600;
-  return parseFloat(v) || 0;
-}
-
-function formatarTempo(h){if(!Number.isFinite(h)||h<=0)return "0m";let total=Math.round(h*60),hh=Math.floor(total/60),mm=total%60;return hh?`${hh}h${mm?mm+"m":""}`:`${mm}m`}
-function converterTempoManual(){const h=parseTempo($("tempoManual").value);$("horasPeca").value=h.toFixed(2);recalcular();return h}
-function numero(id,d=0){const n=parseFloat($(id).value);return Number.isFinite(n)?n:d}
-
-function obterDados(){
-  return {
-    pesoRolo: Math.max(1, numero("pesoRolo", 1000)),
-    pesoPeca: Math.max(0, numero("pesoPeca")),
-    precoRolo: Math.max(0, numero("precoRolo", 18.00)),
-    horas: Math.max(0, numero("horasPeca")),
-    potenciaW: Math.max(0, numero("potenciaWatts", 80)),
-    tarifaKwh: Math.max(0, numero("tarifaLuz", 0.25)),
-    margemPct: Math.max(0, numero("margem", 60)),
-    extras: Math.max(0, numero("custosExtras")),
-    vintedLink: $("vintedLink")?.value.trim() || "",
-    vintedData: $("vintedData")?.value || ""
-  };
-}
-
-function calcularValores(){
-  const d = obterDados();
-  const material = d.pesoPeca * (d.precoRolo / d.pesoRolo);
-  const custoEnergia = (d.potenciaW / 1000) * d.horas * d.tarifaKwh;
-  const subtotal = material + custoEnergia + d.extras;
-  const ideal = subtotal * (1 + d.margemPct / 100);
-  const lucroReal = ideal - subtotal;
-  const margemEfetiva = ideal > 0 ? (lucroReal / ideal) * 100 : 0;
-  return { ...d, custoMaterial: material, custoEnergia, subtotal, precoIdeal: ideal, lucroReal, margemEfetiva };
-}
-
-function recalcular(){
-  const v = calcularValores();
-  $("custoMaterial").textContent = dinheiro(v.custoMaterial);
-  $("custoEnergiaOut").textContent = dinheiro(v.custoEnergia);
-  $("custoExtrasOut").textContent = dinheiro(v.extras);
-  $("subtotal").textContent = dinheiro(v.subtotal);
-  $("precoFinal").textContent = dinheiro(v.precoIdeal);
-  $("lucroRealOut").textContent = dinheiro(v.lucroReal);
-  $("margemEfetivaOut").textContent = `${v.margemEfetiva.toFixed(1)}%`;
-  return v;
-}
-
-function onInputCalculadora(){ recalcular(); salvarConfig(); }
-function salvarConfig(){ safeSet(STORAGE.config, JSON.stringify({ precoRolo: $("precoRolo").value, pesoRolo: $("pesoRolo").value, potenciaWatts: $("potenciaWatts").value, tarifaLuz: $("tarifaLuz").value, margem: $("margem").value, custosExtras: $("custosExtras").value })) }
-function carregarConfig(){
   try{
-    const c = JSON.parse(safeGet(STORAGE.config,"{}"));
-    for(const [k,id] of Object.entries({precoRolo:"precoRolo", pesoRolo:"pesoRolo", potenciaWatts:"potenciaWatts", tarifaLuz:"tarifaLuz", margem:"margem", custosExtras:"custosExtras"}))
-      if(c[k]!==undefined) $(id).value = c[k];
-  }catch{}
-}
+    if(ext==='gcode'||ext==='gc'||ext==='gco'){
+      const text=await file.slice(0,Math.min(file.size,15*1024*1024)).text();
+      a.weight=extractGcodeWeight(text);
+      a.time=extractGcodeTime(text);
+      if(a.weight!=null)$('pesoPeca').value=a.weight;
+      if(a.time!=null)$('tempoManual').value=hoursToText(a.time);
+    }else if(ext==='3mf'){
+      const zip=new JSZip();
+      const zipContent=await zip.loadAsync(file);
+      
+      let combinedText='';
+      for(const [path, obj] of Object.entries(zipContent.files)){
+        if(!obj.dir && /\.(config|json|xml|model|txt|gcode)$/i.test(path)){
+          combinedText+='\n'+await obj.async('text');
+        }
+      }
+      a.weight=extractNumber(combinedText,['total filament weight','filament used weight','weight']);
+      a.time=extractNumber(combinedText,['print time','estimated printing time','print_time']);
+      if(a.weight!=null)$('pesoPeca').value=a.weight;
+      if(a.time!=null)$('tempoManual').value=hoursToText(a.time);
 
-async function lerZip3MF(file){
-  const buf=await file.arrayBuffer(),dv=new DataView(buf),u8=new Uint8Array(buf);
-  let eocd=-1;
-  for(let i=u8.length-22;i>=Math.max(0,u8.length-65558);i--){if(dv.getUint32(i,true)===0x06054b50){eocd=i;break}}
-  if(eocd<0)throw new Error("ZIP inválido");
-  const cdSize=dv.getUint32(eocd+12,true),cdOff=dv.getUint32(eocd+16,true),out={};
-  let p=cdOff;
-  while(p<cdOff+cdSize){
-    if(dv.getUint32(p,true)!==0x02014b50)break;
-    const method=dv.getUint16(p+10,true),csize=dv.getUint32(p+20,true),usize=dv.getUint32(p+24,true);
-    const nl=dv.getUint16(p+28,true),xl=dv.getUint16(p+30,true),cl=dv.getUint16(p+32,true),lo=dv.getUint32(p+42,true);
-    const name=new TextDecoder().decode(u8.slice(p+46,p+46+nl));
-    p+=46+nl+xl+cl;
-    if(dv.getUint32(lo,true)!==0x04034b50)continue;
-    const lnl=dv.getUint16(lo+26,true),lxl=dv.getUint16(lo+28,true),startData=lo+30+lnl+lxl,raw=u8.slice(startData,startData+csize);
-    let data;
-    if(method===0)data=raw;
-    else if(method===8){
-      try{
-        const ds=new DecompressionStream("deflate-raw");
-        const stream=new Blob([raw]).stream().pipeThrough(ds);
-        data=new Uint8Array(await new Response(stream).arrayBuffer());
-      }catch{continue;}
-    }else{continue;}
-    out[name]={data,size:usize};
-  }
-  return out;
-}
-function textOf(entry){return new TextDecoder("utf-8").decode(entry.data)}
-
-function extractTimeFromText(text){
-  if(!text)return 0;
-  for(let line of text.split(/\r?\n/)){
-    let lower = line.toLowerCase();
-    if(line.startsWith(';') && (lower.includes('print time') || lower.includes('estimated printing time') || lower.includes('total time') || lower.includes('time:'))){
-      const p = line.split(/[:=]/); 
-      if(p.length > 1){
-        const v = p.slice(1).join(':').trim();
-        const parsed = parseTempo(v);
-        if(parsed > 0) return parsed;
+      let thumbFile=null;
+      for(const [path, obj] of Object.entries(zipContent.files)){
+        if(!obj.dir && /^Metadata\/.+\.(png|jpg|jpeg)$/i.test(path)){
+          thumbFile=obj;
+          break;
+        }
+      }
+      if(thumbFile){
+        const blob=await thumbFile.async('blob');
+        currentThumbnailBase64=await new Promise(res=>{
+          const reader=new FileReader();
+          reader.onload=()=>res(reader.result);
+          reader.readAsDataURL(blob);
+        });
       }
     }
-  }
-  return 0;
-}
 
-function extractWeightFromText(text){
-  if(!text)return 0;
-  for(let line of text.split(/\r?\n/)){
-    let lower = line.toLowerCase();
-    if(line.startsWith(';') && (lower.includes('filament used') || lower.includes('filament weight')) && lower.includes('g')){
-      const p=line.split(/[:=]/); 
-      if(p.length>1){
-        const num=parseFloat(p[1].trim().replace(',','.').replace(/[^\d.]/g,'')); 
-        if(Number.isFinite(num) && num > 0) return num;
-      }
-    }
-  }
-  return 0;
-}
-
-function extractThumbnailFrom3MF(entries){
-  const thumbKeys=Object.keys(entries).filter(n=>/^Metadata\/.+\.(png|jpg|jpeg)$/i.test(n));
-  if(thumbKeys.length>0){const entry=entries[thumbKeys.find(n=>/plate_1/i.test(n))||thumbKeys[0]]; if(entry?.data)return new Blob([entry.data],{type:"image/png"});}
-  return null;
-}
-
-async function analisarArquivoProjeto(file){
-  const nomeLimpo = file.name.replace(/\.(3mf|gcode)$/i,"");
-  if(file.name.toLowerCase().endsWith('.gcode')){
-    const textChunk = await file.slice(0, 1000000).text();
-    return {
-      nome: nomeLimpo,
-      peso: extractWeightFromText(textChunk),
-      horas: extractTimeFromText(textChunk),
-      thumbBlob: null
-    };
-  } else {
-    const entries = await lerZip3MF(file);
-    const texts = Object.keys(entries).filter(n=>/\.(config|json|xml|model|txt|gcode)$/i.test(n)).map(n=>textOf(entries[n])).join("\n");
-    return {
-      nome: nomeLimpo,
-      peso: extractWeightFromText(texts),
-      horas: extractTimeFromText(texts),
-      thumbBlob: extractThumbnailFrom3MF(entries)
-    };
-  }
-}
-
-async function processarArquivo(file){
-  if(!file)return;
-  try{
-    $("analiseStatus").textContent="⏳ Lendo arquivo...";
-    const a = await analisarArquivoProjeto(file);
-    const base64Content = await blobToBase64(file);
-    arquivoGlobalMemoria = { file, base64: base64Content, name: file.name };
-
-    $("nomeProduto").value=a.nome;
-    $("pesoPeca").value=Number(a.peso||0).toFixed(2);
-    if(a.horas){
-      $("horasPeca").value=Number(a.horas).toFixed(2);
-      $("tempoManual").value=formatarTempo(a.horas);
-    }
-    $("analiseStatus").innerHTML=`<strong>✓ Arquivo carregado na memória (${a.peso}g | ${formatarTempo(a.horas)})!</strong>`;
-    recalcular(); toast("Arquivo pronto para salvar!");
+    calc();
+    saveDraft();
+    renderAnalysis(a);
+    $('analiseStatus').textContent='Análise concluída com sucesso!';
   }catch(e){
     console.error(e);
-    $("analiseStatus").textContent="❌ Erro ao ler arquivo.";
+    $('analiseStatus').textContent='Arquivo lido, mas houve falha ao extrair alguns metadados automaticamente.';
+    renderAnalysis(a);
   }
 }
-$("arquivoProjeto").addEventListener("change",e=>processarArquivo(e.target.files?.[0]));
+
+function extractGcodeWeight(t){const pats=[/total filament weight\s*[:=]\s*([\d.]+)/i,/filament used\s*[:=]\s*([\d.]+)/i,/filament_weight\s*=\s*([\d.]+)/i];for(const p of pats){const m=t.match(p);if(m)return Number(m[1])}return null}
+function extractGcodeTime(t){const pats=[/estimated printing time\s*[:=]\s*([\d]+)h\s*([\d]+)?m?/i,/print time\s*[:=]\s*([\d]+)h\s*([\d]+)?m?/i,/TIME:\s*(\d+)/i];for(const p of pats){const m=t.match(p);if(m)return p.source.includes('TIME')?Number(m[1])/3600:Number(m[1])+(Number(m[2]||0)/60)}return null}
+function extractNumber(text,labels){for(const l of labels){const re=new RegExp(l.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\s*[:=]\\s*([\\d.]+)','i');const m=text.match(re);if(m)return Number(m[1])}return null}
+function hoursToText(h){if(h==null)return '';const hr=Math.floor(h);const min=Math.round((h-hr)*60);return hr+'h'+String(min).padStart(2,'0')}
+function renderAnalysis(a){$('analiseGrid').innerHTML=[['Arquivo',a.name],['Tamanho',fmtBytes(a.size)],['Peso detectado',a.weight!=null?a.weight+' g':'—'],['Tempo detectado',a.time!=null?hoursToText(a.time):'—']].map(x=>`<div class="analysis-item"><small>${esc(x[0])}</small><strong>${esc(String(x[1]))}</strong></div>`).join('')}
+
+function getProduct(){
+  const c=calc();
+  const old=editingProductId?catalogo.find(x=>x.id===editingProductId):null;
+  return {
+    id:editingProductId||crypto.randomUUID(),
+    name:$('nomeProduto').value.trim()||'Produto sem nome',
+    code:$('codigoProduto').value.trim()||'-',
+    category:$('categoriaProduto').value,
+    weight:c.peso,
+    time:c.tempo,
+    material:c.material,
+    energy:c.energia,
+    machine:c.maquina,
+    extras:c.extras,
+    packaging:c.emb,
+    reserve:c.reserva,
+    total:c.total,
+    minPrice:c.minimo,
+    idealPrice:c.ideal,
+    premiumPrice:c.premium,
+    vintedLink:$('vintedLink').value.trim(),
+    vintedData:$('vintedData').value,
+    notes:$('observacoes').value.trim(),
+    fileName:currentFile?.name||old?.fileName||'',
+    fileSize:currentFile?.size||old?.fileSize||0,
+    thumbBase64:currentThumbnailBase64||old?.thumbBase64||null,
+    createdAt:editingProductId?(old?.createdAt||nowISO()):nowISO(),
+    updatedAt:nowISO()
+  };
+}
 
 async function salvarProduto(){
-  const v=recalcular(), name=$("nomeProduto").value.trim()||"Produto", code=$("codigoProduto").value.trim()||uid().slice(0,8), categoria=$("categoriaProduto").value;
-  if(v.pesoPeca<=0&&v.horas<=0){toast("Informe peso ou tempo."); return;}
-  let old=null; if(itemEditandoIndex!==null)old=catalogo[itemEditandoIndex];
-  let thumbBase64=old?.thumbBase64||null;
-  let itemId = old?.id || uid();
-  let fileName = old?.fileName || (name + ".3mf");
-  let fileBase64 = old?.fileBase64 || null;
-
-  if(arquivoGlobalMemoria?.base64){
-    fileName = arquivoGlobalMemoria.name;
-    fileBase64 = arquivoGlobalMemoria.base64;
-  }
-
-  const item={
-    id:itemId, nome:name, codigo:code, categoria, peso:v.pesoPeca, horas:v.horas,
-    subtotal:v.subtotal, precoFinal:v.precoIdeal, observacoes:$("observacoes").value.trim(),
-    vintedLink:v.vintedLink, vintedData:v.vintedData,
-    thumbBase64, fileBase64, fileName, atualizadoEm:new Date().toISOString()
-  };
+  const p=getProduct();
   try{
-    toast("⏳ Salvando produto e arquivo na Nuvem...");
-    await cloudSaveProduct(item);
-    itemEditandoIndex=null; arquivoGlobalMemoria=null; await renderCatalogo();
-    toast("Salvo com sucesso na nuvem! 🚀"); limparFormulario(false);
-  }catch(e){toast("Erro ao salvar.");}
-}
-function adicionarAoCatalogo(){salvarProduto()}
-
-async function renderCatalogo(){
-  if(!catalogo.length){
-    catalogo = await cloudGetProducts();
-  }
-  filtrarCatalogo();
+    if(!window.FB||!window.currentUser)throw new Error('Firebase ainda não está pronto.');
+    const uid=window.currentUser.uid;
+    const old=editingProductId?catalogo.find(x=>x.id===editingProductId):null;
+    const id=p.id;
+    await window.FB.setDoc(window.FB.doc(window.FB.db,'users',uid,'products',id),p,{merge:true});
+    editingProductId=null;currentFile=null;currentThumbnailBase64=null;
+    toast(old?'Produto atualizado no Firestore.':'Produto salvo no Firestore.');
+    await carregarCatalogo(true);
+    limparCamposSemConfirmar();
+  }catch(e){console.error(e);toast('Erro ao salvar: '+friendlyFirebaseError(e))}
 }
 
-function selecionarFiltroCategoria(cat, btn){
-  categoriaAtivaFiltro = cat;
-  document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
-  btn.classList.add("active");
-  filtrarCatalogo();
-}
+async function carregarCatalogo(showToast=false){try{if(!window.FB||!window.currentUser){catalogo=[];renderCatalogo();return}const uid=window.currentUser.uid;const snap=await window.FB.getDocs(window.FB.collection(window.FB.db,'users',uid,'products'));catalogo=snap.docs.map(d=>({...d.data(),id:d.id}));catalogo.sort((a,b)=>String(b.updatedAt||'').localeCompare(String(a.updatedAt||'')));renderCatalogo();populateVendaProdutos();populateAtendimentoProdutos();if(showToast)toast(catalogo.length+' produtos carregados')}catch(e){console.error(e);toast('Erro ao carregar catálogo: '+friendlyFirebaseError(e))}}
 
-function filtrarCatalogo(){
-  const termoBusca = ($("inputBuscaCatalogo")?.value || "").toLowerCase().trim();
-  const div = $("catalogoCards");
-  if(!div) return;
+function renderCatalogo(){
+  const q=($('catalogSearch')?.value||'').toLowerCase();
+  const cat=$('catalogCategory')?.value||'';
+  const list=catalogo.filter(p=>(!q||[p.name,p.code,p.category,p.fileName].join(' ').toLowerCase().includes(q))&&(!cat||p.category===cat));
+  $('catalogCount').textContent=list.length+' produto'+(list.length===1?'':'s');
+  $('catalogGrid').innerHTML=list.length?list.map(p=>`<article class="catalog-card"><div class="catalog-body-grid"><div class="catalog-thumb">${p.thumbBase64?`<img src="${p.thumbBase64}" alt="Miniatura">`:'🧊'}</div><div><div class="catalog-title">${esc(p.name)}</div><div style="color:var(--soft);font-size:12px">${esc(p.code)} · ${esc(p.category||'')}</div></div></div><div class="catalog-details"><div class="catalog-details-row"><span>Peso</span><strong>${Number(p.weight||0).toFixed(2)} g</strong></div><div class="catalog-details-row"><span>Tempo</span><strong>${hoursToText(Number(p.time||0))}</strong></div><div class="catalog-details-row"><span>Custo</span><strong>${money(p.total)}</strong></div><div class="catalog-details-row"><span>Preço recomendado</span><strong>${money(p.idealPrice)}</strong></div></div>${p.fileName?`<div class="file-pill">📦 ${esc(p.fileName)}</div>`:''}<div class="catalog-actions"><button class="btn btn-outline btn-sm" onclick="editarProduto('${p.id}')">✏️ Editar</button><button class="btn btn-primary btn-sm" onclick="abrirAtendimentoProduto('${p.id}')">💬 Atendimento</button><button class="btn btn-danger btn-sm" onclick="excluirProduto('${p.id}')">🗑️</button></div></article>`).join(''):'<div class="empty">Nenhum produto encontrado.</div>'}
 
-  let filtrados = catalogo.filter(item => {
-    const matchCat = (categoriaAtivaFiltro === "todos" || item.categoria === categoriaAtivaFiltro);
-    const matchBusca = !termoBusca || 
-      String(item.nome||"").toLowerCase().includes(termoBusca) ||
-      String(item.codigo||"").toLowerCase().includes(termoBusca) ||
-      String(item.observacoes||"").toLowerCase().includes(termoBusca) ||
-      String(item.categoria||"").toLowerCase().includes(termoBusca);
-    return matchCat && matchBusca;
-  });
+async function excluirProduto(id){if(!confirm('Excluir este produto?'))return;try{const uid=window.currentUser.uid;await window.FB.deleteDoc(window.FB.doc(window.FB.db,'users',uid,'products',id));catalogo=catalogo.filter(x=>x.id!==id);renderCatalogo();populateVendaProdutos();populateAtendimentoProdutos();toast('Produto excluído.')}catch(e){toast('Erro ao excluir: '+friendlyFirebaseError(e))}}
+function editarProduto(id){const p=catalogo.find(x=>x.id===id);if(!p)return;editingProductId=id;Object.entries({nomeProduto:p.name,codigoProduto:p.code,categoriaProduto:p.category,pesoPeca:p.weight,tempoManual:hoursToText(p.time),vintedLink:p.vintedLink,vintedData:p.vintedData,observacoes:p.notes}).forEach(([k,v])=>{if($(k))$(k).value=v??''});$('analiseStatus').textContent=p.fileName?'Arquivo associado: '+p.fileName:'Nenhum arquivo carregado nesta edição.';calc();nav('calc');toast('Produto carregado para edição. Ao salvar, o registro será atualizado.')}
+function limparCamposSemConfirmar(){['nomeProduto','codigoProduto','pesoPeca','tempoManual','vintedLink','vintedData','observacoes'].forEach(id=>{if($(id))$(id).value=''});if($('pesoPeca'))$('pesoPeca').value=0;if($('tempoManual'))$('tempoManual').value='';editingProductId=null;clearAnalysis();calc();localStorage.removeItem(LOCAL_KEYS.draft)}
+function registrarHistorico(){const c=calc();historico.unshift({id:crypto.randomUUID(),name:$('nomeProduto').value||'Sem nome',weight:c.peso,time:c.tempo,total:c.total,ideal:c.ideal,date:nowISO()});localStorage.setItem('bambu_history',JSON.stringify(historico.slice(0,500)));renderHistorico();toast('Cálculo registrado.');}
+function renderHistorico(){const el=$('historicoLista');if(!historico.length){el.innerHTML='<div class="empty">Nenhum cálculo registrado.</div>';return}el.innerHTML=historico.map(h=>`<div class="history-item"><div class="history-main"><div class="history-title">${esc(h.name)}</div><div class="history-meta">${new Date(h.date).toLocaleString('pt-GB')} · ${Number(h.weight||0).toFixed(1)} g · ${hoursToText(Number(h.time||0))}</div></div><div><b>${money(h.ideal)}</b></div></div>`).join('')}
+function limparHistorico(){if(confirm('Limpar todo o histórico local?')){historico=[];localStorage.removeItem('bambu_history');renderHistorico();}}
+function exportarHistorico(){const rows=[['Data','Produto','Peso g','Tempo h','Custo','Preço ideal'],...historico.map(h=>[h.date,h.name,h.weight,h.time,h.total,h.ideal])];downloadBlob(rows.map(r=>r.map(csv).join(';')).join('\n'),'bambucalc-historico.csv','text/csv;charset=utf-8')}
+function csv(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
+function exportarOrcamento(){const c=calc();const text=`BambuCalc 3D PRO\n\nProduto: ${$('nomeProduto').value||'Sem nome'}\nCódigo: ${$('codigoProduto').value||'-'}\nPeso: ${c.peso.toFixed(2)} g\nTempo: ${hoursToText(c.tempo)}\n\nCusto total: ${money(c.total)}\nPreço mínimo: ${money(c.minimo)}\nPreço recomendado: ${money(c.ideal)}\nPreço premium: ${money(c.premium)}\n\nObservações: ${$('observacoes').value||'-'}`;downloadBlob(text,'orcamento-bambucalc.txt','text/plain;charset=utf-8')}
+function downloadBlob(content,name,type){const b=new Blob([content],{type});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)}
+function limparCalculadora(){if(!confirm('Limpar os dados da calculadora?'))return;['nomeProduto','codigoProduto','pesoPeca','tempoManual','vintedLink','vintedData','observacoes'].forEach(id=>$(id).value='');$('pesoPeca').value=0;$('tempoManual').value='';clearAnalysis();calc();localStorage.removeItem(LOCAL_KEYS.draft)}
+function populateVendaProdutos(){const s=$('vendaProduto');if(!s)return;s.innerHTML='<option value="">Selecione...</option>'+catalogo.map(p=>`<option value="${escAttr(p.id)}">${esc(p.name)} — ${money(p.idealPrice)}</option>`).join('');preencherPrecoVenda();}
+function preencherPrecoVenda(){const p=catalogo.find(x=>x.id===$('vendaProduto')?.value);if(p&&$('vendaPreco'))$('vendaPreco').value=Number(p.idealPrice||0).toFixed(2);}
+let pedidoItensEditor=[];
+function pedidoMoney(id){return Math.max(0,Number($(id)?.value||0));}
+function adicionarItemPedido(){const p=catalogo.find(x=>x.id===$('vendaProduto')?.value);if(!p)return toast('Selecione um produto.');const qty=Math.max(1,parseInt($('vendaQtd').value||1));const unit=Math.max(0,Number($('vendaPreco').value||p.idealPrice||0));const existing=pedidoItensEditor.find(x=>x.productId===p.id&&Number(x.unitPrice)===unit);if(existing)existing.qty+=qty;else pedidoItensEditor.push({productId:p.id,name:p.name,qty,unitPrice:unit,cost:Number(p.total||0)});renderPedidoEditor();toast('Item adicionado ao pedido.');}
+function removerItemPedido(i){pedidoItensEditor.splice(i,1);renderPedidoEditor();}
+function limparPedidoEditor(){pedidoItensEditor=[];['pedidoCliente','pedidoObservacoes'].forEach(id=>$(id).value='');$('pedidoFrete').value=0;$('pedidoDesconto').value=0;$('pedidoTaxas').value=0;$('pedidoEmbalagem').value=0;$('pedidoStatus').value='Aguardando pagamento';$('pedidoData').value=new Date().toISOString().slice(0,10);$('tratarComoPedido').checked=true;renderPedidoEditor();}
+function calcularPedido(){const produtos=pedidoItensEditor.reduce((s,i)=>s+i.qty*i.unitPrice,0);const custoProdutos=pedidoItensEditor.reduce((s,i)=>s+i.qty*i.cost,0);const frete=pedidoMoney('pedidoFrete'),desconto=pedidoMoney('pedidoDesconto'),taxas=pedidoMoney('pedidoTaxas'),emb=pedidoMoney('pedidoEmbalagem');const total=produtos+frete-desconto;const lucro=total-custoProdutos-taxas-emb;return{produtos,custoProdutos,frete,desconto,taxas,emb,total,lucro,qty:pedidoItensEditor.reduce((s,i)=>s+i.qty,0)};}
+function renderPedidoEditor(){const box=$('pedidoItens');if(!box)return;const c=calcularPedido();$('pedidoModoBadge').textContent=( $('tratarComoPedido').checked?'Pedido':'Venda avulsa')+' com '+c.qty+' item'+(c.qty===1?'':'s');box.innerHTML=pedidoItensEditor.length?pedidoItensEditor.map((i,idx)=>`<div class="order-item"><div class="order-item-main"><strong>${esc(i.name)}</strong><small>${i.qty} × ${money(i.unitPrice)} · custo ${money(i.cost)}</small></div><strong>${money(i.qty*i.unitPrice)}</strong><button class="btn btn-danger btn-sm order-remove" onclick="removerItemPedido(${idx})">✕</button></div>`).join(''):'<div class="empty" style="padding:25px">Nenhum item adicionado ao pedido.</div>';
+$('pedidoResumo').innerHTML=`<div class="metric"><small>Produtos</small><strong>${money(c.produtos)}</strong></div><div class="metric"><small>Desconto + frete</small><strong>${money(c.total-c.produtos)}</strong></div><div class="metric"><small>Total recebido</small><strong>${money(c.total)}</strong></div><div class="metric"><small>Lucro líquido estimado</small><strong>${money(c.lucro)}</strong></div>`;}
+function buildPedido(){const c=calcularPedido();return{id:crypto.randomUUID(),orderNumber:'PED-'+new Date().toISOString().slice(0,10).replaceAll('-','')+'-'+String(Date.now()).slice(-5),type:$('tratarComoPedido').checked?'pedido':'venda',customer:$('pedidoCliente').value.trim()||'Cliente não informado',channel:$('pedidoCanal').value,date:$('pedidoData').value||new Date().toISOString().slice(0,10),status:$('pedidoStatus').value,items:pedidoItensEditor.map(x=>({...x})),subtotal:c.produtos,shipping:c.frete,discount:c.desconto,platformFees:c.taxas,packaging:c.emb,total:c.total,cost:c.custoProdutos,profit:c.lucro,notes:$('pedidoObservacoes').value.trim(),createdAt:nowISO(),updatedAt:nowISO()};}
+function salvarPedido(){if(!pedidoItensEditor.length)return toast('Adicione pelo menos um produto ao pedido.');const order=buildPedido();if(order.type==='venda'&&order.items.length>1)order.type='pedido';vendas.unshift(order);localStorage.setItem('bambu_sales',JSON.stringify(vendas));renderVendas();limparPedidoEditor();toast(order.type==='pedido'?'Pedido com múltiplos itens registrado.':'Venda registrada.');}
+function statusClass(s){return 'status-'+String(s||'').toLowerCase().replace(/[^a-záéíóúãõç]+/g,'-').replace(/[áàâã]/g,'a').replace(/[éê]/g,'e').replace(/[í]/g,'i').replace(/[óôõ]/g,'o').replace(/[ú]/g,'u').replace(/[ç]/g,'c').replace(/-$/,'');}
+function renderVendas(){const normalized=vendas.map(normalizeOrder);vendas=normalized;const totalQty=vendas.reduce((s,v)=>s+(v.items||[]).reduce((a,i)=>a+i.qty,0),0),fat=vendas.reduce((s,v)=>s+Number(v.total||0),0),cost=vendas.reduce((s,v)=>s+Number(v.cost||0),0),fees=vendas.reduce((s,v)=>s+Number(v.platformFees||0)+Number(v.packaging||0),0);$('metricPedidos').textContent=vendas.length;$('metricVendas').textContent=totalQty;$('metricFaturamento').textContent=money(fat);$('metricLucro').textContent=money(fat-cost-fees);const q=($('vendasSearch')?.value||'').toLowerCase();const list=vendas.filter(v=>!q||JSON.stringify(v).toLowerCase().includes(q));$('vendasLista').innerHTML=list.length?list.map(v=>`<article class="order-card"><div class="order-card-header"><div><strong>${esc(v.orderNumber||v.id)}</strong><div class="history-meta">${esc(v.customer)} · ${esc(v.channel)} · ${esc(v.date)} · ${v.items.reduce((s,i)=>s+i.qty,0)} unidade(s)</div></div><span class="status-pill ${statusClass(v.status)}">${esc(v.status)}</span></div><div class="order-products">${v.items.map(i=>`<div class="order-product-line"><span>${esc(i.name)} × ${i.qty}</span><strong>${money(i.qty*i.unitPrice)}</strong></div>`).join('')}</div><div class="order-card-actions"><strong style="margin-right:auto">Total ${money(v.total)} · Lucro ${money(v.profit)}</strong><button class="btn btn-info btn-sm" onclick="usarPedidoNoAtendimento('${v.id}')">💬 Atendimento</button><button class="btn btn-outline btn-sm" onclick="duplicarPedido('${v.id}')">📋 Duplicar</button><button class="btn btn-danger btn-sm" onclick="excluirPedido('${v.id}')">🗑️</button></div></article>`).join(''):'<div class="empty">Nenhum pedido registrado.</div>';}
+function normalizeOrder(v){if(v.items)return v;return{...v,id:v.id||crypto.randomUUID(),orderNumber:'VEN-'+String(v.id||'').slice(0,8),type:'venda',customer:'Cliente não informado',channel:v.channel||'Outro',date:v.date||'',status:'Concluído',items:[{productId:v.productId,name:v.name,qty:Number(v.qty||1),unitPrice:Number(v.unitPrice||0),cost:Number(v.cost||0)}],subtotal:Number(v.qty||1)*Number(v.unitPrice||0),shipping:0,discount:0,platformFees:0,packaging:0,total:Number(v.qty||1)*Number(v.unitPrice||0),cost:Number(v.qty||1)*Number(v.cost||0),profit:Number(v.qty||1)*(Number(v.unitPrice||0)-Number(v.cost||0)),notes:'',createdAt:nowISO(),updatedAt:nowISO()};}
+function excluirPedido(id){if(!confirm('Excluir este pedido?'))return;vendas=vendas.filter(v=>v.id!==id);localStorage.setItem('bambu_sales',JSON.stringify(vendas));renderVendas();toast('Pedido excluído.');}
+function duplicarPedido(id){const v=vendas.find(x=>x.id===id);if(!v)return;pedidoItensEditor=v.items.map(x=>({...x}));$('pedidoCliente').value=v.customer;$('pedidoCanal').value=v.channel;$('pedidoStatus').value='Aguardando pagamento';$('pedidoData').value=new Date().toISOString().slice(0,10);$('pedidoFrete').value=v.shipping||0;$('pedidoDesconto').value=v.discount||0;$('pedidoTaxas').value=v.platformFees||0;$('pedidoEmbalagem').value=v.packaging||0;$('pedidoObservacoes').value=v.notes||'';nav('vendas');renderPedidoEditor();toast('Pedido duplicado no formulário para edição.');}
+function pedidoTexto(v){return v.items.map(i=>`• ${i.name} ×${i.qty} — ${money(i.qty*i.unitPrice)}`).join('\n');}
+function pedidoParaScript(v){return `Order ${v.orderNumber}\n${pedidoTexto(v)}\nTotal: ${money(v.total)}`;}
+function usarPedidoNoAtendimento(id){if(id&&typeof id==='string'){const v=vendas.find(x=>x.id===id);if(v)localStorage.setItem('bambu_atendimento_order',v.id);}nav('atendimento');populateAtendimentoPedidos();const saved=localStorage.getItem('bambu_atendimento_order');if(saved&&$('atendimentoPedido')){$('atendimentoPedido').value=saved;}renderAtendimento();}
 
-  $("catalogoCount").textContent = `${filtrados.length} produto(s) encontrado(s)`;
-  div.innerHTML = "";
-
-  if(!filtrados.length){
-    div.innerHTML = '<div class="empty">Nenhum produto encontrado com esses filtros.</div>';
-    return;
-  }
-  
-  filtrados.forEach((item)=>{
-    const iOriginal = catalogo.findIndex(x => x.id === item.id);
-    const card=document.createElement("article"); card.className="catalog-card";
-    
-    card.innerHTML=`
-      <div class="catalog-body-grid">
-        <div class="catalog-thumb">${item.thumbBase64?`<img src="${item.thumbBase64}">`:'📦'}</div>
-        <div>
-          <div class="catalog-title">${esc(item.nome)}</div>
-          <div style="font-size:11px; color:var(--accent2); margin-top:2px;">📁 ${esc(item.categoria || 'Outros')}</div>
-          <div style="font-size:11px; color:var(--soft); margin-top:2px;">Ref: <strong>${esc(item.codigo)}</strong></div>
-        </div>
-      </div>
-
-      <div class="catalog-details">
-        <div class="catalog-details-row"><span>Peso da Peça:</span> <strong>${Number(item.peso||0).toFixed(1)}g</strong></div>
-        <div class="catalog-details-row"><span>Tempo Estimado:</span> <strong>${formatarTempo(Number(item.horas||0))}</strong></div>
-        <div class="catalog-details-row"><span>Custo Total:</span> <strong>${dinheiro(item.subtotal)}</strong></div>
-        <div class="catalog-details-row"><span>Preço de Venda:</span> <strong style="color:var(--accent);">${dinheiro(item.precoFinal)}</strong></div>
-        ${item.vintedLink ? `<div class="catalog-details-row"><span>Vinted:</span> <a href="${esc(item.vintedLink)}" target="_blank" style="color:var(--accent2); text-decoration:underline;">Ver Anúncio</a></div>` : ''}
-        ${item.observacoes ? `<div style="margin-top:4px; font-size:11px; color:var(--soft); border-top:1px solid var(--border); pt:4px;">Obs: ${esc(item.observacoes)}</div>` : ''}
-      </div>
-
-      <div style="display:flex; align-items:center; justify-content:space-between; background:var(--card2); padding:6px; border-radius:10px;">
-        <span style="font-size:11px; color:var(--soft);">QR Code:</span>
-        <div id="qrcode-${item.id}" class="catalog-qrcode-box"></div>
-      </div>
-
-      <!-- NOVO BOTÃO E MÉTODO DE DOWNLOAD DIRETO -->
-      <div style="margin-top:4px;">
-        ${item.fileBase64 ? 
-          `<button class="btn-download-pro" onclick="baixarArquivoDireto('${item.id}')">📥 Baixar .3mf/.gcode (${item.fileName || 'projeto'})</button>` : 
-          `<button class="btn btn-sm btn-outline" style="border-color:var(--accent); color:var(--accent); width:100%; border-radius:10px;" onclick="pedirArquivoCatalogo('${item.id}')">📁 Anexar Arquivo para Download</button>`
-        }
-      </div>
-
-      <div class="catalog-actions" style="margin-top:4px;">
-        <button class="btn btn-sm btn-outline" onclick="editarItem(${iOriginal})">✏️ Editar</button>
-        <button class="btn btn-sm btn-primary" onclick="abrirModalVenda(${iOriginal})">🛒 Vender</button>
-        <button class="btn btn-sm btn-danger" onclick="excluirItem(${iOriginal})">🗑️</button>
-      </div>`;
-    div.appendChild(card);
-
-    try {
-      new QRCode(document.getElementById(`qrcode-${item.id}`), {
-        text: String(item.codigo || item.id),
-        width: 80, height: 80,
-        colorDark : "#000000", colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.M
-      });
-    } catch(err) {}
-  });
-}
-
-// NOVO MÉTODO DE DOWNLOAD VIA OBJECT URL (Nativo, limpo e direto)
-function baixarArquivoDireto(id){
-  const item = catalogo.find(x => x.id === id);
-  if(!item || !item.fileBase64) { toast("Nenhum arquivo vinculado."); return; }
-  
-  try {
-    // Converte base64 para blob para garantir compatibilidade nativa com qualquer navegador
-    const arr = item.fileBase64.split(',');
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while(n--){ u8arr[n] = bstr.charCodeAt(n); }
-    const blob = new Blob([u8arr], {type: mime});
-
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = item.fileName || "projeto.3mf";
-    document.body.appendChild(a);
-    a.click();
-    
-    setTimeout(() => {
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }, 1000);
-
-    toast("Download iniciado com sucesso! 📥");
-  } catch(e) {
-    console.error(e);
-    toast("Erro ao processar download.");
-  }
-}
-
-function pedirArquivoCatalogo(id){ 
-  idProdutoAlvoCache = id; 
-  $("inputArquivoCatalogo").click(); 
-}
-
-async function vincularArquivoDiretoCatalogo(input){
-  const file = input.files?.[0];
-  if(!file || !idProdutoAlvoCache) return;
-  try {
-    const base64 = await blobToBase64(file);
-    const idx = catalogo.findIndex(x => x.id === idProdutoAlvoCache);
-    if(idx !== -1){
-      catalogo[idx].fileBase64 = base64;
-      catalogo[idx].fileName = file.name;
-      await cloudSaveProduct(catalogo[idx]);
-      baixarArquivoDireto(idProdutoAlvoCache);
-      toast("Arquivo anexado e baixado! 📥");
+/* Vinted Manager com alerta inteligente para anúncios > 25 dias */
+function renderVinted(){
+  const q=($('vintedSearch')?.value||'').toLowerCase();
+  const list=catalogo.filter(p=>(p.vintedLink||'')&&(!q||p.name.toLowerCase().includes(q)||p.code.toLowerCase().includes(q)));
+  const hoje=new Date();
+  $('vintedLista').innerHTML=list.length?list.map(p=>{
+    let badge='<span class="vinted-badge-ok">✓ Ativo recente</span>';
+    let diasStr='Sem data informada';
+    if(p.vintedDate){
+      const diffDays=Math.floor((hoje - new Date(p.vintedDate))/(1000*60*60*24));
+      diasStr=`Postado há ${diffDays} dia(s) (${p.vintedDate.split('-').reverse().join('/')})`;
+      if(diffDays>=30){
+        badge='<span class="vinted-badge-danger">🚨 ALERTA (>30d): Fazer Bump ou Republicar!</span>';
+      }else if(diffDays>=25){
+        badge='<span class="vinted-badge-warn">⚠️ ATENÇÃO (>25d): Quase expirando relevância</span>';
+      }
     }
-    idProdutoAlvoCache = null; input.value = "";
-    filtrarCatalogo();
-  } catch(e) { toast("Erro ao anexar arquivo."); }
-}
-
-async function editarItem(i){
-  const item=catalogo[i]; if(!item)return;
-  itemEditandoIndex=i; nav("calc",document.querySelector('.sidebar-btn[data-page="calc"]'));
-  $("nomeProduto").value=item.nome||""; $("codigoProduto").value=item.codigo||""; $("categoriaProduto").value=item.categoria||"Outros";
-  $("pesoPeca").value=Number(item.peso||0).toFixed(2); $("horasPeca").value=Number(item.horas||0).toFixed(2);
-  $("tempoManual").value=formatarTempo(Number(item.horas||0)); $("observacoes").value=item.observacoes||"";
-  if($("vintedLink")) $("vintedLink").value = item.vintedLink || "";
-  if($("vintedData")) $("vintedData").value = item.vintedData || "";
-  recalcular(); toast("Carregado para edição.");
-}
-async function excluirItem(i){
-  const item=catalogo[i]; if(!item||!confirm("Excluir?"))return;
-  await cloudDeleteProduct(item.id); catalogo = await cloudGetProducts(); filtrarCatalogo(); toast("Excluído.");
-}
-
-function abrirModalVenda(i){
-  const item = catalogo[i];
-  if(!item) return;
-  $("modalProdutoIndex").value = i;
-  $("modalTituloProduto").textContent = `Vender: ${item.nome}`;
-  $("modalCliente").value = ""; $("modalQtd").value = "1";
-  $("modalPrecoUnit").value = dinheiro(item.precoFinal);
-  calcularTotalModal();
-  $("modalVendaRapida").classList.add("active");
-}
-function fecharModalVenda(){ $("modalVendaRapida").classList.remove("active"); }
-function calcularTotalModal(){
-  const i = $("modalProdutoIndex").value;
-  const item = catalogo[i];
-  if(!item) return;
-  const qtd = parseInt($("modalQtd").value) || 1;
-  $("modalTotalPreview").textContent = dinheiro(qtd * item.precoFinal);
-}
-function confirmarVendaRapida(){
-  const i = $("modalProdutoIndex").value;
-  const item = catalogo[i];
-  if(!item) return;
-  const qtd = parseInt($("modalQtd").value) || 1;
-  const cliente = $("modalCliente").value.trim() || "Avulso";
-  
-  vendasLista.unshift({
-    id: uid(), nome: `${item.nome} (${cliente})`, qtd,
-    total: qtd * item.precoFinal, lucro: (qtd * item.precoFinal) - (qtd * item.subtotal),
-    dataISO: new Date().toISOString()
-  });
-
-  safeSet(STORAGE.vendas, JSON.stringify(vendasLista));
-  fecharModalVenda(); atualizarPainelVendas(); toast("Venda registrada com sucesso! ✅");
-}
-
-function abrirModalEdicaoVenda(id){
-  const v = vendasLista.find(x => x.id === id);
-  if(!v) return;
-  $("editVendaId").value = v.id;
-  $("editVendaNome").value = v.nome;
-  $("editVendaQtd").value = v.qtd;
-  $("editVendaTotal").value = v.total.toFixed(2);
-  $("modalEditarVenda").classList.add("active");
-}
-function fecharModalEdicaoVenda(){ $("modalEditarVenda").classList.remove("active"); }
-function salvarEdicaoVenda(){
-  const id = $("editVendaId").value;
-  const idx = vendasLista.findIndex(x => x.id === id);
-  if(idx === -1) return;
-  vendasLista[idx].nome = $("editVendaNome").value.trim() || "Venda";
-  vendasLista[idx].qtd = parseInt($("editVendaQtd").value) || 1;
-  vendasLista[idx].total = parseFloat($("editVendaTotal").value) || 0;
-  safeSet(STORAGE.vendas, JSON.stringify(vendasLista));
-  fecharModalEdicaoVenda(); atualizarPainelVendas(); toast("Venda atualizada! ✏️");
-}
-
-function renderVintedManager(){
-  const container = $("vintedListaContainer");
-  if(!container) return;
-  if(!catalogo.length){ container.innerHTML = '<div class="empty">Nenhum produto no catálogo.</div>'; return; }
-  const hoje = new Date();
-  container.innerHTML = catalogo.map(item => {
-    let diasStr = "Sem data Vinted", statusBadge = '<span class="vinted-badge-ok">Sem Link</span>';
-    if(item.vintedData){
-      const diffDays = Math.floor((hoje - new Date(item.vintedData)) / (1000 * 60 * 60 * 24));
-      diasStr = diffDays < 0 ? "Data futura" : diffDays === 0 ? "Postado hoje" : `Postado há ${diffDays} dia(s)`;
-      statusBadge = diffDays >= 25 ? '<span class="vinted-badge-warn">⚠️ Antigo (>25d) - Fazer Bump/Repost</span>' : '<span class="vinted-badge-ok">✓ Ativo recente</span>';
-    }
-    return `
-      <div class="history-item" style="flex-direction:column; align-items:flex-start; gap:6px;">
-        <div style="display:flex; justify-content:space-between; width:100%;">
-          <span class="history-title">${esc(item.nome)}</span> ${statusBadge}
-        </div>
-        <div class="history-meta">Idade: ${diasStr}</div>
-        ${item.vintedLink ? `<a href="${esc(item.vintedLink)}" target="_blank" class="btn btn-sm btn-outline" style="text-decoration:none; width:100%; text-align:center;">🔗 Abrir na Vinted</a>` : ''}
-      </div>`;
-  }).join("");
-}
-
-function toggleScanner(){ if(isScanning) pararScanner(); else iniciarScanner(); }
-function iniciarScanner(){
-  $("videoScanner").style.display = "block";
-  $("btnToggleScanner").textContent = "Parar Câmera";
-  $("scannerStatus").textContent = "Aponte para o código...";
-  codeReader = new ZXing.BrowserBarcodeReader();
-  codeReader.decodeFromVideoDevice(null, 'videoScanner', (result) => {
-    if (result) { pararScanner(); encontrarProdutoPorCodigo(result.getText()); }
-  }).catch(() => { $("scannerStatus").textContent = "Erro na câmera."; pararScanner(); });
-  isScanning = true;
-}
-function pararScanner(){
-  if(codeReader){ codeReader.reset(); codeReader = null; }
-  $("videoScanner").style.display = "none";
-  $("btnToggleScanner").textContent = "Iniciar Câmera";
-  $("scannerStatus").textContent = "Câmera desligada.";
-  isScanning = false;
-}
-function encontrarProdutoPorCodigo(codigo){
-  const index = catalogo.findIndex(p => String(p.codigo).trim().toLowerCase() === String(codigo).trim().toLowerCase());
-  if(index !== -1){ abrirModalVenda(index); toast(`Encontrado: ${catalogo[index].nome}`); }
-  else { toast(`Código "${codigo}" não encontrado ❌`); }
-}
-
-function atualizarSelectCatalogoVendas(){
-  const sel=$("vendaProdutoSelect"); if(!sel)return;
-  sel.innerHTML='<option value="">-- Venda avulsa --</option>';
-  catalogo.forEach((p,i)=>{ const opt=document.createElement("option"); opt.value=i; opt.textContent=`${p.nome} (${dinheiro(p.precoFinal)})`; sel.appendChild(opt); });
-}
-function preencherDadosVenda(){
-  const i=$("vendaProdutoSelect").value;
-  if(i===""){ $("vendaNome").value=""; $("vendaPrecoUnit").value="0"; $("vendaCustoUnit").value="0"; }
-  else{ const p=catalogo[Number(i)]; $("vendaNome").value=p.nome; $("vendaPrecoUnit").value=p.precoFinal.toFixed(2); $("vendaCustoUnit").value=p.subtotal.toFixed(2); }
-  calcularTotalVendaForm();
-}
-function calcularTotalVendaForm(){$("vendaTotalPreview").textContent=dinheiro((parseFloat($("vendaQtd").value)||1)*(parseFloat($("vendaPrecoUnit").value)||0));}
-function registrarVenda(){
-  const nome=$("vendaNome").value.trim()||"Avulso", qtd=parseInt($("vendaQtd").value)||1, preco=parseFloat($("vendaPrecoUnit").value)||0, custo=parseFloat($("vendaCustoUnit").value)||0;
-  if(preco<=0)return toast("Informe o preço.");
-  vendasLista.unshift({ id:uid(), nome, qtd, total:qtd*preco, lucro:(qtd*preco)-(qtd*custo), dataISO:new Date().toISOString() });
-  safeSet(STORAGE.vendas, JSON.stringify(vendasLista)); atualizarPainelVendas(); toast("Venda registrada!");
-}
-function limparVendas(){ vendasLista=[]; safeSet(STORAGE.vendas,"[]"); atualizarPainelVendas(); }
-function atualizarPainelVendas(){
-  try{vendasLista=JSON.parse(safeGet(STORAGE.vendas,"[]"))}catch{vendasLista=[]}
-  const periodo = $("filtroPeriodo")?.value || "todos";
-  const hojeStr = new Date().toISOString().slice(0, 10);
-  const mesAtualStr = new Date().toISOString().slice(0, 7);
-
-  const vendasFiltradas = vendasLista.filter(v => {
-    if(!v.dataISO) return true;
-    if(periodo === "hoje") return v.dataISO.slice(0, 10) === hojeStr;
-    if(periodo === "mes") return v.dataISO.slice(0, 7) === mesAtualStr;
-    return true;
-  });
-
-  let fat=0, luc=0; vendasFiltradas.forEach(v=>{fat+=v.total; luc+=v.lucro;});
-  $("resumoFaturamento").textContent=dinheiro(fat); $("resumoLucro").textContent=dinheiro(luc);
-  const c=$("listaVendasContainer");
-  if(!vendasFiltradas.length){c.innerHTML='<div class="empty">Nenhuma venda encontrada.</div>'; return;}
-  c.innerHTML=vendasFiltradas.map(v=>`
-    <div class="history-item">
-      <div class="history-main">
-        <div class="history-title">${esc(v.nome)} (${v.qtd}x)</div>
-        <div class="history-meta">Lucro: ${dinheiro(v.lucro)} ${v.dataISO ? '• '+v.dataISO.slice(0,10).split('-').reverse().join('/') : ''}</div>
+    return `<div class="history-item" style="flex-direction:column;align-items:flex-start;gap:6px;">
+      <div style="display:flex;justify-content:space-between;width:100%;">
+        <b>${esc(p.name)}</b> ${badge}
       </div>
-      <div style="display:flex; align-items:center; gap:8px;">
-        <strong>${dinheiro(v.total)}</strong>
-        <button class="btn btn-sm btn-outline" style="padding:6px 10px;" onclick="abrirModalEdicaoVenda('${v.id}')">✏️</button>
-      </div>
-    </div>`).join("");
+      <div class="history-meta">Idade: ${diasStr} · Preço: ${money(p.idealPrice)}</div>
+      <a class="btn btn-info btn-sm" href="${escAttr(p.vintedLink)}" target="_blank" rel="noopener" style="margin-top:4px;">Abrir anúncio na Vinted</a>
+    </div>`;
+  }).join(''):'<div class="empty">Nenhum produto com link Vinted cadastrado.</div>';
 }
 
-function registrarHistorico(){
-  const v=recalcular(); if(v.pesoPeca<=0)return toast("Informe dados.");
-  historicoCalc.unshift({nome:$("nomeProduto").value.trim()||"Cálculo", subtotal:v.subtotal, precoIdeal:v.precoIdeal});
-  safeSet(STORAGE.historico, JSON.stringify(historicoCalc)); atualizarHistorico(); toast("Registrado.");
-}
-function atualizarHistorico(){
-  try{historicoCalc=JSON.parse(safeGet(STORAGE.historico,"[]"))}catch{historicoCalc=[]}
-  const c=$("historicoCalc");
-  if(!historicoCalc.length){c.innerHTML='<div class="empty">Sem histórico.</div>'; return;}
-  c.innerHTML=historicoCalc.map(x=>`<div class="history-item"><div class="history-main"><div class="history-title">${esc(x.nome)}</div><div class="history-meta">Subtotal: ${dinheiro(x.subtotal)}</div></div><strong>${dinheiro(x.precoIdeal)}</strong></div>`).join("");
-}
+const SUPPORT_SCRIPTS={
+ welcome:{title:'Boas-vindas',pt:'Cliente entrou em contato e você quer iniciar o atendimento.',en:'Hi! 👋 Thanks for getting in touch!\n\nWe offer a range of 3D printed products from our catalogue. 🖨️\n\nIf you\'d like to know more about a product, its price, available colours or delivery time, just let me know which item you\'re interested in and I\'ll be happy to help.'},
+ price:{title:'Informar preço',pt:'Cliente quer saber o preço do produto selecionado.',en:'Of course! 😊\n\nThe price for the {{PRODUCT}} is {{PRICE}}.\n\nIf you\'re interested, I can also confirm the available colours and estimated dispatch time.'},
+ availability:{title:'Disponibilidade',pt:'Confirmar que o produto está disponível e perguntar quantidade.',en:'Hi! 😊\n\nThe {{PRODUCT}} is currently available for {{PRICE}}.\n\nHow many would you like to order? I can confirm the available options and total price for you.'},
+ colours:{title:'Cores disponíveis',pt:'Informar as cores que você cadastrou para o produto.',en:'Hi! 😊\n\nThe {{PRODUCT}} is available in the following colours:\n\n{{COLOURS}}\n\nLet me know which colour you\'d prefer and how many you\'d like.'},
+ quote:{title:'Orçamento',pt:'Enviar preço, quantidade e informações básicas do produto.',en:'Hi! 😊\n\nI can help you with the {{PRODUCT}}. The current price is {{PRICE}} per item.\n\nOrder items:\n{{ORDER_ITEMS}}\n\nTotal: {{TOTAL}}.\n\nLet me know if you\'d like to place the order.'},
+ dispatch:{title:'Prazo de produção',pt:'Informar o tempo estimado de produção.',en:'Hi! 😊\n\nThe estimated production time for the {{PRODUCT}} is around {{TIME}}.\n\nOnce your order is confirmed, we\'ll prepare the item and arrange dispatch as soon as possible.'},
+ shipping:{title:'Envio',pt:'Explicar que o envio depende da localização e confirmar as opções.',en:'Hi! 😊\n\nWe can arrange delivery for the {{PRODUCT}}. 📦\n\nThe delivery cost and estimated delivery time depend on your location.\n\nIf you send me your postcode, I can confirm the available delivery information for you.'},
+ order:{title:'Fechar pedido',pt:'Confirmar produto, quantidade, cor e valor antes da compra.',en:'Great! 😊\n\nI\'d be happy to arrange your order.\n\nOrder: {{ORDER_NUMBER}}\n\n{{ORDER_ITEMS}}\n\nTotal: {{TOTAL}}\n\nPlease confirm the details and I\'ll help you with the next step.'},
+ followup:{title:'Follow-up',pt:'Cliente não respondeu e você quer fazer um acompanhamento sem pressionar.',en:'Hi! 😊 Just checking in to see if you\'re still interested in the {{PRODUCT}}.\n\nIf you have any questions about the item, price or delivery, I\'d be happy to help.'},
+ shipped:{title:'Pedido enviado',pt:'Avisar que o pedido foi enviado e adicionar o rastreio.',en:'Good news! 🎉\n\nYour order {{ORDER_NUMBER}} has now been dispatched. 📦\n\nYour tracking details are:\n{{TRACKING}}\n\nThank you very much for your order and support! 😊'},
+ review:{title:'Pedir avaliação',pt:'Pedir uma avaliação após a compra.',en:'Hi! 😊 We hope you\'re happy with your {{PRODUCT}}.\n\nIf you have a moment, we\'d really appreciate it if you could leave us a review. ⭐\n\nYour feedback helps our small business grow. Thank you very much for your support!'},
+ catalogue:{title:'Fora do catálogo',pt:'Cliente pergunta se você faz outro modelo ou peça personalizada.',en:'Thanks for asking! 😊\n\nAt the moment, we only sell the products available in our catalogue and we don\'t offer custom-made items.\n\nIf you\'d like, I\'d be happy to show you some of the products currently available.'},
+ discount:{title:'Pedido de desconto',pt:'Cliente pede desconto. Para várias unidades, você pode avaliar.',en:'Thanks for asking! 😊\n\nOur prices are carefully calculated based on the material and production costs.\n\nIf you\'re interested in ordering multiple items, let me know the quantity and I\'ll check whether I can offer you the best possible price.'}
+};
+function scriptData(){const orderId=$('atendimentoPedido')?.value;const order=vendas.map(normalizeOrder).find(x=>x.id===orderId);const id=$('atendimentoProduto')?.value;const p=catalogo.find(x=>x.id===id);const qty=Math.max(1,Number($('atendimentoQtd')?.value||1));return{p,qty,order};}
+function fillScript(t){const {p,qty,order}=scriptData();const price=p?money(p.idealPrice):'£ [PRICE]';const total=p?money(Number(p.idealPrice||0)*qty):'£ [TOTAL]';const time=p?hoursToText(Number(p.time||0)):'[TIME]';const product=p?.name||'[PRODUCT]';const colours=p?.colours||p?.colors||'';const colourText=Array.isArray(colours)?colours.map(x=>'• '+x).join('\n'):(colours||'• [COLOUR 1]\n• [COLOUR 2]');const orderProducts=order?pedidoTexto(order):`${product} ×${qty}`;const orderTotal=order?money(order.total):total;return t.replaceAll('{{PRODUCT}}',product).replaceAll('{{PRICE}}',price).replaceAll('{{QTY}}',String(order?order.items.reduce((s,i)=>s+i.qty,0):qty)).replaceAll('{{TOTAL}}',orderTotal).replaceAll('{{TIME}}',time).replaceAll('{{COLOURS}}',colourText).replaceAll('{{TRACKING}}','[TRACKING NUMBER]').replaceAll('{{ORDER_ITEMS}}',orderProducts).replaceAll('{{ORDER_NUMBER}}',order?.orderNumber||'[ORDER NUMBER]').replaceAll('{{CUSTOMER}}',order?.customer||'[CUSTOMER]');}
+function populateAtendimentoProdutos(){const s=$('atendimentoProduto');if(!s)return;const current=s.value;s.innerHTML='<option value="">Selecione um produto...</option>'+catalogo.map(p=>`<option value="${escAttr(p.id)}">${esc(p.name)} — ${money(p.idealPrice)}</option>`).join('');if(catalogo.some(p=>p.id===current))s.value=current;populateAtendimentoPedidos();}
+function populateAtendimentoPedidos(){const s=$('atendimentoPedido');if(!s)return;const current=s.value||localStorage.getItem('bambu_atendimento_order')||'';s.innerHTML='<option value="">Sem pedido — usar produto individual</option>'+vendas.map(normalizeOrder).map(v=>`<option value="${escAttr(v.id)}">${esc(v.orderNumber)} · ${esc(v.customer)} · ${money(v.total)}</option>`).join('');if(vendas.some(v=>v.id===current))s.value=current;}
+function atendimentoSelecionarProduto(){const {p}=scriptData();$('atendimentoProdutoBadge').textContent=p?p.name:'Nenhum produto selecionado';renderAtendimento();}
+function renderAtendimento(){const grid=$('supportGrid');if(!grid)return;grid.innerHTML=Object.entries(SUPPORT_SCRIPTS).map(([id,s])=>`<button class="support-card ${selectedScriptId===id?'active':''}" onclick="selecionarScript('${id}')"><span class="support-icon">${({welcome:'👋',price:'💷',availability:'📦',colours:'🎨',quote:'🧾',dispatch:'⏱️',shipping:'🚚',order:'🛒',followup:'⏳',shipped:'📬',review:'⭐',catalogue:'❌',discount:'🏷️'})[id]}</span><strong>${s.title}</strong><small>${s.pt}</small></button>`).join('');const s=SUPPORT_SCRIPTS[selectedScriptId]||SUPPORT_SCRIPTS.welcome;$('scriptTitle').textContent=s.title;$('scriptPT').textContent=s.pt;$('scriptEN').value=fillScript(s.en);const {p,order}=scriptData();$('atendimentoProdutoBadge').textContent=order?`${order.orderNumber} · ${order.customer}`:(p?p.name:'Nenhum produto selecionado');}
+function selecionarScript(id){selectedScriptId=id;renderAtendimento();}
+async function copiarScript(){const text=$('scriptEN').value;if(!text)return;try{await navigator.clipboard.writeText(text);toast('Mensagem em inglês copiada.')}catch(e){$('scriptEN').select();document.execCommand('copy');toast('Mensagem copiada.')}}
+function abrirWhatsAppScript(){const text=encodeURIComponent($('scriptEN').value||'');window.open('https://wa.me/?text='+text,'_blank','noopener')}
+function abrirEmailScript(){copiarScript();toast('Mensagem copiada. Cole no e-mail ou no chat desejado.')}
+function abrirAtendimentoProduto(id){nav('atendimento');if($('atendimentoProduto')){$('atendimentoProduto').value=id;atendimentoSelecionarProduto();}}
 
-function limparFormulario(show=true){
-  itemEditandoIndex=null; arquivoGlobalMemoria=null; $("pesoPeca").value="0"; $("tempoManual").value=""; $("horasPeca").value="0";
-  $("nomeProduto").value=""; $("codigoProduto").value=""; $("observacoes").value=""; $("arquivoProjeto").value="";
-  if($("vintedLink")) $("vintedLink").value=""; if($("vintedData")) $("vintedData").value="";
-  $("analiseStatus").textContent="Nenhum arquivo enviado."; recalcular(); if(show)toast("Limpo.");
-}
+function friendlyFirebaseError(e){const c=e?.code||'';return c.includes('permission-denied')?'Permissão negada. Verifique as regras do Firestore.':c.includes('unauthenticated')?'Usuário não autenticado.':'Verifique a configuração do Firebase.'}
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;T'}[c]||c))}function escAttr(v){return esc(v)}
 
-window.addEventListener('firebase-ready', async ()=>{
-  carregarConfig(); applyTheme(safeGet(STORAGE.theme,"dark")); recalcular();
-  try{catalogo = await cloudGetProducts();}catch(e){}
-  atualizarSelectCatalogoVendas(); atualizarPainelVendas(); atualizarHistorico();
-});
+$('arquivoProjeto').addEventListener('change',e=>{const f=e.target.files?.[0];if(f)analyzeFile(f)});
+const dz=$('dropzone');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dragover')});
+dz.addEventListener('dragleave',()=>dz.classList.remove('dragover'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('dragover');const f=e.dataTransfer.files?.[0];if(f)analyzeFile(f)});
+
+['pesoPeca','tempoManual','precoRolo','pesoRolo','potenciaWatts','tarifaLuz','custoHora','margem','taxaFalha','custosExtras','embalagem'].forEach(id=>$(id).addEventListener('input',onInputCalculadora));
+try{historico=JSON.parse(localStorage.getItem('bambu_history')||'[]');vendas=JSON.parse(localStorage.getItem('bambu_sales')||'[]')}catch(e){}loadDraft();
+if($('pedidoData'))$('pedidoData').value=new Date().toISOString().slice(0,10);renderPedidoEditor();
+window.addEventListener('firebase-ready',()=>carregarCatalogo());
+window.addEventListener('DOMContentLoaded',()=>{try{historico=JSON.parse(localStorage.getItem('bambu_history')||'[]')}catch(e){historico=[]}try{vendas=JSON.parse(localStorage.getItem('bambu_sales')||'[]')}catch(e){vendas=[]}renderHistorico();renderVendas();populateAtendimentoProdutos();renderAtendimento();});
 </script>
 </body>
 </html>
