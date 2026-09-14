@@ -2430,7 +2430,7 @@ function parseTime(value){
 
 
 /* =========================================================
-   WEIGHT PARSER CORRIGIDO
+   WEIGHT PARSER CORRIGIDO (COM SUPORTE G-CODE / METERS)
 ========================================================= */
 
 function normalizeNumber(value){
@@ -2467,6 +2467,7 @@ function extractWeightFromText(text){
         /total\s+filament\s+used\s*\[g\]\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
         /filament_used_g\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
         /filament\s*used\s*\(g\)\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
+        /;\s*filament\s+used\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)\s*g/i,
         /weight\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)\s*g/i,
         /filament\s*usage\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)\s*g/i,
         /filament_used\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i
@@ -2494,6 +2495,24 @@ function extractWeightFromText(text){
 
         }
 
+    }
+
+    /* Fallback: Comprimento em metros (comum em G-codes do Cura) */
+    const lengthMetersPatterns = [
+        /filament\s+used\s*\[m\]\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
+        /;\s*filament\s+used\s*\[m\]\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i,
+        /filament_used_m\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i
+    ];
+
+    for(const regex of lengthMetersPatterns){
+        const match = text.match(regex);
+        if(match){
+            const meters = normalizeNumber(match[1]);
+            if(meters !== null && meters > 0){
+                const weightFromMeters = meters * 100 * 0.024;
+                return Number(weightFromMeters.toFixed(2));
+            }
+        }
     }
 
     return null;
