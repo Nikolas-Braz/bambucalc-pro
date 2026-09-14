@@ -129,71 +129,1289 @@ function popularFilamentosSelect(){const sel=$('filamentoPreset');if(!sel)return
 function salvarNovoFilamento(){const nome=prompt('Nome do filamento (Ex: PLA Preto, PETG Branco):');if(!nome)return;const preco=$('precoRolo').value;const peso=$('pesoRolo').value;const lista=getFilamentosSalvos();lista.push({nome,preco,peso});localStorage.setItem(LOCAL_KEYS.filaments,JSON.stringify(lista));popularFilamentosSelect();toast('Filamento salvo com sucesso!');}
 function aplicarFilamentoPreset(){const idx=$('filamentoPreset').value;if(idx==='')return;const lista=getFilamentosSalvos();const f=lista[idx];if(f){$('precoRolo').value=f.preco;$('pesoRolo').value=f.peso;calc();saveDraft();toast('Filamento aplicado: '+f.nome);}}
 
-/* Análise de Arquivos e Miniaturas 3MF */
+/* ============================================================
+   ANÁLISE DE ARQUIVOS 3MF / G-CODE / STL
+   Parser robusto para Bambu Studio / OrcaSlicer
+   ============================================================ */
+
 async function analyzeFile(file){
-  currentFile=file;
-  currentThumbnailBase64=null;
-  const ext=file.name.split('.').pop().toLowerCase();
-  $('arquivoTipoBadge').textContent=ext==='3mf'?'3MF':ext==='stl'?'STL':'G-code';
-  $('analiseStatus').textContent='Analisando '+file.name+'...';
-  $('analiseGrid').innerHTML='';
-  let a={name:file.name,size:file.size,type:file.type||'',weight:null,time:null};
+  currentFile = file;
+  currentThumbnailBase64 = null;
 
-  try{
-    if(ext==='gcode'||ext==='gc'||ext==='gco'){
-      const text=await file.slice(0,Math.min(file.size,15*1024*1024)).text();
-      a.weight=extractGcodeWeight(text);
-      a.time=extractGcodeTime(text);
-      if(a.weight!=null)$('pesoPeca').value=a.weight;
-      if(a.time!=null)$('tempoManual').value=hoursToText(a.time);
-    }else if(ext==='3mf'){
-      const zip=new JSZip();
-      const zipContent=await zip.loadAsync(file);
-      
-      let combinedText='';
-      for(const [path, obj] of Object.entries(zipContent.files)){
-        if(!obj.dir && /\.(config|json|xml|model|txt|gcode)$/i.test(path)){
-          combinedText+='\n'+await obj.async('text');
-        }
-      }
-      a.weight=extractNumber(combinedText,['total filament weight','filament used weight','weight']);
-      a.time=extractNumber(combinedText,['print time','estimated printing time','print_time']);
-      if(a.weight!=null)$('pesoPeca').value=a.weight;
-      if(a.time!=null)$('tempoManual').value=hoursToText(a.time);
+  const ext = file.name.split('.').pop().toLowerCase();
 
-      let thumbFile=null;
-      for(const [path, obj] of Object.entries(zipContent.files)){
-        if(!obj.dir && /^Metadata\/.+\.(png|jpg|jpeg)$/i.test(path)){
-          thumbFile=obj;
-          break;
-        }
+  $('arquivoTipoBadge').textContent =
+    ext === '3mf' ? '3MF' :
+    ext === 'stl' ? 'STL' :
+    'G-code';
+
+  $('analiseStatus').textContent =
+    'Analisando ' + file.name + '...';
+
+  $('analiseGrid').innerHTML = '';
+
+  const a = {
+    name: file.name,
+    size: file.size,
+    type: file.type || '',
+    weight: null,
+    time: null,
+    source: '',
+    plates: 0
+  };
+
+  try {
+
+    /* ========================================================
+       G-CODE NORMAL
+       ======================================================== */
+
+    if(ext === 'gcode' || ext === 'gc' || ext === 'gco'){
+
+      const text = await file
+        .slice(0, Math.min(file.size, 30 * 1024 * 1024))
+        .text();
+
+      a.weight = extractGcodeWeight(text);
+      a.time = extractGcodeTime(text);
+      a.source = 'G-code';
+
+      if(a.weight != null){
+        $('pesoPeca').value = Number(a.weight).toFixed(2);
       }
-      if(thumbFile){
-        const blob=await thumbFile.async('blob');
-        currentThumbnailBase64=await new Promise(res=>{
-          const reader=new FileReader();
-          reader.onload=()=>res(reader.result);
-          reader.readAsDataURL(blob);
-        });
+
+      if(a.time != null){
+        $('tempoManual').value = hoursToText(a.time);
       }
     }
 
+
+    /* ========================================================
+       3MF
+       ======================================================== */
+
+    else if(ext === '3mf'){
+
+      if(typeof JSZip === 'undefined'){
+        throw new Error(
+          'JSZip não foi carregado. Verifique a conexão com a internet.'
+        );
+      }
+
+      const zip = new JSZip();
+      const zipContent = await zip.loadAsync(file);
+
+      const files = Object.entries(zipContent.files);
+
+      console.log(
+        '[BambuCalc] Arquivos encontrados no 3MF:',
+        files.map(([path]) => path)
+      );
+
+
+      /* ------------------------------------------------------
+         1. Procurar slice_info.config
+         ------------------------------------------------------ */
+
+      let sliceInfoEntry = null;
+
+      for(const [path, obj] of files){
+
+        if(
+          !obj.dir &&
+          path.replace(/\\/g,'/')
+            .toLowerCase()
+            .endsWith('metadata/slice_info.config')
+        ){
+          sliceInfoEntry = obj;
+          break;
+        }
+      }
+
+
+      /* ------------------------------------------------------
+         2. Ler slice_info.config
+         ------------------------------------------------------ */
+
+      if(sliceInfoEntry){
+
+        const sliceInfo =
+          await sliceInfoEntry.async('text');
+
+        console.log(
+          '[BambuCalc] slice_info.config:',
+          sliceInfo
+        );
+
+        const parsed =
+          parseSliceInfoConfig(sliceInfo);
+
+        a.weight = parsed.weight;
+        a.time = parsed.time;
+        a.plates = parsed.plates || 0;
+        a.source = 'Metadata/slice_info.config';
+
+        console.log(
+          '[BambuCalc] Dados encontrados no slice_info:',
+          parsed
+        );
+      }
+
+
+      /* ------------------------------------------------------
+         3. Procurar G-code dentro do 3MF
+         ------------------------------------------------------ */
+
+      let gcodeWeight = null;
+      let gcodeTime = null;
+
+      for(const [path, obj] of files){
+
+        if(
+          !obj.dir &&
+          (
+            /\.gcode$/i.test(path) ||
+            /\.gco$/i.test(path) ||
+            /\.gc$/i.test(path)
+          )
+        ){
+
+          try{
+
+            const gcode =
+              await obj.async('text');
+
+            const w =
+              extractGcodeWeight(gcode);
+
+            const t =
+              extractGcodeTime(gcode);
+
+            if(gcodeWeight == null && w != null){
+              gcodeWeight = w;
+            }
+
+            if(gcodeTime == null && t != null){
+              gcodeTime = t;
+            }
+
+            /*
+              Se já encontramos os dois dados,
+              não precisamos ler outros G-codes.
+            */
+            if(
+              gcodeWeight != null &&
+              gcodeTime != null
+            ){
+              break;
+            }
+
+          }catch(err){
+
+            console.warn(
+              '[BambuCalc] Não foi possível ler G-code interno:',
+              path,
+              err
+            );
+
+          }
+        }
+      }
+
+
+      /* ------------------------------------------------------
+         4. Fallback do G-code
+         ------------------------------------------------------ */
+
+      if(a.weight == null && gcodeWeight != null){
+
+        a.weight = gcodeWeight;
+
+        a.source =
+          a.source ?
+          a.source + ' + G-code' :
+          'G-code interno';
+      }
+
+      if(a.time == null && gcodeTime != null){
+
+        a.time = gcodeTime;
+
+        a.source =
+          a.source ?
+          a.source + ' + G-code' :
+          'G-code interno';
+      }
+
+
+      /* ------------------------------------------------------
+         5. Procurar outros metadados como fallback
+         ------------------------------------------------------ */
+
+      if(a.weight == null || a.time == null){
+
+        let combinedText = '';
+
+        for(const [path, obj] of files){
+
+          if(
+            !obj.dir &&
+            /\.(config|json|xml|model|txt)$/i.test(path)
+          ){
+
+            try{
+              combinedText +=
+                '\n' + await obj.async('text');
+            }catch{}
+          }
+        }
+
+        if(a.weight == null){
+
+          const fallbackWeight =
+            extractWeightFromAnyMetadata(combinedText);
+
+          if(fallbackWeight != null){
+            a.weight = fallbackWeight;
+            a.source = 'Metadados';
+          }
+        }
+
+        if(a.time == null){
+
+          const fallbackTime =
+            extractTimeFromAnyMetadata(combinedText);
+
+          if(fallbackTime != null){
+            a.time = fallbackTime;
+            a.source = 'Metadados';
+          }
+        }
+      }
+
+
+      /* ------------------------------------------------------
+         6. Miniatura
+         ------------------------------------------------------ */
+
+      let thumbFile = null;
+
+      /*
+         Prioridade:
+         plate_1.png
+         plate_1_small.png
+         thumbnail.png
+         qualquer PNG/JPG dentro de Metadata
+      */
+
+      const thumbPriority = [
+        /metadata\/plate_1\.png$/i,
+        /metadata\/plate_1_small\.png$/i,
+        /metadata\/thumbnail\.png$/i,
+        /metadata\/.+\.(png|jpg|jpeg)$/i
+      ];
+
+      for(const pattern of thumbPriority){
+
+        thumbFile = files.find(
+          ([path,obj]) =>
+            !obj.dir && pattern.test(path)
+        )?.[1];
+
+        if(thumbFile) break;
+      }
+
+      if(thumbFile){
+
+        try{
+
+          const blob =
+            await thumbFile.async('blob');
+
+          currentThumbnailBase64 =
+            await new Promise(resolve => {
+
+              const reader =
+                new FileReader();
+
+              reader.onload = () =>
+                resolve(reader.result);
+
+              reader.readAsDataURL(blob);
+            });
+
+        }catch(err){
+
+          console.warn(
+            '[BambuCalc] Erro ao carregar miniatura:',
+            err
+          );
+        }
+      }
+    }
+
+
+    /* ========================================================
+       STL
+       ======================================================== */
+
+    else if(ext === 'stl'){
+
+      a.source = 'STL';
+
+      /*
+         STL não contém normalmente tempo/peso
+         de impressão.
+      */
+
+      a.weight = null;
+      a.time = null;
+    }
+
+
+    /* ========================================================
+       PREENCHER CALCULADORA
+       ======================================================== */
+
+    if(a.weight != null && Number.isFinite(Number(a.weight))){
+
+      $('pesoPeca').value =
+        Number(a.weight).toFixed(2);
+    }
+
+    if(a.time != null && Number.isFinite(Number(a.time))){
+
+      $('tempoManual').value =
+        hoursToText(Number(a.time));
+    }
+
+
     calc();
     saveDraft();
+
     renderAnalysis(a);
-    $('analiseStatus').textContent='Análise concluída com sucesso!';
+
+
+    /* ========================================================
+       STATUS REAL DA ANÁLISE
+       ======================================================== */
+
+    if(a.weight != null && a.time != null){
+
+      $('analiseStatus').textContent =
+        '✅ Análise concluída! Peso e tempo encontrados automaticamente.';
+
+    }else if(a.weight != null){
+
+      $('analiseStatus').textContent =
+        '⚠️ Peso encontrado, mas o tempo de impressão não foi encontrado.';
+
+    }else if(a.time != null){
+
+      $('analiseStatus').textContent =
+        '⚠️ Tempo encontrado, mas o peso não foi encontrado.';
+
+    }else{
+
+      $('analiseStatus').textContent =
+        '⚠️ Arquivo aberto, mas peso e tempo não foram encontrados.';
+
+    }
+
   }catch(e){
-    console.error(e);
-    $('analiseStatus').textContent='Arquivo lido, mas houve falha ao extrair alguns metadados automaticamente.';
+
+    console.error(
+      '[BambuCalc] Erro na análise:',
+      e
+    );
+
+    $('analiseStatus').textContent =
+      '❌ Não foi possível analisar completamente este arquivo.';
+
     renderAnalysis(a);
   }
 }
 
-function extractGcodeWeight(t){const pats=[/total filament weight\s*[:=]\s*([\d.]+)/i,/filament used\s*[:=]\s*([\d.]+)/i,/filament_weight\s*=\s*([\d.]+)/i];for(const p of pats){const m=t.match(p);if(m)return Number(m[1])}return null}
-function extractGcodeTime(t){const pats=[/estimated printing time\s*[:=]\s*([\d]+)h\s*([\d]+)?m?/i,/print time\s*[:=]\s*([\d]+)h\s*([\d]+)?m?/i,/TIME:\s*(\d+)/i];for(const p of pats){const m=t.match(p);if(m)return p.source.includes('TIME')?Number(m[1])/3600:Number(m[1])+(Number(m[2]||0)/60)}return null}
-function extractNumber(text,labels){for(const l of labels){const re=new RegExp(l.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\s*[:=]\\s*([\\d.]+)','i');const m=text.match(re);if(m)return Number(m[1])}return null}
-function hoursToText(h){if(h==null)return '';const hr=Math.floor(h);const min=Math.round((h-hr)*60);return hr+'h'+String(min).padStart(2,'0')}
-function renderAnalysis(a){$('analiseGrid').innerHTML=[['Arquivo',a.name],['Tamanho',fmtBytes(a.size)],['Peso detectado',a.weight!=null?a.weight+' g':'—'],['Tempo detectado',a.time!=null?hoursToText(a.time):'—']].map(x=>`<div class="analysis-item"><small>${esc(x[0])}</small><strong>${esc(String(x[1]))}</strong></div>`).join('')}
+
+/* ============================================================
+   PARSER DO Metadata/slice_info.config
+   ============================================================ */
+
+function parseSliceInfoConfig(xmlText){
+
+  let totalWeight = 0;
+  let totalTimeSeconds = 0;
+
+  let foundWeight = false;
+  let foundTime = false;
+
+  let plates = 0;
+
+  /*
+    Primeiro tenta DOMParser.
+    É muito mais seguro para XML.
+  */
+
+  try{
+
+    const parser =
+      new DOMParser();
+
+    const xml =
+      parser.parseFromString(
+        xmlText,
+        'application/xml'
+      );
+
+    const parserError =
+      xml.querySelector('parsererror');
+
+    if(!parserError){
+
+      const plateNodes =
+        Array.from(xml.getElementsByTagName('plate'));
+
+      plates = plateNodes.length;
+
+
+      /* ------------------------------------------------------
+         Cada plate
+         ------------------------------------------------------ */
+
+      for(const plate of plateNodes){
+
+        const metadata =
+          Array.from(
+            plate.getElementsByTagName('metadata')
+          );
+
+        let plateWeight = null;
+        let plateTime = null;
+
+
+        for(const node of metadata){
+
+          const key =
+            node.getAttribute('key');
+
+          const value =
+            node.getAttribute('value');
+
+          if(!key || value == null) continue;
+
+
+          /* Peso total da placa */
+
+          if(
+            key === 'weight' ||
+            key === 'total_weight' ||
+            key === 'filament_weight'
+          ){
+
+            const n =
+              parseDecimal(value);
+
+            if(n != null && n >= 0){
+
+              plateWeight = n;
+            }
+          }
+
+
+          /* Tempo total da placa */
+
+          if(
+            key === 'prediction' ||
+            key === 'print_time' ||
+            key === 'print_time_seconds'
+          ){
+
+            const n =
+              parseDecimal(value);
+
+            if(n != null && n >= 0){
+
+              /*
+                prediction do Bambu é em segundos.
+              */
+
+              plateTime = n;
+            }
+          }
+        }
+
+
+        /*
+          Se weight existir na placa,
+          usa ele.
+        */
+
+        if(plateWeight != null){
+
+          totalWeight += plateWeight;
+          foundWeight = true;
+
+        }else{
+
+          /*
+            Fallback:
+            somar used_g dos filamentos.
+          */
+
+          const filaments =
+            Array.from(
+              plate.getElementsByTagName('filament')
+            );
+
+          let filamentWeight = 0;
+          let hasFilamentWeight = false;
+
+          for(const filament of filaments){
+
+            const usedG =
+              parseDecimal(
+                filament.getAttribute('used_g')
+              );
+
+            if(
+              usedG != null &&
+              usedG >= 0
+            ){
+
+              filamentWeight += usedG;
+              hasFilamentWeight = true;
+            }
+          }
+
+          if(hasFilamentWeight){
+
+            totalWeight += filamentWeight;
+            foundWeight = true;
+          }
+        }
+
+
+        if(plateTime != null){
+
+          totalTimeSeconds += plateTime;
+          foundTime = true;
+        }
+      }
+
+
+      /*
+        Alguns arquivos podem ter metadata fora
+        de <plate>. Fazemos uma segunda busca.
+      */
+
+      if(!foundWeight){
+
+        const nodes =
+          Array.from(
+            xml.getElementsByTagName('metadata')
+          );
+
+        for(const node of nodes){
+
+          if(
+            node.getAttribute('key') === 'weight'
+          ){
+
+            const n =
+              parseDecimal(
+                node.getAttribute('value')
+              );
+
+            if(n != null){
+
+              totalWeight += n;
+              foundWeight = true;
+              break;
+            }
+          }
+        }
+      }
+
+      if(!foundTime){
+
+        const nodes =
+          Array.from(
+            xml.getElementsByTagName('metadata')
+          );
+
+        for(const node of nodes){
+
+          if(
+            node.getAttribute('key') === 'prediction'
+          ){
+
+            const n =
+              parseDecimal(
+                node.getAttribute('value')
+              );
+
+            if(n != null){
+
+              totalTimeSeconds += n;
+              foundTime = true;
+              break;
+            }
+          }
+        }
+      }
+    }
+
+  }catch(err){
+
+    console.warn(
+      '[BambuCalc] DOMParser falhou:',
+      err
+    );
+  }
+
+
+  /*
+    ------------------------------------------------------------
+    FALLBACK POR REGEX
+    ------------------------------------------------------------
+  */
+
+  if(!foundWeight){
+
+    const weights = [];
+
+    const re =
+      /key=["'](?:weight|total_weight|filament_weight)["'][^>]*value=["']([^"']+)["']/gi;
+
+    let m;
+
+    while((m = re.exec(xmlText))){
+
+      const n =
+        parseDecimal(m[1]);
+
+      if(n != null && n >= 0){
+        weights.push(n);
+      }
+    }
+
+    if(weights.length){
+
+      /*
+        Se houver várias placas,
+        soma os valores.
+      */
+
+      totalWeight =
+        weights.reduce(
+          (sum,v) => sum + v,
+          0
+        );
+
+      foundWeight = true;
+    }
+  }
+
+
+  if(!foundTime){
+
+    const predictions = [];
+
+    const re =
+      /key=["'](?:prediction|print_time|print_time_seconds)["'][^>]*value=["']([^"']+)["']/gi;
+
+    let m;
+
+    while((m = re.exec(xmlText))){
+
+      const n =
+        parseDecimal(m[1]);
+
+      if(n != null && n >= 0){
+        predictions.push(n);
+      }
+    }
+
+    if(predictions.length){
+
+      totalTimeSeconds =
+        predictions.reduce(
+          (sum,v) => sum + v,
+          0
+        );
+
+      foundTime = true;
+    }
+  }
+
+
+  return {
+
+    weight:
+      foundWeight ?
+      totalWeight :
+      null,
+
+    time:
+      foundTime ?
+      totalTimeSeconds / 3600 :
+      null,
+
+    plates
+  };
+}
+
+
+/* ============================================================
+   PESO NO G-CODE
+   ============================================================ */
+
+function extractGcodeWeight(text){
+
+  if(!text) return null;
+
+
+  const patterns = [
+
+    /*
+      Bambu / Orca
+      ; total filament weight [g] : 12.34
+    */
+
+    /total\s+filament\s+weight\s*\[\s*g\s*\]\s*[:=]\s*([\d.,]+)/i,
+
+    /*
+      ; filament used [g] = 12.34
+    */
+
+    /filament\s+used\s*\[\s*g\s*\]\s*[:=]\s*([\d.,]+)/i,
+
+    /*
+      total filament weight: 12.34
+    */
+
+    /total\s+filament\s+weight\s*[:=]\s*([\d.,]+)/i,
+
+    /*
+      filament used: 12.34
+    */
+
+    /filament\s+used\s*[:=]\s*([\d.,]+)/i,
+
+    /*
+      filament_weight = 12.34
+    */
+
+    /filament[_\s-]*weight\s*[:=]\s*([\d.,]+)/i,
+
+    /*
+      weight = 12.34
+    */
+
+    /\bweight\s*[:=]\s*([\d.,]+)\s*g\b/i
+  ];
+
+
+  for(const pattern of patterns){
+
+    const m =
+      text.match(pattern);
+
+    if(m){
+
+      const n =
+        parseDecimal(m[1]);
+
+      if(
+        n != null &&
+        n >= 0 &&
+        n < 100000
+      ){
+
+        return n;
+      }
+    }
+  }
+
+
+  return null;
+}
+
+
+/* ============================================================
+   TEMPO NO G-CODE
+   ============================================================ */
+
+function extractGcodeTime(text){
+
+  if(!text) return null;
+
+
+  /*
+    Exemplos:
+
+    ; estimated printing time = 1h 23m 45s
+    ; estimated printing time (normal mode) = 1h 23m
+    */
+
+  const patterns = [
+
+    /estimated\s+printing\s+time(?:\s*\([^)]*\))?\s*[:=]\s*([0-9hms :.,]+)/i,
+
+    /estimated\s+print(?:ing)?\s*time\s*[:=]\s*([0-9hms :.,]+)/i,
+
+    /print\s*time\s*[:=]\s*([0-9hms :.,]+)/i
+  ];
+
+
+  for(const pattern of patterns){
+
+    const m =
+      text.match(pattern);
+
+    if(m){
+
+      const hours =
+        parseFlexibleTime(m[1]);
+
+      if(
+        hours != null &&
+        hours >= 0 &&
+        hours < 10000
+      ){
+
+        return hours;
+      }
+    }
+  }
+
+
+  /*
+    Bambu / Orca também pode usar:
+
+    TIME: 5234
+
+    normalmente segundos.
+  */
+
+  const timeMatch =
+    text.match(
+      /(?:^|\n)\s*;\s*TIME\s*:\s*(\d+(?:\.\d+)?)/i
+    );
+
+  if(timeMatch){
+
+    const seconds =
+      Number(timeMatch[1]);
+
+    if(
+      Number.isFinite(seconds) &&
+      seconds >= 0
+    ){
+
+      return seconds / 3600;
+    }
+  }
+
+
+  return null;
+}
+
+
+/* ============================================================
+   TEMPO FLEXÍVEL
+   ============================================================ */
+
+function parseFlexibleTime(value){
+
+  if(value == null) return null;
+
+  let s =
+    String(value)
+      .trim()
+      .toLowerCase()
+      .replace(/,/g,'.');
+
+  if(!s) return null;
+
+
+  /*
+    1h 23m 45s
+    1h23m
+    1h
+  */
+
+  const hms =
+    s.match(
+      /^(?:(\d+(?:\.\d+)?)\s*h)?\s*(?:(\d+(?:\.\d+)?)\s*m)?\s*(?:(\d+(?:\.\d+)?)\s*s)?$/i
+    );
+
+  if(
+    hms &&
+    (
+      hms[1] != null ||
+      hms[2] != null ||
+      hms[3] != null
+    )
+  ){
+
+    return (
+      Number(hms[1] || 0) +
+      Number(hms[2] || 0) / 60 +
+      Number(hms[3] || 0) / 3600
+    );
+  }
+
+
+  /*
+    1:23
+  */
+
+  const colon =
+    s.match(
+      /^(\d+)\s*:\s*(\d{1,2})(?::(\d{1,2}))?$/
+    );
+
+  if(colon){
+
+    const first =
+      Number(colon[1]);
+
+    const second =
+      Number(colon[2]);
+
+    const third =
+      Number(colon[3] || 0);
+
+
+    if(colon[3] != null){
+
+      /*
+        HH:MM:SS
+      */
+
+      return (
+        first +
+        second / 60 +
+        third / 3600
+      );
+
+    }else{
+
+      /*
+        HH:MM
+      */
+
+      return first + second / 60;
+    }
+  }
+
+
+  const n =
+    Number(s);
+
+  return Number.isFinite(n)
+    ? n
+    : null;
+}
+
+
+/* ============================================================
+   METADADOS GENÉRICOS
+   ============================================================ */
+
+function extractWeightFromAnyMetadata(text){
+
+  if(!text) return null;
+
+
+  const patterns = [
+
+    /key=["']weight["'][^>]*value=["']([\d.,]+)["']/i,
+
+    /"weight"\s*:\s*([\d.,]+)/i,
+
+    /"filament_weight"\s*:\s*([\d.,]+)/i,
+
+    /filament\s+used\s*\[\s*g\s*\]\s*[:=]\s*([\d.,]+)/i,
+
+    /total\s+filament\s+weight\s*\[\s*g\s*\]\s*[:=]\s*([\d.,]+)/i
+  ];
+
+
+  for(const pattern of patterns){
+
+    const m =
+      text.match(pattern);
+
+    if(m){
+
+      const n =
+        parseDecimal(m[1]);
+
+      if(n != null && n >= 0){
+        return n;
+      }
+    }
+  }
+
+  return null;
+}
+
+
+function extractTimeFromAnyMetadata(text){
+
+  if(!text) return null;
+
+
+  /*
+    prediction é em segundos.
+  */
+
+  const prediction =
+    text.match(
+      /key=["']prediction["'][^>]*value=["']([\d.,]+)["']/i
+    );
+
+  if(prediction){
+
+    const seconds =
+      parseDecimal(prediction[1]);
+
+    if(
+      seconds != null &&
+      seconds >= 0
+    ){
+
+      return seconds / 3600;
+    }
+  }
+
+
+  const patterns = [
+
+    /"print_time"\s*:\s*([\d.,]+)/i,
+
+    /"prediction"\s*:\s*([\d.,]+)/i,
+
+    /estimated\s+printing\s+time\s*[:=]\s*([0-9hms :.,]+)/i
+  ];
+
+
+  for(const pattern of patterns){
+
+    const m =
+      text.match(pattern);
+
+    if(m){
+
+      const value =
+        m[1];
+
+      /*
+        JSON prediction normalmente segundos.
+      */
+
+      if(
+        pattern.source.includes('prediction') ||
+        pattern.source.includes('print_time')
+      ){
+
+        const n =
+          parseDecimal(value);
+
+        if(n != null && n >= 0){
+
+          return n / 3600;
+        }
+      }
+
+      const hours =
+        parseFlexibleTime(value);
+
+      if(hours != null){
+        return hours;
+      }
+    }
+  }
+
+  return null;
+}
+
+
+/* ============================================================
+   NÚMERO DECIMAL
+   ============================================================ */
+
+function parseDecimal(value){
+
+  if(value == null) return null;
+
+  let s =
+    String(value)
+      .trim()
+      .replace(/\s/g,'');
+
+  if(!s) return null;
+
+
+  /*
+    Aceita:
+
+    12.34
+    12,34
+    1,234.56
+  */
+
+  if(
+    s.includes(',') &&
+    s.includes('.')
+  ){
+
+    if(s.lastIndexOf('.') > s.lastIndexOf(',')){
+      s = s.replace(/,/g,'');
+    }else{
+      s = s.replace(/\./g,'').replace(',','.');
+    }
+
+  }else if(s.includes(',')){
+
+    s = s.replace(',','.');
+  }
+
+
+  const n = Number(s);
+
+  return Number.isFinite(n)
+    ? n
+    : null;
+}
+
+
+/* ============================================================
+   FORMATAÇÃO DO TEMPO
+   ============================================================ */
+
+function hoursToText(hours){
+
+  if(
+    hours == null ||
+    !Number.isFinite(Number(hours))
+  ){
+
+    return '';
+  }
+
+  let totalMinutes =
+    Math.round(Number(hours) * 60);
+
+  let h =
+    Math.floor(totalMinutes / 60);
+
+  let m =
+    totalMinutes % 60;
+
+
+  /*
+    Evita coisas como 2h60.
+  */
+
+  if(m >= 60){
+    h++;
+    m = 0;
+  }
+
+
+  return (
+    h +
+    'h' +
+    String(m).padStart(2,'0')
+  );
+}
+
+
+/* ============================================================
+   FALLBACK ANTIGO — MANTIDO PARA COMPATIBILIDADE
+   ============================================================ */
+
+function extractNumber(text,labels){
+
+  if(!text) return null;
+
+  for(const label of labels){
+
+    const escaped =
+      label.replace(
+        /[.*+?^${}()|[\]\\]/g,
+        '\\$&'
+      );
+
+    const re =
+      new RegExp(
+        escaped +
+        '\\s*[:=]\\s*([\\d.,]+)',
+        'i'
+      );
+
+    const m =
+      text.match(re);
+
+    if(m){
+
+      const n =
+        parseDecimal(m[1]);
+
+      if(n != null){
+        return n;
+      }
+    }
+  }
+
+  return null;
+}
+
+
+function renderAnalysis(a){
+
+  const weight =
+    a.weight != null
+      ? Number(a.weight).toFixed(2) + ' g'
+      : '—';
+
+  const time =
+    a.time != null
+      ? hoursToText(Number(a.time))
+      : '—';
+
+  $('analiseGrid').innerHTML = [
+
+    ['Arquivo', a.name],
+
+    ['Tamanho', fmtBytes(a.size)],
+
+    ['Peso detectado', weight],
+
+    ['Tempo detectado', time],
+
+    [
+      'Fonte',
+      a.source || 'Não encontrado'
+    ],
+
+    [
+      'Placas',
+      a.plates
+        ? String(a.plates)
+        : '—'
+    ]
+
+  ].map(x =>
+    `<div class="analysis-item">
+      <small>${esc(x[0])}</small>
+      <strong>${esc(String(x[1]))}</strong>
+    </div>`
+  ).join('');
+}
 
 function getProduct(){
   const c=calc();
@@ -337,7 +1555,7 @@ function abrirEmailScript(){copiarScript();toast('Mensagem copiada. Cole no e-ma
 function abrirAtendimentoProduto(id){nav('atendimento');if($('atendimentoProduto')){$('atendimentoProduto').value=id;atendimentoSelecionarProduto();}}
 
 function friendlyFirebaseError(e){const c=e?.code||'';return c.includes('permission-denied')?'Permissão negada. Verifique as regras do Firestore.':c.includes('unauthenticated')?'Usuário não autenticado.':'Verifique a configuração do Firebase.'}
-function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;T'}[c]||c))}function escAttr(v){return esc(v)}
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c))}function escAttr(v){return esc(v)}
 
 $('arquivoProjeto').addEventListener('change',e=>{const f=e.target.files?.[0];if(f)analyzeFile(f)});
 const dz=$('dropzone');
