@@ -314,7 +314,7 @@ const KEY = { theme: "bambu_theme", draft: "bambu_draft", filaments: "bambu_fila
 let catalogo = [], historico = [], vendas = [], filamentos = [], pedidoItens = [], currentFile = null, currentAnalysis = null, editingProductId = null, dbPromise = null;
 
 function esc(v) {
-    return String(v ?? "").replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\": "&quot;", "'": "&#039;" }[m]));
+    return String(v || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 
 function toast(m) {
@@ -1065,7 +1065,7 @@ function importarBackup() {
             const d = JSON.parse(await f.text());
             if (!Array.isArray(d.catalogo)) throw new Error("Backup inválido");
             catalogo = d.catalogo; historico = d.historico || []; vendas = d.vendas || []; filamentos = d.filamentos || filamentos;
-            setLocal("bambu_catalog", catalogo); setLocal(KEY.history, historico); setLocal(KEY.sales, vendas); setLocal(KEY.filaments, filamentos);
+            setLocal("bambu_catalog", catalogo); setLocal(KEY.history, historico); setLocal(KEY.sales, vendas); setLocal(KEY.filamentos, filamentos);
             initFilaments(); renderCatalogo(); toast("Backup importado.");
         } catch (e) { toast("Backup inválido ou corrompido."); }
     };
