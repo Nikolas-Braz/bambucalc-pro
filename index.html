@@ -947,7 +947,7 @@ function exportarHistorico() {
 function exportarOrcamento() {
     const v = calc(), name = $("nomeProduto").value.trim() || "Produto";
     const lines = ["ORÇAMENTO DE IMPRESSÃO 3D", "================================", `Produto: ${name}`, `Peso: ${v.peso.toFixed(2)} g`, `Tempo: ${formatTime(v.hours)}`, `Material: ${money(v.custoMaterial)}`, `Energia: ${money(v.custoEnergia)}`, `Máquina: ${money(v.custoMaquina)}`, `Extras/embalagem: ${money(v.custosExtras)}`, `Falhas: ${money(v.custoFalha)}`, `Custo total: ${money(v.total)}`, "", `Preço mínimo: ${money(v.minimum)}`, `Preço ideal: ${money(v.ideal)}`, `Lucro ideal: ${money(v.profitIdeal)}`, `Preço premium: ${money(v.premium)}`, `Lucro premium: ${money(v.profitPremium)}`, "", `Observações: ${$("observacoes").value || "-"}`];
-    downloadText(lines.join("\n"), `orcamento_${name.replace(/[^a-z0-9_-]+/gi, "_" +)}.txt`);
+    downloadText(lines.join("\n"), `orcamento_${name.replace(/[^a-z0-9_-]+/gi, "_")}.txt`);
 }
 
 function limparCalculadora() {
