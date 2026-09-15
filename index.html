@@ -3,462 +3,133 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="description" content="BambuCalc 3D PRO — calculadora, catálogo, vendas e arquivos 3D">
+<meta name="description" content="BambuCalc 3D PRO — calculadora, catálogo, vendas, Vinted e atendimento">
 <meta name="theme-color" content="#22c55e">
 <title>BambuCalc 3D PRO — uai 3D printing</title>
-
 <style>
-:root{
-    --bg:#0f172a;
-    --panel:#020617;
-    --card:#111827;
-    --card2:#172033;
-    --text:#f8fafc;
-    --muted:#94a3b8;
-    --border:#263449;
-    --accent:#22c55e;
-    --accent2:#0ea5e9;
-    --warning:#f59e0b;
-    --danger:#ef4444;
-    --shadow:0 15px 40px rgba(0,0,0,.22);
-    --radius:16px;
-}
-
-:root[data-theme="light"]{
-    --bg:#f1f5f9;
-    --panel:#ffffff;
-    --card:#ffffff;
-    --card2:#f8fafc;
-    --text:#0f172a;
-    --muted:#64748b;
-    --border:#dbe3ec;
-    --shadow:0 12px 30px rgba(15,23,42,.08);
-}
-
-*{ box-sizing:border-box; }
-html{ scroll-behavior:smooth; }
-body{ margin:0; font-family:Inter,Segoe UI,Arial,sans-serif; background:var(--bg); color:var(--text); }
-button, input, select, textarea{ font:inherit; }
-button{ cursor:pointer; }
-a{ color:var(--accent2); text-decoration:none; }
-
-.app{ display:flex; min-height:100vh; }
-
-.sidebar{
-    width:250px; background:var(--panel); border-right:1px solid var(--border);
-    padding:20px 14px; position:fixed; left:0; top:0; bottom:0; z-index:20;
-}
-.brand{ padding:8px 10px 20px; }
-.brand h1{ font-size:21px; margin:0; font-weight:800; }
-.brand p{ margin:6px 0 0; color:var(--muted); font-size:12px; }
-
-.nav{ display:flex; flex-direction:column; gap:7px; }
-.nav button{
-    width:100%; border:0; background:transparent; color:var(--muted);
-    padding:12px 14px; border-radius:12px; text-align:left; transition:.2s;
-}
-.nav button:hover{ background:var(--card); color:var(--text); }
-.nav button.active{ background:rgba(34,197,94,.14); color:var(--accent); font-weight:700; }
-
-.sidebar-footer{ position:absolute; bottom:18px; left:18px; right:18px; }
-.theme-btn{ width:100%; padding:10px; border:1px solid var(--border); background:var(--card); color:var(--text); border-radius:10px; }
-
-.main{ margin-left:250px; width:calc(100% - 250px); padding:26px; }
-.page{ display:none; }
-.page.active{ display:block; }
-
-.topbar{ display:flex; align-items:center; justify-content:space-between; gap:15px; margin-bottom:24px; }
-.topbar h2{ margin:0; font-size:26px; }
-.topbar p{ color:var(--muted); margin:6px 0 0; }
-
-.connection{ border:1px solid var(--border); padding:8px 12px; border-radius:999px; font-size:12px; color:var(--muted); }
-.connection.ok{ color:var(--accent); border-color:rgba(34,197,94,.35); }
-.connection.error{ color:var(--danger); border-color:rgba(239,68,68,.35); }
-
-.card{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow); margin-bottom:18px; }
-.card h3{ margin:0 0 5px; }
-.card-subtitle{ color:var(--muted); font-size:13px; margin-bottom:18px; }
-
-.grid{ display:grid; gap:16px; }
-.grid-2{ grid-template-columns:repeat(2,minmax(0,1fr)); }
-.grid-3{ grid-template-columns:repeat(3,minmax(0,1fr)); }
-.grid-4{ grid-template-columns:repeat(4,minmax(0,1fr)); }
-
-.form-group{ display:flex; flex-direction:column; gap:7px; }
-.form-group label{ font-size:13px; color:var(--muted); font-weight:600; }
-input, select, textarea{ width:100%; border:1px solid var(--border); background:var(--card2); color:var(--text); border-radius:10px; padding:11px 12px; outline:none; }
-input:focus, select:focus, textarea:focus{ border-color:var(--accent2); }
-textarea{ resize:vertical; min-height:90px; }
-
-.actions{ display:flex; gap:10px; flex-wrap:wrap; }
-.btn{ border:0; border-radius:10px; padding:11px 16px; font-weight:700; transition:.2s; }
-.btn:hover{ transform:translateY(-1px); }
-.btn-primary{ background:var(--accent); color:#052e16; }
-.btn-secondary{ background:var(--accent2); color:white; }
-.btn-dark{ background:var(--card2); border:1px solid var(--border); color:var(--text); }
-.btn-danger{ background:rgba(239,68,68,.12); color:#f87171; border:1px solid rgba(239,68,68,.25); }
-.btn-warning{ background:rgba(245,158,11,.12); color:#fbbf24; border:1px solid rgba(245,158,11,.25); }
-.btn-small{ padding:7px 10px; font-size:12px; }
-
-.dropzone{ border:2px dashed var(--border); background:var(--card2); min-height:170px; border-radius:16px; display:flex; align-items:center; justify-content:center; text-align:center; padding:25px; cursor:pointer; }
-.dropzone.dragover{ border-color:var(--accent); background:rgba(34,197,94,.08); }
-.file-badge{ display:inline-block; padding:6px 10px; border-radius:999px; background:rgba(14,165,233,.12); color:var(--accent2); font-size:12px; margin-top:10px; }
-
-.analysis-grid{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:16px; }
-.analysis-item{ background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:13px; }
-.analysis-item .label{ font-size:11px; color:var(--muted); }
-.analysis-item .value{ font-size:16px; font-weight:800; margin-top:5px; }
-
-.summary-grid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
-.price-card{ border:1px solid var(--border); border-radius:15px; padding:18px; background:var(--card2); }
-.price-card.featured{ border-color:rgba(34,197,94,.55); }
-.price{ font-size:29px; font-weight:900; margin:8px 0; }
-.profit{ color:var(--accent); font-weight:800; font-size:14px; }
-
-.cost-table{ display:flex; flex-direction:column; gap:10px; }
-.cost-row{ display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:9px; }
-.cost-row span:first-child{ color:var(--muted); }
-.total-row{ font-size:18px; color:var(--accent); }
-
-.catalog-grid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
-.product-card{ background:var(--card); border:1px solid var(--border); border-radius:16px; overflow:hidden; }
-.product-body{ padding:16px; }
-.product-price{ color:var(--accent); font-size:22px; font-weight:900; }
-
-.list{ display:flex; flex-direction:column; gap:12px; }
-.list-item{ background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:15px; }
-.list-item-header{ display:flex; justify-content:space-between; align-items:center; }
-
-.toast{
-    position:fixed; right:20px; bottom:20px; background:#020617; color:white;
-    padding:13px 17px; border-radius:11px; box-shadow:var(--shadow);
-    opacity:0; pointer-events:none; transform:translateY(10px); transition:.25s; z-index:100;
-}
-.toast.show{ opacity:1; transform:translateY(0); }
-
-@media(max-width:850px){
-    .sidebar{ display:none; }
-    .main{ margin-left:0; width:100%; padding:16px; }
-}
+:root{--bg:#0f172a;--panel:#020617;--card:#111827;--card2:#172033;--text:#f8fafc;--muted:#94a3b8;--border:#263449;--accent:#22c55e;--accent2:#0ea5e9;--warning:#f59e0b;--danger:#ef4444;--purple:#8b5cf6;--shadow:0 15px 40px rgba(0,0,0,.22);--radius:16px}
+:root[data-theme="light"]{--bg:#f1f5f9;--panel:#fff;--card:#fff;--card2:#f8fafc;--text:#0f172a;--muted:#64748b;--border:#dbe3ec;--shadow:0 12px 30px rgba(15,23,42,.08)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:var(--accent2);text-decoration:none}.app{display:flex;min-height:100vh}.sidebar{width:250px;background:var(--panel);border-right:1px solid var(--border);padding:20px 14px;position:fixed;left:0;top:0;bottom:0;z-index:20}.brand{padding:8px 10px 20px}.brand h1{font-size:21px;margin:0;font-weight:800}.brand p{margin:6px 0 0;color:var(--muted);font-size:12px}.nav{display:flex;flex-direction:column;gap:7px}.nav button{width:100%;border:0;background:transparent;color:var(--muted);padding:12px 14px;border-radius:12px;text-align:left}.nav button:hover{background:var(--card);color:var(--text)}.nav button.active{background:rgba(34,197,94,.14);color:var(--accent);font-weight:700}.sidebar-footer{position:absolute;bottom:18px;left:18px;right:18px}.theme-btn{width:100%;padding:10px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:10px}.main{margin-left:250px;width:calc(100% - 250px);padding:26px}.page{display:none}.page.active{display:block}.topbar{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:24px}.topbar h2{margin:0;font-size:26px}.topbar p{color:var(--muted);margin:6px 0 0}.connection{border:1px solid var(--border);padding:8px 12px;border-radius:999px;font-size:12px;color:var(--muted);white-space:nowrap}.connection.ok{color:var(--accent);border-color:rgba(34,197,94,.35)}.connection.error{color:var(--danger);border-color:rgba(239,68,68,.35)}.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:18px}.card h3{margin:0 0 5px}.card-subtitle{color:var(--muted);font-size:13px;margin-bottom:18px}.grid{display:grid;gap:16px}.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}.form-group{display:flex;flex-direction:column;gap:7px}.form-group label{font-size:13px;color:var(--muted);font-weight:600}input,select,textarea{width:100%;border:1px solid var(--border);background:var(--card2);color:var(--text);border-radius:10px;padding:11px 12px;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--accent2)}textarea{resize:vertical;min-height:90px}.actions{display:flex;gap:10px;flex-wrap:wrap}.btn{border:0;border-radius:10px;padding:11px 16px;font-weight:700;transition:.2s}.btn:hover{transform:translateY(-1px)}.btn-primary{background:var(--accent);color:#052e16}.btn-secondary{background:var(--accent2);color:#fff}.btn-dark{background:var(--card2);border:1px solid var(--border);color:var(--text)}.btn-danger{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.25)}.btn-warning{background:rgba(245,158,11,.12);color:#fbbf24;border:1px solid rgba(245,158,11,.25)}.btn-small{padding:7px 10px;font-size:12px}.badge{display:inline-block;padding:7px 10px;background:rgba(34,197,94,.12);color:var(--accent);border-radius:999px;font-size:12px;font-weight:700}.dropzone{border:2px dashed var(--border);background:var(--card2);min-height:170px;border-radius:16px;display:flex;align-items:center;justify-content:center;text-align:center;padding:25px;transition:.2s}.dropzone.dragover{border-color:var(--accent);background:rgba(34,197,94,.08)}.dropzone strong{display:block;font-size:18px;margin-bottom:8px}.dropzone span{color:var(--muted);font-size:13px}.file-badge{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(14,165,233,.12);color:var(--accent2);font-size:12px;margin-top:10px}.analysis-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}.analysis-item{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:13px}.analysis-item .label{font-size:11px;color:var(--muted)}.analysis-item .value{font-size:16px;font-weight:800;margin-top:5px}.analysis-source{margin-top:12px;color:var(--muted);font-size:12px}.filament-bar{display:grid;grid-template-columns:1fr 1fr 1fr auto;align-items:end;gap:10px}.summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.price-card{border:1px solid var(--border);border-radius:15px;padding:18px;background:var(--card2)}.price-card.featured{border-color:rgba(34,197,94,.55);box-shadow:0 0 0 1px rgba(34,197,94,.08)}.price-card h4{margin:0;font-size:13px;color:var(--muted)}.price{font-size:29px;font-weight:900;margin:8px 0}.profit{color:var(--accent);font-weight:800;font-size:14px}.margin{color:var(--muted);font-size:12px;margin-top:4px}.cost-table{display:flex;flex-direction:column;gap:10px}.cost-row{display:flex;justify-content:space-between;gap:20px;border-bottom:1px solid var(--border);padding-bottom:9px}.cost-row:last-child{border-bottom:0}.cost-row span:first-child{color:var(--muted)}.total-row{font-size:18px;color:var(--accent)}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px}.toolbar>*{flex:1;min-width:180px}.catalog-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.product-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}.product-thumb{height:180px;background:var(--card2);display:flex;align-items:center;justify-content:center}.product-thumb img{width:100%;height:100%;object-fit:contain}.no-thumb{color:var(--muted);font-size:13px}.product-body{padding:16px}.product-body h3{margin:0 0 5px}.product-code{color:var(--muted);font-size:12px}.product-info{margin:14px 0;display:grid;grid-template-columns:1fr 1fr;gap:8px}.product-info div{background:var(--card2);border-radius:9px;padding:9px}.product-info small{display:block;font-size:10px;color:var(--muted)}.product-info strong{display:block;margin-top:3px}.product-price{color:var(--accent);font-size:22px;font-weight:900}.product-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}.metric{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:17px}.metric span{color:var(--muted);font-size:12px}.metric strong{display:block;font-size:25px;margin-top:7px}.order-items{display:flex;flex-direction:column;gap:10px}.order-item{display:grid;grid-template-columns:2fr .7fr 1fr 1fr auto;gap:8px;align-items:center;background:var(--card2);padding:10px;border-radius:10px;border:1px solid var(--border)}.order-summary{margin-top:15px;background:var(--card2);border-radius:12px;padding:15px}.order-summary-row{display:flex;justify-content:space-between;padding:5px 0}.order-summary-row.total{border-top:1px solid var(--border);margin-top:7px;padding-top:12px;font-size:19px;font-weight:900}.order-summary-row.profit{color:var(--accent)}.list{display:flex;flex-direction:column;gap:12px}.list-item{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:15px}.list-item-header{display:flex;align-items:center;justify-content:space-between;gap:10px}.list-item-title{font-weight:800}.list-item-meta{color:var(--muted);font-size:12px;margin-top:5px}.status{display:inline-block;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:800}.status-pendente{color:#fbbf24;background:rgba(245,158,11,.12)}.status-pago{color:#60a5fa;background:rgba(59,130,246,.12)}.status-producao{color:#c084fc;background:rgba(168,85,247,.12)}.status-enviado{color:#22d3ee;background:rgba(6,182,212,.12)}.status-concluido{color:#4ade80;background:rgba(34,197,94,.12)}.status-cancelado{color:#f87171;background:rgba(239,68,68,.12)}.empty{text-align:center;color:var(--muted);padding:30px;border:1px dashed var(--border);border-radius:12px}.script-buttons{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}.script-buttons button{border:1px solid var(--border);background:var(--card2);color:var(--text);padding:8px 12px;border-radius:9px}details.advanced-card{padding:0;overflow:hidden}details.advanced-card summary{list-style:none;cursor:pointer;padding:18px 20px;font-weight:800;display:flex;justify-content:space-between;align-items:center}details.advanced-card summary::-webkit-details-marker{display:none}details.advanced-card summary span{font-size:11px;font-weight:600;color:var(--muted);background:var(--card2);padding:5px 8px;border-radius:999px}.advanced-body{padding:0 20px 20px}.advanced-body>h3{display:none}.topbar .actions{align-items:center}.product-actions .btn-primary{font-weight:800}.order-summary{border:1px solid var(--border)}.assistant-card{border-color:rgba(14,165,233,.28);background:linear-gradient(180deg,var(--card),rgba(14,165,233,.035))}.assistant-head{display:flex;justify-content:space-between;gap:15px;align-items:flex-start}.assistant-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:4px 0 15px}.assistant-step{display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid var(--border);border-radius:10px;color:var(--muted);font-size:12px}.assistant-step b{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--card2);color:var(--muted)}.assistant-step.active{border-color:rgba(34,197,94,.4);color:var(--text)}.assistant-step.active b{background:var(--accent);color:#052e16}.assistant-step.done{border-color:rgba(34,197,94,.25);color:var(--accent)}.assistant-result{display:flex;flex-direction:column;gap:5px;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:14px}.assistant-result strong{font-size:15px}.assistant-result span{color:var(--muted);font-size:13px;line-height:1.5}.assistant-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}@media(max-width:600px){.assistant-steps{grid-template-columns:1fr 1fr}.assistant-head{flex-direction:column}}
+.mobile-nav{display:none}.toast{position:fixed;right:20px;bottom:20px;background:#020617;color:#fff;padding:13px 17px;border-radius:11px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transform:translateY(10px);transition:.25s;z-index:100;max-width:420px}.toast.show{opacity:1;transform:translateY(0)}@media(max-width:1100px){.catalog-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.analysis-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:850px){.sidebar{display:none}.main{margin-left:0;width:100%;padding:16px;padding-bottom:90px}.mobile-nav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--panel);border-top:1px solid var(--border);padding:8px;gap:5px}.mobile-nav button{flex:1;border:0;background:transparent;color:var(--muted);font-size:10px;padding:7px 2px;border-radius:9px}.mobile-nav button.active{color:var(--accent);background:rgba(34,197,94,.1)}.grid-2,.grid-3,.grid-4,.summary-grid{grid-template-columns:1fr}.filament-bar{grid-template-columns:1fr 1fr}.filament-bar button{grid-column:1/-1}}@media(max-width:600px){.catalog-grid{grid-template-columns:1fr}.analysis-grid{grid-template-columns:1fr}.metrics{grid-template-columns:1fr 1fr}.order-item{grid-template-columns:1fr 1fr}.topbar{align-items:flex-start}.topbar h2{font-size:21px}}
 </style>
 </head>
 <body>
-
 <div class="app">
-<aside class="sidebar">
-    <div class="brand">
-        <h1>uai 3D printing</h1>
-        <p>BambuCalc 3D PRO</p>
-    </div>
-    <nav class="nav">
-        <button class="active" data-page="calc">🧮 Calculadora</button>
-        <button data-page="catalogo">📦 Catálogo</button>
-        <button data-page="vendas">💰 Vendas</button>
-        <button data-page="vinted">🛍️ Vinted</button>
-        <button data-page="atendimento">💬 Atendimento</button>
-        <button data-page="historico">📊 Histórico</button>
-    </nav>
-    <div class="sidebar-footer">
-        <button class="theme-btn" id="btnTheme">🌙 Tema</button>
-    </div>
-</aside>
-
+<aside class="sidebar"><div class="brand"><h1>uai 3D printing</h1><p>BambuCalc 3D PRO</p></div><nav class="nav"><button class="active" data-page="calc">🧮 Calculadora</button><button data-page="catalogo">📦 Catálogo</button><button data-page="vendas">💰 Vendas</button><button data-page="vinted">🛍️ Vinted</button><button data-page="atendimento">💬 Atendimento</button><button data-page="historico">📊 Histórico</button></nav><div class="sidebar-footer"><button class="theme-btn" id="btnTheme">🌙 Tema</button></div></aside>
 <main class="main">
-
-<!-- CALCULADORA -->
 <section id="page-calc" class="page active">
-    <div class="topbar">
-        <div>
-            <h2>Calculadora PRO</h2>
-            <p>Analise 3MF, G-code ou STL e calcule o preço e o lucro.</p>
-        </div>
-        <div id="firebaseStatus" class="connection">Conectando...</div>
-    </div>
-
-    <div class="card">
-        <h3>🚀 Análise automática</h3>
-        <div class="card-subtitle">Envie seu 3MF ou G-code para detectar peso e tempo.</div>
-        <div id="dropzone" class="dropzone">
-            <div>
-                <strong>📁 Arraste seu arquivo aqui</strong>
-                <span>ou clique para selecionar (.3mf, .gcode, .stl)</span><br>
-                <span id="arquivoTipoBadge" class="file-badge">Aguardando arquivo</span>
-                <input id="arquivoProjeto" type="file" accept=".3mf,.gcode,.gc,.gco,.stl" style="display:none">
-            </div>
-        </div>
-        <div id="analiseStatus" style="margin-top:12px;color:var(--muted)">Nenhum arquivo analisado.</div>
-        <div id="analiseGrid" class="analysis-grid"></div>
-    </div>
-
-    <div class="card">
-        <h3>🧵 Filamento e Produto</h3>
-        <div class="grid grid-3">
-            <div class="form-group"><label>Nome do produto</label><input id="nomeProduto" placeholder="Ex.: Vaso espiral"></div>
-            <div class="form-group"><label>Código</label><input id="codigoProduto" placeholder="Ex.: VAS-001"></div>
-            <div class="form-group"><label>Categoria</label><input id="categoriaProduto" placeholder="Ex.: Decoração"></div>
-        </div>
-        <br>
-        <div class="grid grid-3">
-            <div class="form-group"><label>Peso da peça (g)</label><input id="pesoPeca" type="number" step="0.01" value="0"></div>
-            <div class="form-group"><label>Tempo (Ex: 3h 15m)</label><input id="tempoManual" placeholder="3h 15m"></div>
-            <div class="form-group"><label>Horas calculadas</label><input id="horasPeca" type="number" readonly value="0"></div>
-        </div>
-        <br>
-        <div class="grid grid-3">
-            <div class="form-group"><label>Preço do rolo (£)</label><input id="precoRolo" type="number" step="0.01" value="18"></div>
-            <div class="form-group"><label>Peso do rolo (g)</label><input id="pesoRolo" type="number" value="1000"></div>
-            <div class="form-group"><label>Margem desejada (%)</label><input id="margem" type="number" value="60"></div>
-        </div>
-    </div>
-
-    <div class="card">
-        <h3>⚙️ Custos Operacionais</h3>
-        <div class="grid grid-4">
-            <div class="form-group"><label>Potência (W)</label><input id="potenciaWatts" type="number" value="80"></div>
-            <div class="form-group"><label>Tarifa (£/kWh)</label><input id="tarifaLuz" type="number" step="0.01" value="0.25"></div>
-            <div class="form-group"><label>Custo máquina (£/h)</label><input id="custoHora" type="number" step="0.01" value="0.50"></div>
-            <div class="form-group"><label>Falhas (%)</label><input id="taxaFalha" type="number" value="5"></div>
-        </div>
-    </div>
-
-    <div class="card">
-        <h3>💷 Resultados</h3>
-        <div class="cost-table">
-            <div class="cost-row"><span>Material</span><strong id="custoMaterial">£ 0.00</strong></div>
-            <div class="cost-row"><span>Energia + Máquina</span><strong id="custoMaquinaOut">£ 0.00</strong></div>
-            <div class="cost-row total-row"><span>CUSTO TOTAL</span><strong id="custoTotal">£ 0.00</strong></div>
-        </div>
-        <br>
-        <div class="summary-grid">
-            <div class="price-card">
-                <h4>Preço mínimo</h4>
-                <div class="price" id="precoMinimo">£ 0.00</div>
-                <div class="profit">Lucro: <span id="lucroMinimo">£ 0.00</span></div>
-            </div>
-            <div class="price-card featured">
-                <h4>⭐ Preço ideal</h4>
-                <div class="price" id="precoIdeal">£ 0.00</div>
-                <div class="profit">Lucro: <span id="lucroIdeal">£ 0.00</span></div>
-            </div>
-            <div class="price-card">
-                <h4>💎 Preço premium</h4>
-                <div class="price" id="precoPremium">£ 0.00</div>
-                <div class="profit">Lucro: <span id="lucroPremium">£ 0.00</span></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="actions">
-            <button class="btn btn-primary" onclick="salvarProduto()">💾 Salvar produto</button>
-            <button class="btn btn-secondary" onclick="registrarHistorico()">📊 Registrar cálculo</button>
-            <button class="btn btn-warning" onclick="limparCalculadora()">🧹 Limpar</button>
-        </div>
-    </div>
-</section>
-
-<!-- CATÁLOGO -->
-<section id="page-catalogo" class="page">
-    <div class="topbar"><div><h2>📦 Catálogo</h2><p>Produtos cadastrados.</p></div></div>
-    <div class="card"><div id="catalogGrid" class="catalog-grid"></div></div>
-</section>
-
-<!-- VENDAS -->
-<section id="page-vendas" class="page">
-    <div class="topbar"><div><h2>💰 Vendas</h2><p>Registro de pedidos.</p></div></div>
-    <div class="card"><div id="vendasLista" class="list"></div></div>
-</section>
-
-<!-- VINTED -->
-<section id="page-vinted" class="page">
-    <div class="topbar"><div><h2>🛍️ Vinted</h2><p>Anúncios integrados.</p></div></div>
-    <div class="card"><div id="vintedLista" class="list"></div></div>
-</section>
-
-<!-- ATENDIMENTO -->
-<section id="page-atendimento" class="page">
-    <div class="topbar"><div><h2>💬 Atendimento</h2><p>Scripts rápidos.</p></div></div>
-    <div class="card"><p>Atendimento rápido configurado na barra lateral.</p></div>
-</section>
-
-<!-- HISTÓRICO -->
-<section id="page-historico" class="page">
-    <div class="topbar"><div><h2>📊 Histórico</h2><p>Log de cálculos.</p></div></div>
-    <div class="card"><div id="historicoLista" class="list"></div></div>
-</section>
-
-</main>
+<div class="topbar"><div><h2>Calculadora PRO</h2><p>Envie o arquivo → confira o resultado → salve o produto ou registre a venda.</p></div><div id="firebaseStatus" class="connection">Modo local</div></div>
+<div class="card"><h3>🚀 Análise automática</h3><div class="card-subtitle">Na maioria dos casos você só precisa enviar o 3MF. Peso e tempo são preenchidos automaticamente.</div><div id="dropzone" class="dropzone"><div><strong>📁 Arraste seu arquivo aqui</strong><span>ou clique para selecionar</span><br><span>3MF, G-code ou STL</span><br><span id="arquivoTipoBadge" class="file-badge">Aguardando arquivo</span><input id="arquivoProjeto" type="file" accept=".3mf,.gcode,.gc,.gco,.stl" style="display:none"></div></div><div id="analiseStatus" style="margin-top:12px;color:var(--muted)">Nenhum arquivo analisado.</div><div id="analiseGrid" class="analysis-grid"></div><div id="analysisSource" class="analysis-source"></div></div>
+<div class="card assistant-card" id="assistantCard">
+  <div class="assistant-head">
+    <div><h3>🤖 Modo Assistente</h3><div class="card-subtitle">O BambuCalc analisa o arquivo, preenche o que conseguir e só pede ajuda quando faltar alguma informação.</div></div>
+    <span class="badge" id="assistantModeBadge">Automático</span>
+  </div>
+  <div class="assistant-steps" id="assistantSteps">
+    <div class="assistant-step active"><b>1</b><span>Envie o arquivo</span></div>
+    <div class="assistant-step"><b>2</b><span>Confira os dados</span></div>
+    <div class="assistant-step"><b>3</b><span>Veja o preço</span></div>
+    <div class="assistant-step"><b>4</b><span>Salve ou venda</span></div>
+  </div>
+  <div class="assistant-result" id="assistantResult"><strong>👋 Vamos começar</strong><span>Envie um 3MF ou G-code para o Assistente preencher peso, tempo e nome automaticamente.</span></div>
+  <div class="assistant-actions"><button class="btn btn-primary" onclick="executarAssistente()">🤖 Calcular com Assistente</button><button class="btn btn-dark" onclick="abrirConfiguracoesAvancadas()">⚙️ Configurações avançadas</button></div>
 </div>
-<div id="toast" class="toast"></div>
-
-<!-- JSZip -->
+<details id="advancedFilament" class="card advanced-card"><summary>🧵 Filamento <span>Configuração avançada</span> <span>Configuração avançada</span></summary><div class="advanced-body"><h3>🧵 Filamento</h3><div class="card-subtitle">Preço do rolo usado no cálculo.</div><div class="filament-bar"><div class="form-group"><label>Preset</label><select id="filamentoPreset" onchange="aplicarFilamentoPreset()"><option value="">Selecione...</option></select></div><div class="form-group"><label>Preço do rolo (£)</label><input id="precoRolo" type="number" min="0" step="0.01" value="12.41"></div><div class="form-group"><label>Peso do rolo (g)</label><input id="pesoRolo" type="number" min="1" step="1" value="1000"></div><button class="btn btn-secondary" onclick="salvarNovoFilamento()">+ Salvar</button></div></div>
+<div class="card"><h3>📦 Produto</h3><div class="card-subtitle">Os dados detectados podem ser ajustados manualmente.</div><div class="grid grid-3"><div class="form-group"><label>Nome</label><input id="nomeProduto" maxlength="120" placeholder="Ex.: Vaso espiral"></div><div class="form-group"><label>Código</label><input id="codigoProduto" maxlength="60" placeholder="Ex.: VAS-001"></div><div class="form-group"><label>Categoria</label><input id="categoriaProduto" maxlength="60" placeholder="Ex.: Decoração"></div></div><br><div class="grid grid-3"><div class="form-group"><label>Peso da peça (g)</label><input id="pesoPeca" type="number" min="0" step="0.01" value="0"></div><div class="form-group"><label>Tempo de impressão</label><input id="tempoManual" placeholder="Ex.: 3h18m ou 3:18" oninput="converterTempoManual(false)"></div><div class="form-group"><label>Horas calculadas</label><input id="horasPeca" type="number" readonly value="0"></div></div></div>
+</div></details><details id="advancedCosts" class="card advanced-card"><summary>⚙️ Custos e energia <span>Configuração avançada</span></summary><div class="advanced-body"><h3>⚙️ Custos</h3><div class="grid grid-4"><div class="form-group"><label>Potência (W)</label><input id="potenciaWatts" type="number" min="0" value="80"></div><div class="form-group"><label>Tarifa (£/kWh)</label><input id="tarifaLuz" type="number" min="0" step="0.01" value="0.25"></div><div class="form-group"><label>Custo máquina (£/h)</label><input id="custoHora" type="number" min="0" step="0.01" value="0.50"></div><div class="form-group"><label>Margem desejada (%)</label><input id="margem" type="number" min="0" step="1" value="60"></div><div class="form-group"><label>Reserva falhas (%)</label><input id="taxaFalha" type="number" min="0" step="0.5" value="5"></div><div class="form-group"><label>Custos extras (£)</label><input id="custosExtras" type="number" min="0" step="0.01" value="0"></div><div class="form-group"><label>Embalagem (£)</label><input id="embalagem" type="number" min="0" step="0.01" value="0"></div></div></div>
+</div></details><details id="advancedSale" class="card advanced-card"><summary>🛍️ Venda / Vinted <span>Opcional</span></summary><div class="advanced-body"><h3>🛍️ Venda / Vinted</h3><div class="grid grid-2"><div class="form-group"><label>Link Vinted</label><input id="vintedLink" type="url" placeholder="https://www.vinted.co.uk/..."></div><div class="form-group"><label>Data do anúncio</label><input id="vintedData" type="date"></div><div class="form-group"><label>Link externo do arquivo</label><input id="fileDownloadLink" type="url" placeholder="https://..."></div><div class="form-group"><label>Observações</label><textarea id="observacoes" maxlength="1000"></textarea></div></div></div>
+</div></details><div class="card"><h3>💷 Resultado da calculadora</h3><div class="card-subtitle">Lucro = preço de venda − custo total de produção.</div><div class="cost-table"><div class="cost-row"><span>Material</span><strong id="custoMaterial">£ 0.00</strong></div><div class="cost-row"><span>Energia</span><strong id="custoEnergiaOut">£ 0.00</strong></div><div class="cost-row"><span>Máquina</span><strong id="custoMaquinaOut">£ 0.00</strong></div><div class="cost-row"><span>Extras + embalagem</span><strong id="custoExtrasOut">£ 0.00</strong></div><div class="cost-row"><span>Reserva para falhas</span><strong id="custoFalhaOut">£ 0.00</strong></div><div class="cost-row total-row"><span>CUSTO TOTAL</span><strong id="custoTotal">£ 0.00</strong></div></div><br><div class="summary-grid"><div class="price-card"><h4>Preço mínimo</h4><div class="price" id="precoMinimo">£ 0.00</div><div class="profit">Lucro: <span id="lucroMinimo">£ 0.00</span></div><div class="margin">Margem: <span id="margemMinima">0%</span></div></div><div class="price-card featured"><h4>⭐ Preço ideal</h4><div class="price" id="precoIdeal">£ 0.00</div><div class="profit">Lucro: <span id="lucroIdeal">£ 0.00</span></div><div class="margin">Margem: <span id="margemIdeal">0%</span></div></div><div class="price-card"><h4>💎 Preço premium</h4><div class="price" id="precoPremium">£ 0.00</div><div class="profit">Lucro: <span id="lucroPremium">£ 0.00</span></div><div class="margin">Margem: <span id="margemPremium">0%</span></div></div></div></div>
+<div class="card"><div class="actions"><button class="btn btn-primary" onclick="salvarProduto()">💾 Salvar produto</button><button class="btn btn-secondary" onclick="registrarHistorico()">📊 Registrar cálculo</button><button class="btn btn-dark" onclick="exportarOrcamento()">📄 Exportar orçamento</button><button class="btn btn-warning" onclick="limparCalculadora()">🧹 Limpar</button></div></div>
+</section>
+<section id="page-catalogo" class="page"><div class="topbar"><div><h2>📦 Catálogo</h2><p>Pesquise, edite e venda seus produtos em poucos cliques.</p></div><div class="actions"><span id="catalogCount" class="badge">0 produtos</span><button class="btn btn-primary" onclick="novoProdutoRapido()">＋ Novo produto</button></div></div><div class="card"><div class="toolbar"><input id="catalogSearch" placeholder="🔎 Procurar produto..." oninput="renderCatalogo()"><select id="catalogCategory" onchange="renderCatalogo()"><option value="">Todas as categorias</option></select><button class="btn btn-secondary" onclick="renderCatalogo()">🔄 Atualizar</button><button class="btn btn-dark" onclick="exportarBackup()">💾 Backup</button><button class="btn btn-dark" onclick="importarBackup()">📥 Importar</button></div><div id="catalogGrid" class="catalog-grid"></div></div></section>
+<section id="page-vendas" class="page"><div class="topbar"><div><h2>💰 Vendas</h2><p>Crie pedidos, acompanhe o status e veja faturamento e lucro.</p></div><button class="btn btn-primary" onclick="focarNovoPedido()">＋ Novo pedido</button></div><div class="metrics"><div class="metric"><span>Pedidos</span><strong id="metricPedidos">0</strong></div><div class="metric"><span>Itens vendidos</span><strong id="metricVendas">0</strong></div><div class="metric"><span>Faturamento</span><strong id="metricFaturamento">£ 0.00</strong></div><div class="metric"><span>Lucro</span><strong id="metricLucro">£ 0.00</strong></div></div><div class="card"><h3>🧾 Novo pedido</h3><div class="grid grid-4"><div class="form-group"><label>Cliente</label><input id="pedidoCliente"></div><div class="form-group"><label>Canal</label><select id="pedidoCanal"><option>Vinted</option><option>WhatsApp</option><option>Facebook</option><option>Instagram</option><option>Loja própria</option><option>Outro</option></select></div><div class="form-group"><label>Data</label><input id="pedidoData" type="date"></div><div class="form-group"><label>Status</label><select id="pedidoStatus"><option value="pendente">Pendente</option><option value="pago">Pago</option><option value="producao">Em produção</option><option value="enviado">Enviado</option><option value="concluido">Concluído</option><option value="cancelado">Cancelado</option></select></div></div><br><div class="grid grid-4"><div class="form-group"><label>Produto</label><select id="vendaProduto" onchange="preencherPrecoVenda()"><option value="">Selecione...</option></select></div><div class="form-group"><label>Quantidade</label><input id="vendaQtd" type="number" min="1" value="1"></div><div class="form-group"><label>Preço unitário (£)</label><input id="vendaPreco" type="number" min="0" step="0.01"></div><div class="form-group"><label>&nbsp;</label><button class="btn btn-primary" onclick="adicionarItemPedido()">+ Adicionar item</button></div></div><br><div id="pedidoItens" class="order-items"></div><div class="grid grid-4" style="margin-top:16px"><div class="form-group"><label>Frete cobrado (£)</label><input id="pedidoFrete" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="form-group"><label>Custo real frete (£)</label><input id="pedidoCustoFrete" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="form-group"><label>Desconto (£)</label><input id="pedidoDesconto" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="form-group"><label>Taxas plataforma (£)</label><input id="pedidoTaxas" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="form-group"><label>Embalagem (£)</label><input id="pedidoEmbalagem" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div></div><div id="pedidoResumo" class="order-summary"></div><br><div class="actions"><button class="btn btn-primary" onclick="salvarPedido()">💾 Salvar pedido</button><button class="btn btn-warning" onclick="limparPedidoEditor()">🧹 Limpar pedido</button></div></div><div class="card"><div class="toolbar"><input id="vendaBusca" placeholder="🔎 Buscar cliente ou canal..." oninput="renderVendas()"><select id="vendaFiltroStatus" onchange="renderVendas()"><option value="">Todos os status</option><option value="pendente">Pendente</option><option value="pago">Pago</option><option value="producao">Em produção</option><option value="enviado">Enviado</option><option value="concluido">Concluído</option><option value="cancelado">Cancelado</option></select></div><h3>📋 Pedidos registrados</h3><div id="vendasLista" class="list"></div></div></section>
+<section id="page-vinted" class="page"><div class="topbar"><div><h2>🛍️ Vinted</h2><p>Produtos com links de anúncio.</p></div></div><div class="card"><div id="vintedLista" class="list"></div></div></section>
+<section id="page-atendimento" class="page"><div class="topbar"><div><h2>💬 Atendimento</h2><p>Mensagens prontas em português e inglês.</p></div></div><div class="card"><div class="script-buttons"><button onclick="selecionarScript('saudacao')">👋 Saudação</button><button onclick="selecionarScript('pedido')">📦 Pedido</button><button onclick="selecionarScript('producao')">🖨️ Produção</button><button onclick="selecionarScript('envio')">🚚 Envio</button><button onclick="selecionarScript('obrigado')">❤️ Obrigado</button></div><div class="grid grid-2"><div class="form-group"><label>Português</label><textarea id="scriptPT"></textarea></div><div class="form-group"><label>Inglês</label><textarea id="scriptEN"></textarea></div></div><br><div class="actions"><button class="btn btn-primary" onclick="copiarScript()">📋 Copiar</button><button class="btn btn-secondary" onclick="abrirWhatsAppScript()">💬 WhatsApp</button></div></div></section>
+<section id="page-historico" class="page"><div class="topbar"><div><h2>📊 Histórico</h2><p>Registros dos cálculos.</p></div><div class="actions"><button class="btn btn-secondary" onclick="exportarHistorico()">📄 CSV</button><button class="btn btn-danger" onclick="limparHistorico()">🗑️ Limpar</button></div></div><div class="card"><div id="historicoLista" class="list"></div></div></section>
+</main></div>
+<nav class="mobile-nav"><button class="active" data-page="calc">🧮<br>Calc</button><button data-page="catalogo">📦<br>Catálogo</button><button data-page="vendas">💰<br>Vendas</button><button data-page="vinted">🛍️<br>Vinted</button><button data-page="atendimento">💬<br>Chat</button><button data-page="historico">📊<br>Hist.</button></nav><div id="toast" class="toast"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import{getAuth,onAuthStateChanged,signInAnonymously}from"https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import{getFirestore,collection,getDocs,setDoc,doc,deleteDoc}from"https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaSyCD0oMZ8Lkb-Tow1kPw2GPMu2IW6MEGyxY",authDomain:"bambucalc3d.firebaseapp.com",projectId:"bambucalc3d",storageBucket:"bambucalc3d.firebasestorage.app",messagingSenderId:"296605014403",appId:"1:296605014403:web:54d77e49d1a02053183eb6",measurementId:"G-5QLJHQVZQY"};
+try{const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);window.FB={db,collection,getDocs,setDoc,doc,deleteDoc};onAuthStateChanged(auth,async user=>{if(user){window.currentUser=user;const s=document.getElementById("firebaseStatus");s.textContent="☁️ Firestore conectado";s.classList.add("ok");document.dispatchEvent(new Event("firebase-ready"));}else{try{await signInAnonymously(auth)}catch(e){console.error(e);const s=document.getElementById("firebaseStatus");s.textContent="⚠️ Modo local";s.classList.add("error")}}})}catch(e){console.error(e);document.getElementById("firebaseStatus").textContent="⚠️ Modo local"}
+</script>
 <script>
 "use strict";
+const $=id=>document.getElementById(id), money=v=>"£ "+Number(v||0).toFixed(2), uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random(), today=()=>new Date().toISOString().slice(0,10);
+const KEY={theme:"bambu_theme",draft:"bambu_draft",filaments:"bambu_filaments",history:"bambu_history",sales:"bambu_sales"};
+let catalogo=[],historico=[],vendas=[],filamentos=[],pedidoItens=[],currentFile=null,currentAnalysis=null,editingProductId=null,dbPromise=null;
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove("show"),3200)}window.toast=toast;
+function downloadBlob(blob,name){const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)}
+function downloadText(text,name,type="text/plain;charset=utf-8"){downloadBlob(new Blob([text],{type}),name)}
+function safeUrl(v){try{const u=new URL(v);return ["http:","https:"].includes(u.protocol)?u.href:""}catch{return""}}
+function formatTime(h){let m=Math.round(Number(h||0)*60);const hh=Math.floor(m/60);m%=60;return hh?`${hh}h ${String(m).padStart(2,"0")}m`:`${m}min`}
+function normalizarNumero(v){if(v==null)return NaN;let s=String(v).trim().replace(/\s/g,"");if(/^-?\d+,\d+$/.test(s))s=s.replace(",",".");else if(/^-?\d{1,3}(?:\.\d{3})+$/.test(s))s=s.replace(/\./g,"");const n=Number(s);return Number.isFinite(n)?n:NaN}
+function tempoComUnidades(s){s=String(s||"").trim().toLowerCase().replace(/,/g,".");if(!s)return 0;let h=0,m=0,sec=0,found=false,x=s.match(/(\d+(?:\.\d+)?)\s*(?:hours?|hrs?|h)\b/);if(x){h=+x[1];found=true}x=s.match(/(\d+(?:\.\d+)?)\s*(?:minutes?|mins?|m)\b/);if(x){m=+x[1];found=true}x=s.match(/(\d+(?:\.\d+)?)\s*(?:seconds?|secs?|s)\b/);if(x){sec=+x[1];found=true}if(found)return h+m/60+sec/3600;x=s.match(/^(\d+)\s*:\s*(\d{1,2})(?::(\d{1,2}))?$/);if(x){return x[3]?+x[1]+ +x[2]/60 + +x[3]/3600:+x[1]+ +x[2]/60}return 0}
+function parseBambuTime(v,key=""){const s=String(v??"").trim();if(!s)return 0;const u=tempoComUnidades(s);if(u>0)return u;const n=normalizarNumero(s);if(!Number.isFinite(n)||n<0)return 0;return /prediction|print_time|estimated|duration|seconds?|time/.test(key.toLowerCase())?n/3600:n}
+function parseTime(v){if(v==null)return 0;if(typeof v==="number")return v>100?v/3600:v;const s=String(v).trim();return tempoComUnidades(s)||((Number(s.replace(",","."))||0))}
+function extractTime(text){const s=String(text||"");const priority=[/prediction\s*["']?\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)/i,/total\s+estimated\s+printing\s+time[^:=]*[:=]\s*([^\n\r;}]+)/i,/estimated\s+printing\s+time[^:=]*[:=]\s*([^\n\r;}]+)/i,/estimated\s+print(?:ing)?\s+time[^:=]*[:=]\s*([^\n\r;}]+)/i,/total\s+print(?:ing)?\s+time[^:=]*[:=]\s*([^\n\r;}]+)/i,/print(?:ing)?\s+time[^:=]*[:=]\s*([^\n\r;}]+)/i,/(?:total_time|print_time|estimated_time|printing_time|printTime|totalPrintTime)\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)/i];for(const r of priority){const m=s.match(r);if(m){const h=parseBambuTime(m[1],r.source);if(h>0&&h<100000)return h}}let m;const re=/(?:["']?)([A-Za-z0-9_ -]*(?:print|printing|estimated|total)[A-Za-z0-9_ -]*(?:time|duration))(?:["']?)\s*[:=]\s*["']?([^"',;\n\r}]+)/gi;while((m=re.exec(s))){const h=parseBambuTime(m[2],m[1]);if(h>0&&h<100000)return h}return 0}
+function extractWeight(text){const s=String(text||"");const patterns=[/filament\s+used\s*\[\s*g\s*\]\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)/i,/filament\s+used\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)\s*g/i,/(?:total[_\s-]*filament[_\s-]*(?:weight|used)|filament[_\s-]*(?:weight|used)|total[_\s-]*weight|filament_weight)\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)/i];for(const r of patterns){const m=s.match(r);if(m){const n=normalizarNumero(m[1]);if(n>0&&n<100000)return n}}const vals=[];let m;const re=/(?:["']?)(filament[_\s-]*used[_\s-]*g|used_g|filament[_\s-]*weight|total_weight)(?:["']?)\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)/gi;while((m=re.exec(s))){const n=normalizarNumero(m[2]);if(n>0&&n<100000)vals.push(n)}return vals.length?vals.reduce((a,b)=>a+b,0):0}
+function extractFilament(s){for(const r of [/"filament_type"\s*:\s*\[\s*"([^"]+)/i,/filament_type\s*[:=]\s*["']?([^"',;\n\r}]+)/i,/material\s*[:=]\s*["']?([^"',;\n\r}]+)/i]){const m=String(s||"").match(r);if(m)return m[1].trim().slice(0,80)}return""}
+function extractPrinter(s){for(const r of [/"printer_model"\s*:\s*"([^"]+)/i,/printer_model\s*[:=]\s*["']?([^"',;\n\r}]+)/i]){const m=String(s||"").match(r);if(m)return m[1].trim().slice(0,100)}return""}
+async function parse3MF(file){if(window.JSZip){const zip=await JSZip.loadAsync(file);const names=Object.keys(zip.files);const get=async n=>zip.files[n]?zip.files[n].async("string"):"";let weight=0,hours=0,filament="",printer="",source="";const sliceName=names.find(n=>/metadata\/slice_info\.config$/i.test(n));if(sliceName){source="Metadata/slice_info.config";const xml=await get(sliceName);try{const doc=new DOMParser().parseFromString(xml,"application/xml");const nodes=[...doc.querySelectorAll("metadata")];const weights=nodes.filter(n=>/^(weight|total_weight|filament_weight)$/i.test(n.getAttribute("key")||"")).map(n=>normalizarNumero(n.getAttribute("value"))).filter(n=>n>0);const preds=nodes.filter(n=>/^(prediction|print_time|estimated_time|printing_time|total_time)$/i.test(n.getAttribute("key")||"")).map(n=>parseBambuTime(n.getAttribute("value"),n.getAttribute("key")||"")).filter(n=>n>0);weight=weights.length?Math.max(...weights):0;hours=preds.length?Math.max(...preds):0;const used=[...doc.querySelectorAll("filament")].map(n=>normalizarNumero(n.getAttribute("used_g"))).filter(n=>n>0);if(!weight&&used.length)weight=used.reduce((a,b)=>a+b,0)}catch(e){weight=extractWeight(xml);hours=extractTime(xml)}if(!weight)weight=extractWeight(xml);if(!hours)hours=extractTime(xml);filament=extractFilament(xml);printer=extractPrinter(xml)}const project=names.find(n=>/project_settings\.config$/i.test(n));if(project){const t=await get(project);filament=filament||extractFilament(t);printer=printer||extractPrinter(t);weight=weight||extractWeight(t);hours=hours||extractTime(t)}const gcodes=names.filter(n=>/\.(gcode|gc|gco)$/i.test(n));for(const n of gcodes){const t=await get(n);const w=extractWeight(t),h=extractTime(t);if(!weight&&w)weight=w;if(!hours&&h)hours=h;filament=filament||extractFilament(t)}return{type:"3MF",weight,hours,filament,printer,source:source||"3MF",embedded:gcodes.length}}throw new Error("JSZip não carregado.")}
+async function parseGCode(file){const t=await file.text();return{type:"G-code",weight:extractWeight(t),hours:extractTime(t),filament:extractFilament(t),printer:extractPrinter(t),source:"G-code",embedded:1}}
+async function analyzeFile(file){currentFile=file;currentAnalysis=null;$('arquivoTipoBadge').textContent='Analisando...';$('analiseStatus').textContent='⏳ Analisando arquivo localmente...';$('analiseGrid').innerHTML='';setAssistantStep(1);const ext=file.name.toLowerCase().split('.').pop();if(ext==='stl'){currentAnalysis={type:'STL',weight:0,hours:0,filament:'',printer:'',source:'STL',embedded:0};renderAnalysis(currentAnalysis);$('analiseStatus').textContent='ℹ️ STL não contém de forma confiável peso/tempo de fatiamento. Informe manualmente ou envie 3MF/G-code.';updateAssistant();return}try{const d=ext==='3mf'?await parse3MF(file):await parseGCode(file);currentAnalysis=d;if(d.weight>0)$('pesoPeca').value=d.weight.toFixed(2);if(d.hours>0){$('horasPeca').value=d.hours.toFixed(4);$('tempoManual').value=formatTime(d.hours)}const autoName=file.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').replace(/\s+/g,' ').trim();if(!$('nomeProduto').value)$('nomeProduto').value=autoName;if(!$('codigoProduto').value)$('codigoProduto').value=autoName.toUpperCase().replace(/[^A-Z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,30);renderAnalysis(d);calc();saveDraft();const complete=d.weight>0&&d.hours>0;$('analiseStatus').textContent=complete?'✅ Peso, tempo e dados disponíveis foram preenchidos automaticamente.':'⚠️ Dados parciais: informe somente o que estiver faltando.';setAssistantStep(complete?2:2);updateAssistant();toast(complete?'Arquivo analisado pelo Assistente.':'Dados parciais: confira o que ficou faltando.')}catch(e){console.error(e);$('analiseStatus').textContent='❌ Não foi possível analisar este arquivo.';$('analysisSource').textContent='Tente outro 3MF/G-code ou informe os dados manualmente.';updateAssistant();toast('Não foi possível analisar o arquivo.')}}
+function renderAnalysis(d){const rows=[["Formato",d.type||"-"],["Peso",d.weight>0?d.weight.toFixed(2)+" g":"Não encontrado"],["Tempo",d.hours>0?formatTime(d.hours):"Não encontrado"],["Material",d.filament||"Não detectado"],["Impressora",d.printer||"Não detectada"]];$("arquivoTipoBadge").textContent=d.weight>0&&d.hours>0?"Dados encontrados":"Dados parciais / ausentes";$("analiseGrid").innerHTML=rows.map(r=>`<div class="analysis-item"><div class="label">${esc(r[0])}</div><div class="value">${esc(r[1])}</div></div>`).join("");$("analysisSource").textContent="Fonte: "+(d.source||"-")+(d.embedded?" · G-code incorporado detectado":"")}
+const dz=$("dropzone"),fi=$("arquivoProjeto");dz.addEventListener("click",()=>fi.click());fi.addEventListener("change",e=>e.target.files[0]&&analyzeFile(e.target.files[0]));["dragenter","dragover"].forEach(x=>dz.addEventListener(x,e=>{e.preventDefault();dz.classList.add("dragover")}));["dragleave","drop"].forEach(x=>dz.addEventListener(x,e=>{e.preventDefault();dz.classList.remove("dragover")}));dz.addEventListener("drop",e=>e.dataTransfer.files[0]&&analyzeFile(e.dataTransfer.files[0]));
+function advancedAberto(){return !!document.querySelector('details.advanced-card[open]')}
+function calc(){const peso=+$('pesoPeca').value||0,pr=+$('precoRolo').value||0,gr=+$('pesoRolo').value||1000,h=parseTime($('tempoManual').value)||(+$('horasPeca').value||0),w=+$('potenciaWatts').value||0,tar=+$('tarifaLuz').value||0,mh=+$('custoHora').value||0,mg=+$('margem').value||0,fail=+$('taxaFalha').value||0,extra=+$('custosExtras').value||0,emb=+$('embalagem').value||0;const material=peso*(pr/gr),energy=w/1000*h*tar,machine=h*mh,extras=extra+emb,base=material+energy+machine+extras,failure=base*fail/100,total=base+failure,min=total*1.2,ideal=total*(1+mg/100),premium=total*1.8;const out={peso,hours:h,precoRolo:pr,pesoRolo:gr,custoMaterial:material,custoEnergia:energy,custoMaquina:machine,custosExtras:extras,custoFalha:failure,total,minimum:min,ideal,premium,profitMinimum:min-total,profitIdeal:ideal-total,profitPremium:premium-total,marginMinimum:min?(min-total)/min*100:0,marginIdeal:ideal?(ideal-total)/ideal*100:0,marginPremium:premium?(premium-total)/premium*100:0,automatic:!advancedAberto()};$('horasPeca').value=h.toFixed(4);$('custoMaterial').textContent=money(material);$('custoEnergiaOut').textContent=money(energy);$('custoMaquinaOut').textContent=money(machine);$('custoExtrasOut').textContent=money(extras);$('custoFalhaOut').textContent=money(failure);$('custoTotal').textContent=money(total);$('precoMinimo').textContent=money(min);$('precoIdeal').textContent=money(ideal);$('precoPremium').textContent=money(premium);$('lucroMinimo').textContent=money(min-total);$('lucroIdeal').textContent=money(ideal-total);$('lucroPremium').textContent=money(premium-total);$('margemMinima').textContent=out.marginMinimum.toFixed(1)+'%';$('margemIdeal').textContent=out.marginIdeal.toFixed(1)+'%';$('margemPremium').textContent=out.marginPremium.toFixed(1)+'%';updateAssistant(out);return out}
+function setAssistantStep(step){const els=[...document.querySelectorAll('#assistantSteps .assistant-step')];els.forEach((el,i)=>{el.classList.toggle('active',i===step-1);el.classList.toggle('done',i<step-1)})}
+function updateAssistant(v){const box=$('assistantResult'),badge=$('assistantModeBadge');if(!box)return;const auto=!advancedAberto();badge.textContent=auto?'Automático':'Avançado';if(!currentFile&&!v){box.innerHTML='<strong>👋 Vamos começar</strong><span>Envie um 3MF ou G-code. O Assistente tenta preencher nome, peso e tempo automaticamente.</span>';setAssistantStep(1);return}v=v||calc();const name=$('nomeProduto').value.trim()||'Produto sem nome';const missing=[];if(v.peso<=0)missing.push('peso');if(v.hours<=0)missing.push('tempo');if(!name||name==='Produto sem nome')missing.push('nome');if(missing.length){box.innerHTML=`<strong>⚠️ Falta${missing.length>1?'m':'m'} ${missing.join(', ')}.</strong><span>O Assistente já calculou o que conseguiu. Preencha apenas os dados indicados e tente novamente.</span>`;setAssistantStep(2);return}box.innerHTML=`<strong>✅ ${esc(name)}</strong><span>⚖️ ${v.peso.toFixed(2)} g · ⏱️ ${formatTime(v.hours)} · Custo ${money(v.total)}</span><span>💰 Preço ideal <strong>${money(v.ideal)}</strong> · Lucro <strong>${money(v.profitIdeal)}</strong> · ${auto?'valores automáticos':'configurações avançadas ativas'}</span>`;setAssistantStep(3)}
+function abrirConfiguracoesAvancadas(){document.querySelectorAll('details.advanced-card').forEach(d=>d.open=true);document.getElementById('advancedCosts')?.scrollIntoView({behavior:'smooth',block:'center'});calc();updateAssistant()}
+function executarAssistente(){const v=calc();if(v.peso<=0||v.hours<=0){toast('O Assistente precisa de peso e tempo para calcular o preço ideal.');setAssistantStep(2);return}if(!$('nomeProduto').value.trim()){$('nomeProduto').value='Produto sem nome'}calc();setAssistantStep(3);document.getElementById('precoIdeal')?.scrollIntoView({behavior:'smooth',block:'center'});toast('Preço calculado pelo Assistente.')}
 
-const $ = id => document.getElementById(id);
-const money = val => "£ " + Number(val || 0).toFixed(2);
-function toast(msg){
-    const el = $("toast");
-    if(!el) return;
-    el.textContent = msg;
-    el.classList.add("show");
-    setTimeout(() => el.classList.remove("show"), 3000);
-}
-
-let catalogo = [];
-let historico = [];
-let vendas = [];
-
-// Navegação de abas
-document.querySelectorAll("[data-page]").forEach(btn => {
-    btn.addEventListener("click", () => {
-        const page = btn.dataset.page;
-        document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-        document.querySelectorAll("[data-page]").forEach(b => b.classList.remove("active"));
-        $("page-" + page).classList.add("active");
-        btn.classList.add("active");
-    });
-});
-
-// Tema
-$("btnTheme").addEventListener("click", () => {
-    const isLight = document.documentElement.getAttribute("data-theme") === "light";
-    document.documentElement.setAttribute("data-theme", isLight ? "dark" : "light");
-    $("btnTheme").textContent = isLight ? "🌙 Tema" : "☀️ Tema";
-});
-
-// Parsers de Peso e Tempo Robustos
-function parseTime(val){
-    if(!val) return 0;
-    let s = String(val).trim().toLowerCase();
-    let mMatch = s.match(/(\d+(?:\.\d+)?)\s*h/);
-    let h = mMatch ? Number(mMatch[1]) : 0;
-    let minMatch = s.match(/(\d+(?:\.\d+)?)\s*m/);
-    let m = minMatch ? Number(minMatch[1]) : 0;
-    if(h > 0 || m > 0) return h + m / 60;
-    if(s.includes(":")){
-        let p = s.split(":").map(Number);
-        return (p[0] || 0) + (p[1] || 0) / 60;
-    }
-    return Number(s) || 0;
-}
-
-function extractWeight(text){
-    if(!text) return null;
-    const match = text.match(/(?:filament_weight|total_filament_weight|filament used \[g\]|weight)\s*[:=]\s*([0-9]+(?:[.,][0-9]+)?)/i);
-    return match ? parseFloat(match[1].replace(",", ".")) : null;
-}
-
-function extractTime(text){
-    if(!text) return null;
-    const match = text.match(/(?:total estimated time|estimated printing time|print_time|TIME)\s*[:=]\s*([^\r\n]+)/i);
-    return match ? parseTime(match[1]) : null;
-}
-
-// Leitor de arquivos 3MF e G-code
-async function analyzeFile(file){
-    if(!file) return;
-    const ext = file.name.split(".").pop().toLowerCase();
-    $("analiseStatus").textContent = "⏳ Analisando arquivo...";
-    
-    try{
-        let text = "";
-        if(ext === "gcode" || ext === "gc"){
-            text = await file.text();
-        } else if(ext === "3mf"){
-            const zip = await JSZip.loadAsync(file);
-            for(const [name, entry] of Object.entries(zip.files)){
-                if(!entry.dir && /\.(config|json|xml|txt|gcode)$/i.test(name)){
-                    text += "\n" + await entry.async("text");
-                }
-            }
-        }
-
-        const weight = extractWeight(text);
-        const hours = extractTime(text);
-
-        if(weight) $("pesoPeca").value = weight.toFixed(2);
-        if(hours){
-            $("horasPeca").value = hours.toFixed(2);
-            $("tempoManual").value = Math.floor(hours) + "h " + Math.round((hours % 1) * 60) + "m";
-        }
-
-        $("analiseStatus").textContent = "✅ Análise concluída!";
-        calc();
-        toast("Arquivo processado com sucesso!");
-    } catch(err){
-        $("analiseStatus").textContent = "❌ Erro ao ler arquivo.";
-        toast("Erro ao processar arquivo.");
-    }
-}
-
-const dropzone = $("dropzone");
-const fileInput = $("arquivoProjeto");
-dropzone.addEventListener("click", () => fileInput.click());
-fileInput.addEventListener("change", e => analyzeFile(e.target.files[0]));
-
-// Motor de Cálculo
-function calc(){
-    const peso = Number($("pesoPeca").value) || 0;
-    const precoRolo = Number($("precoRolo").value) || 0;
-    const pesoRolo = Number($("pesoRolo").value) || 1000;
-    const hours = parseTime($("tempoManual").value) || Number($("horasPeca").value) || 0;
-    const custoHora = Number($("custoHora").value) || 0;
-    const margem = Number($("margem").value) || 60;
-    const failureRate = Number($("taxaFalha").value) || 5;
-
-    const material = peso * (precoRolo / pesoRolo);
-    const machine = hours * custoHora;
-    const base = material + machine;
-    const total = base * (1 + failureRate / 100);
-
-    const minimum = total * 1.20;
-    const ideal = total * (1 + margem / 100);
-    const premium = total * 1.80;
-
-    $("custoMaterial").textContent = money(material);
-    $("custoMaquinaOut").textContent = money(machine);
-    $("custoTotal").textContent = money(total);
-
-    $("precoMinimo").textContent = money(minimum);
-    $("lucroMinimo").textContent = money(minimum - total);
-
-    $("precoIdeal").textContent = money(ideal);
-    $("lucroIdeal").textContent = money(ideal - total);
-
-    $("precoPremium").textContent = money(premium);
-    $("lucroPremium").textContent = money(premium - total);
-}
-
-["pesoPeca", "precoRolo", "pesoRolo", "tempoManual", "custoHora", "margem", "taxaFalha"].forEach(id => {
-    $(id).addEventListener("input", calc);
-});
-
-function salvarProduto(){
-    const name = $("nomeProduto").value.trim() || "Produto sem nome";
-    catalogo.push({ name, price: $("precoIdeal").textContent });
-    toast("Produto salvo no catálogo!");
-}
-
-function registrarHistorico(){
-    historico.push({ date: new Date().toLocaleDateString(), name: $("nomeProduto").value || "Cálculo" });
-    toast("Cálculo registrado no histórico!");
-}
-
-function limparCalculadora(){
-    $("nomeProduto").value = "";
-    $("codigoProduto").value = "";
-    $("pesoPeca").value = "0";
-    $("tempoManual").value = "";
-    $("horasPeca").value = "0";
-    calc();
-    toast("Calculadora limpa!");
-}
-
-calc();
+function onCalcInput(){calc();saveDraft();updateAssistant()}
+["pesoPeca","precoRolo","pesoRolo","tempoManual","potenciaWatts","tarifaLuz","custoHora","margem","taxaFalha","custosExtras","embalagem","nomeProduto","codigoProduto","categoriaProduto","vintedLink","vintedData","fileDownloadLink","observacoes"].forEach(id=>{const e=$(id);e&&e.addEventListener("input",onCalcInput)});
+function saveDraft(){const d={};["nomeProduto","codigoProduto","categoriaProduto","pesoPeca","tempoManual","precoRolo","pesoRolo","potenciaWatts","tarifaLuz","custoHora","margem","taxaFalha","custosExtras","embalagem","vintedLink","vintedData","fileDownloadLink","observacoes"].forEach(id=>d[id]=$(id).value);try{localStorage.setItem(KEY.draft,JSON.stringify(d))}catch{}}
+function loadDraft(){try{const d=JSON.parse(localStorage.getItem(KEY.draft)||"{}");Object.entries(d).forEach(([k,v])=>$(k)&&($(k).value=v));calc()}catch{}}
+function getLocal(key,def=[]){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(def))}catch{return def}}
+function setLocal(key,val){try{localStorage.setItem(key,JSON.stringify(val))}catch{toast("Não foi possível salvar localmente.")}}
+function initFilaments(){filamentos=getLocal(KEY.filaments,[{id:uid(),name:"PLA",price:12.41,weight:1000}]);const s=$("filamentoPreset");s.innerHTML='<option value="">Selecione...</option>'+filamentos.map(f=>`<option value="${esc(f.id)}">${esc(f.name)} — £${Number(f.price).toFixed(2)}/kg</option>`).join("")}
+function aplicarFilamentoPreset(){const f=filamentos.find(x=>x.id===$("filamentoPreset").value);if(!f)return;$("precoRolo").value=f.price;$("pesoRolo").value=f.weight;calc();saveDraft()}
+function salvarNovoFilamento(){const name=prompt("Nome do filamento:","PLA");if(!name)return;const f={id:uid(),name:name.trim(),price:+$("precoRolo").value||0,weight:+$("pesoRolo").value||1000};filamentos.push(f);setLocal(KEY.filaments,filamentos);initFilaments();$("filamentoPreset").value=f.id;toast("Filamento salvo.")}
+function openPage(page){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));$("page-"+page)?.classList.add("active");document.querySelectorAll("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));if(page==="catalogo")renderCatalogo();if(page==="vendas")renderVendas();if(page==="vinted")renderVinted();if(page==="historico")renderHistorico()}
+document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",()=>openPage(b.dataset.page)));
+function initTheme(){const t=localStorage.getItem(KEY.theme)||"dark";document.documentElement.toggleAttribute("data-theme",false);if(t==="light")document.documentElement.setAttribute("data-theme","light");$("btnTheme").textContent=t==="light"?"☀️ Tema":"🌙 Tema"}function toggleTheme(){const light=document.documentElement.getAttribute("data-theme")==="light";if(light){document.documentElement.removeAttribute("data-theme");localStorage.setItem(KEY.theme,"dark");$("btnTheme").textContent="🌙 Tema"}else{document.documentElement.setAttribute("data-theme","light");localStorage.setItem(KEY.theme,"light");$("btnTheme").textContent="☀️ Tema"}}
+$("btnTheme").addEventListener("click",toggleTheme);
+const DB="BambuCalc3D_Files",STORE="files";function idb(){if(dbPromise)return dbPromise;dbPromise=new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>r.result.createObjectStore(STORE,{keyPath:"id"});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});return dbPromise}async function filePut(o){const db=await idb();return new Promise((res,rej)=>{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).put(o);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}async function fileGet(id){if(!id)return null;const db=await idb();return new Promise((res,rej)=>{const r=db.transaction(STORE).objectStore(STORE).get(id);r.onsuccess=()=>res(r.result||null);r.onerror=()=>rej(r.error)})}async function fileDel(id){if(!id)return;const db=await idb();return new Promise((res,rej)=>{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).delete(id);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
+async function salvarProduto(){const v=calc();if(v.peso<=0&&v.hours<=0){toast("Informe peso ou tempo antes de salvar.");return}const id=editingProductId||uid();let fileId=null;if(currentFile){fileId=uid();await filePut({id:fileId,name:currentFile.name,type:currentFile.type||"application/octet-stream",blob:currentFile,size:currentFile.size});}else if(editingProductId){const old=catalogo.find(x=>x.id===editingProductId);fileId=old?.fileId||null}const item={id,name:$("nomeProduto").value.trim()||"Produto sem nome",code:$("codigoProduto").value.trim()||"-",category:$("categoriaProduto").value.trim()||"Sem categoria",weight:v.peso,hours:v.hours,ideal:v.ideal,min:v.minimum,premium:v.premium,cost:v.total,profit:v.profitIdeal,analysis:currentAnalysis,vintedLink:$("vintedLink").value.trim(),vintedData:$("vintedData").value,downloadLink:$("fileDownloadLink").value.trim(),observacoes:$("observacoes").value.trim(),fileId,createdAt:editingProductId?(catalogo.find(x=>x.id===editingProductId)?.createdAt||new Date().toISOString()):new Date().toISOString(),updatedAt:new Date().toISOString()};catalogo=editingProductId?catalogo.map(x=>x.id===id?item:x):[item,...catalogo];setLocal("bambu_catalog",catalogo);toast(editingProductId?"Produto atualizado.":"Produto salvo no catálogo.");editingProductId=null;renderCatalogo();setAssistantStep(4);updateAssistant();}
+function loadCatalog(){catalogo=getLocal("bambu_catalog",[])}
+async function renderCatalogo(){loadCatalog();const search=$("catalogSearch").value.toLowerCase(),cat=$("catalogCategory").value;const cats=[...new Set(catalogo.map(x=>x.category).filter(Boolean))];$("catalogCategory").innerHTML='<option value="">Todas as categorias</option>'+cats.map(c=>`<option ${c===cat?"selected":""}>${esc(c)}</option>`).join("");const list=catalogo.filter(x=>(!search||`${x.name} ${x.code}`.toLowerCase().includes(search))&&(!cat||x.category===cat));$("catalogCount").textContent=`${catalogo.length} produto${catalogo.length===1?"":"s"}`;const grid=$("catalogGrid");if(!list.length){grid.innerHTML='<div class="empty">Nenhum produto encontrado.</div>';return}grid.innerHTML="";for(const p of list){const card=document.createElement("article");card.className="product-card";let thumb="<div class='no-thumb'>📦 Sem prévia</div>";if(p.fileId){const f=await fileGet(p.fileId);if(f&&f.blob&&f.type.startsWith("image/")){thumb=`<img src="${URL.createObjectURL(f.blob)}" alt="">`}}card.innerHTML=`<div class="product-thumb">${thumb}</div><div class="product-body"><h3>${esc(p.name)}</h3><div class="product-code">${esc(p.code)} · ${esc(p.category)}</div><div class="product-info"><div><small>Peso</small><strong>${Number(p.weight||0).toFixed(2)} g</strong></div><div><small>Tempo</small><strong>${formatTime(p.hours)}</strong></div><div><small>Custo</small><strong>${money(p.cost)}</strong></div><div><small>Lucro ideal</small><strong>${money(p.profit)}</strong></div></div><div class="product-price">${money(p.ideal)}</div><div class="product-actions"><button class="btn btn-small btn-secondary" onclick="editarProduto('${p.id}')">Editar</button><button class="btn btn-small btn-dark" onclick="baixarArquivo('${p.id}')">Arquivo</button><button class="btn btn-small btn-danger" onclick="excluirProduto('${p.id}')">Excluir</button></div></div>`;grid.appendChild(card)}}
+async function editarProduto(id){const p=catalogo.find(x=>x.id===id);if(!p)return;editingProductId=id;Object.entries({nomeProduto:p.name,codigoProduto:p.code,categoriaProduto:p.category,pesoPeca:p.weight,tempoManual:formatTime(p.hours),horasPeca:p.hours,vintedLink:p.vintedLink,vintedData:p.vintedData,fileDownloadLink:p.downloadLink,observacoes:p.observacoes}).forEach(([k,v])=>$(k).value=v??"");currentAnalysis=p.analysis||null;currentFile=null;openPage("calc");calc();toast("Produto carregado para edição.")}
+async function baixarArquivo(id){const p=catalogo.find(x=>x.id===id);if(!p?.fileId){toast("Este produto não possui arquivo local.");return}const f=await fileGet(p.fileId);if(!f){toast("Arquivo não encontrado.");return}downloadBlob(f.blob,f.name)}
+async function excluirProduto(id){if(!confirm("Excluir este produto?"))return;const p=catalogo.find(x=>x.id===id);catalogo=catalogo.filter(x=>x.id!==id);setLocal("bambu_catalog",catalogo);if(p?.fileId)await fileDel(p.fileId);renderCatalogo();toast("Produto excluído.")}
+function novoProdutoRapido(){limparCalculadora();openPage("calc");document.getElementById("nomeProduto").focus();}
+function focarNovoPedido(){openPage("vendas");setTimeout(()=>document.getElementById("pedidoCliente")?.focus(),80);}
+function alterarStatusVenda(id){vendas=getLocal(KEY.sales,[]);const o=vendas.find(x=>x.id===id);if(!o)return;const seq=["pendente","pago","producao","enviado","concluido"];let i=seq.indexOf(o.status);o.status=seq[(i+1)%seq.length];setLocal(KEY.sales,vendas);renderVendas();toast("Status atualizado: "+o.status)}
+function registrarHistorico(){const v=calc();const item={id:uid(),date:new Date().toISOString(),name:$("nomeProduto").value.trim()||"Sem nome",weight:v.peso,hours:v.hours,cost:v.total,price:v.ideal,profit:v.profitIdeal};historico=[item,...historico];setLocal(KEY.history,historico);toast("Cálculo registrado.");}
+function renderHistorico(){historico=getLocal(KEY.history,[]);const el=$("historicoLista");if(!historico.length){el.innerHTML='<div class="empty">Nenhum cálculo registrado.</div>';return}el.innerHTML=historico.map(h=>`<div class="list-item"><div class="list-item-header"><div class="list-item-title">${esc(h.name)}</div><strong>${money(h.price)}</strong></div><div class="list-item-meta">${new Date(h.date).toLocaleString("pt-BR")} · ${Number(h.weight).toFixed(2)} g · ${formatTime(h.hours)} · Custo ${money(h.cost)} · Lucro ${money(h.profit)}</div></div>`).join("")}
+function limparHistorico(){if(!confirm("Limpar histórico?"))return;historico=[];setLocal(KEY.history,historico);renderHistorico()}
+function exportarHistorico(){historico=getLocal(KEY.history,[]);const rows=[["Data","Produto","Peso(g)","Tempo(h)","Custo","Preço","Lucro"],...historico.map(x=>[x.date,x.name,x.weight,x.hours,x.cost,x.price,x.profit])];downloadText(rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\n"),"bambucalc_historico.csv","text/csv;charset=utf-8")}
+function exportarOrcamento(){const v=calc(),name=$("nomeProduto").value.trim()||"Produto",lines=["ORÇAMENTO DE IMPRESSÃO 3D","================================",`Produto: ${name}`,`Peso: ${v.peso.toFixed(2)} g`,`Tempo: ${formatTime(v.hours)}`,`Material: ${money(v.custoMaterial)}`,`Energia: ${money(v.custoEnergia)}`,`Máquina: ${money(v.custoMaquina)}`,`Extras/embalagem: ${money(v.custosExtras)}`,`Falhas: ${money(v.custoFalha)}`,`Custo total: ${money(v.total)}`,"",`Preço mínimo: ${money(v.minimum)}`,`Preço ideal: ${money(v.ideal)}`,`Lucro ideal: ${money(v.profitIdeal)}`,`Preço premium: ${money(v.premium)}`,`Lucro premium: ${money(v.profitPremium)}`,"",`Observações: ${$("observacoes").value||"-"}`];downloadText(lines.join("\n"),`orcamento_${name.replace(/[^a-z0-9_-]+/gi,"_")}.txt`)}
+function limparCalculadora(){editingProductId=null;currentFile=null;currentAnalysis=null;["nomeProduto","codigoProduto","categoriaProduto","tempoManual","vintedLink","vintedData","fileDownloadLink","observacoes"].forEach(id=>$(id).value="");$("pesoPeca").value=0;$("horasPeca").value=0;$("arquivoProjeto").value="";$("arquivoTipoBadge").textContent="Aguardando arquivo";$("analiseStatus").textContent="Nenhum arquivo analisado.";$("analiseGrid").innerHTML="";$("analysisSource").textContent="";calc();toast("Calculadora limpa.")}
+function fillProductsSelect(){loadCatalog();const s=$("vendaProduto"),old=s.value;s.innerHTML='<option value="">Selecione...</option>'+catalogo.map(p=>`<option value="${esc(p.id)}">${esc(p.name)} — ${money(p.ideal)}</option>`).join("");if(old)s.value=old}
+function preencherPrecoVenda(){const p=catalogo.find(x=>x.id===$("vendaProduto").value);if(p)$("vendaPreco").value=Number(p.ideal).toFixed(2)}
+function addOrderItem(p,q,price){pedidoItens.push({id:uid(),productId:p.id,name:p.name,qty:q,price:price,cost:p.cost||0});renderPedidoEditor()}
+function adicionarItemPedido(){const p=catalogo.find(x=>x.id===$("vendaProduto").value),q=Math.max(1,+$("vendaQtd").value||1),price=Math.max(0,+$("vendaPreco").value||0);if(!p){toast("Selecione um produto.");return}addOrderItem(p,q,price);$("vendaQtd").value=1}
+function renderPedidoEditor(){const el=$("pedidoItens");el.innerHTML=pedidoItens.length?pedidoItens.map((x,i)=>`<div class="order-item"><strong>${esc(x.name)}</strong><span>${x.qty}x</span><span>${money(x.price)}</span><strong>${money(x.qty*x.price)}</strong><button class="btn btn-small btn-danger" onclick="pedidoItens.splice(${i},1);renderPedidoEditor()">×</button></div>`).join(""):'<div class="empty">Nenhum item no pedido.</div>';const sales=pedidoItens.reduce((a,x)=>a+x.qty*x.price,0),cost=pedidoItens.reduce((a,x)=>a+x.qty*x.cost,0),frete=+$("pedidoFrete").value||0,cfrete=+$("pedidoCustoFrete").value||0,desc=+$("pedidoDesconto").value||0,tax=+$("pedidoTaxas").value||0,emb=+$("pedidoEmbalagem").value||0,revenue=sales+frete-desc,totalCost=cost+cfrete+tax+emb,profit=revenue-totalCost;$("pedidoResumo").innerHTML=`<div class="order-summary-row"><span>Itens</span><strong>${money(sales)}</strong></div><div class="order-summary-row"><span>Frete cobrado</span><strong>${money(frete)}</strong></div><div class="order-summary-row"><span>Desconto</span><strong>- ${money(desc)}</strong></div><div class="order-summary-row"><span>Custo total</span><strong>${money(totalCost)}</strong></div><div class="order-summary-row total"><span>Faturamento</span><strong>${money(revenue)}</strong></div><div class="order-summary-row profit"><span>Lucro</span><strong>${money(profit)}</strong></div>`;return{sales,cost,frete,cfrete,desc,tax,emb,revenue,totalCost,profit}}
+function limparPedidoEditor(){pedidoItens=[];["pedidoCliente","vendaPreco"].forEach(id=>$(id).value="");$("vendaQtd").value=1;$("pedidoFrete").value=0;$("pedidoCustoFrete").value=0;$("pedidoDesconto").value=0;$("pedidoTaxas").value=0;$("pedidoEmbalagem").value=0;$("pedidoData").value=today();renderPedidoEditor()}
+function salvarPedido(){if(!pedidoItens.length){toast("Adicione pelo menos um produto.");return}const r=renderPedidoEditor(),o={id:uid(),client:$("pedidoCliente").value.trim()||"Cliente",channel:$("pedidoCanal").value,date:$("pedidoData").value||today(),status:$("pedidoStatus").value,items:pedidoItens.map(x=>({...x})),...r};vendas=[o,...vendas];setLocal(KEY.sales,vendas);toast("Pedido salvo.");limparPedidoEditor();renderVendas()}
+function renderVendas(){vendas=getLocal(KEY.sales,[]);fillProductsSelect();const itens=vendas.reduce((a,o)=>a+o.items.reduce((b,x)=>b+x.qty,0),0),fat=vendas.filter(o=>o.status!=="cancelado").reduce((a,o)=>a+o.revenue,0),luc=vendas.filter(o=>o.status!=="cancelado").reduce((a,o)=>a+o.profit,0);$("metricPedidos").textContent=vendas.length;$("metricVendas").textContent=itens;$("metricFaturamento").textContent=money(fat);$("metricLucro").textContent=money(luc);const q=($("vendaBusca")?.value||"").toLowerCase(),st=$("vendaFiltroStatus")?.value||"",lista=vendas.filter(o=>(!q||(`${o.client} ${o.channel}`.toLowerCase().includes(q)))&&(!st||o.status===st));const el=$("vendasLista");if(!lista.length){el.innerHTML='<div class="empty">Nenhum pedido encontrado.</div>';return}el.innerHTML=lista.map(o=>`<div class="list-item"><div class="list-item-header"><div><div class="list-item-title">${esc(o.client)} · ${o.items.length} item(s)</div><div class="list-item-meta">${esc(o.channel)} · ${esc(o.date)}</div></div><span class="status status-${esc(o.status)}">${esc(o.status)}</span></div><div class="list-item-meta" style="margin-top:8px">${o.items.map(x=>esc(x.name)+" × "+x.qty).join(" · ")}</div><div class="list-item-meta">Faturamento: <strong>${money(o.revenue)}</strong> · Lucro: <strong>${money(o.profit)}</strong></div><div class="actions" style="margin-top:10px"><button class="btn btn-small btn-secondary" onclick="alterarStatusVenda('${o.id}')">↻ Próximo status</button><button class="btn btn-small btn-danger" onclick="excluirVenda('${o.id}')">Excluir</button></div></div>`).join("")}
+function excluirVenda(id){if(!confirm("Excluir pedido?"))return;vendas=vendas.filter(x=>x.id!==id);setLocal(KEY.sales,vendas);renderVendas()}
+function renderVinted(){loadCatalog();const el=$("vintedLista"),items=catalogo.filter(p=>safeUrl(p.vintedLink));if(!items.length){el.innerHTML='<div class="empty">Nenhum produto com link da Vinted.</div>';return}el.innerHTML=items.map(p=>`<div class="list-item"><div class="list-item-header"><div><div class="list-item-title">${esc(p.name)}</div><div class="list-item-meta">${esc(p.code)} · ${esc(p.category)}</div></div><a class="btn btn-small btn-secondary" href="${esc(safeUrl(p.vintedLink))}" target="_blank" rel="noopener">Abrir anúncio</a></div><div class="list-item-meta">Preço sugerido: ${money(p.ideal)} · Data: ${esc(p.vintedData||"-")}</div></div>`).join("")}
+const scripts={saudacao:["Olá! 👋 Obrigado pelo seu contacto. Como posso ajudar?","Hello! 👋 Thank you for your message. How can I help you?"],pedido:["Olá! Seu pedido foi recebido e já está registrado. Vou mantê-lo atualizado.","Hello! Your order has been received and registered. I will keep you updated."],producao:["Olá! 🖨️ Seu pedido está em produção. Avisarei assim que estiver pronto.","Hello! 🖨️ Your order is now in production. I will let you know when it is ready."],envio:["Olá! 🚚 Seu pedido foi enviado. Obrigado pela compra!","Hello! 🚚 Your order has been shipped. Thank you for your purchase!"],obrigado:["Muito obrigado pela compra! ❤️ Espero que goste do seu produto.","Thank you very much for your purchase! ❤️ I hope you enjoy your product."]};function selecionarScript(k){$("scriptPT").value=scripts[k][0];$("scriptEN").value=scripts[k][1]}async function copiarScript(){const text=$("scriptEN").value||$("scriptPT").value;if(!text)return toast("Selecione uma mensagem.");try{await navigator.clipboard.writeText(text);toast("Mensagem copiada.")}catch{toast("Não foi possível copiar automaticamente.")}}function abrirWhatsAppScript(){const text=$("scriptEN").value||$("scriptPT").value;if(!text)return;window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank","noopener")}
+function exportarBackup(){const data={version:1,exportedAt:new Date().toISOString(),catalogo,historico:getLocal(KEY.history,[]),vendas:getLocal(KEY.sales,[]),filamentos:getLocal(KEY.filaments,[]),draft:getLocal(KEY.draft,{})};downloadText(JSON.stringify(data,null,2),`bambucalc_backup_${today()}.json`,"application/json;charset=utf-8")}
+function importarBackup(){const i=document.createElement("input");i.type="file";i.accept=".json,application/json";i.onchange=async()=>{const f=i.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!Array.isArray(d.catalogo))throw new Error("Backup inválido");catalogo=d.catalogo;historico=d.historico||[];vendas=d.vendas||[];filamentos=d.filamentos||filamentos;setLocal("bambu_catalog",catalogo);setLocal(KEY.history,historico);setLocal(KEY.sales,vendas);setLocal(KEY.filaments,filamentos);initFilaments();renderCatalogo();toast("Backup importado.")}catch(e){console.error(e);toast("Backup inválido ou corrompido.")}};i.click()}
+document.addEventListener("DOMContentLoaded",()=>{initTheme();initFilaments();loadDraft();historico=getLocal(KEY.history,[]);vendas=getLocal(KEY.sales,[]);$("pedidoData").value=today();renderPedidoEditor();document.querySelectorAll("details.advanced-card").forEach(d=>d.addEventListener("toggle",()=>{calc();updateAssistant()}));calc();updateAssistant()});
 </script>
-
 </body>
 </html>
