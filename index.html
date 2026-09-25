@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="description" content="BambuCalc 3D PRO — calculadora, catálogo, vendas, Vinted e atendimento">
+<meta name="description" content="BambuCalc 3D PRO — calculadora, catálogo, vendas e atendimento">
 <meta name="theme-color" content="#22c55e">
 <title>BambuCalc 3D PRO — uai 3D printing</title>
 <style>
@@ -19,8 +19,8 @@
     --accent2: #0ea5e9;
     --warning: #f59e0b;
     --danger: #ef4444;
-    --shadow: 0 15px 40px rgba(0,0,0,.22);
-    --radius: 16px;
+    --shadow: 0 10px 30px rgba(0,0,0,.2);
+    --radius: 12px;
 }
 
 :root[data-theme="light"] {
@@ -31,7 +31,7 @@
     --text: #0f172a;
     --muted: #64748b;
     --border: #dbe3ec;
-    --shadow: 0 12px 30px rgba(15,23,42,.08);
+    --shadow: 0 8px 20px rgba(15,23,42,.06);
 }
 
 * { box-sizing: border-box; }
@@ -44,155 +44,153 @@ a { color: var(--accent2); text-decoration: none; }
 .app { display: flex; min-height: 100vh; }
 
 .sidebar {
-    width: 250px; background: var(--panel); border-right: 1px solid var(--border);
-    padding: 20px 14px; position: fixed; left: 0; top: 0; bottom: 0; z-index: 20;
+    width: 240px; background: var(--panel); border-right: 1px solid var(--border);
+    padding: 16px 12px; position: fixed; left: 0; top: 0; bottom: 0; z-index: 20;
 }
-.brand { padding: 8px 10px 20px; }
-.brand h1 { font-size: 21px; margin: 0; font-weight: 800; }
-.brand p { margin: 6px 0 0; color: var(--muted); font-size: 12px; }
+.brand { padding: 8px 8px 16px; }
+.brand h1 { font-size: 19px; margin: 0; font-weight: 800; }
+.brand p { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
 
-.nav { display: flex; flex-direction: column; gap: 7px; }
+.nav { display: flex; flex-direction: column; gap: 6px; }
 .nav button {
     width: 100%; border: 0; background: transparent; color: var(--muted);
-    padding: 12px 14px; border-radius: 12px; text-align: left; cursor: pointer;
-    transition: .2s;
+    padding: 10px 12px; border-radius: 10px; text-align: left; cursor: pointer;
+    transition: .2s; font-size: 14px;
 }
 .nav button:hover { background: var(--card); color: var(--text); }
-.nav button.active { background: rgba(34,197,94,.14); color: var(--accent); font-weight: 700; }
+.nav button.active { background: rgba(34,197,94,.12); color: var(--accent); font-weight: 700; }
 
-.sidebar-footer { position: absolute; bottom: 18px; left: 18px; right: 18px; }
-.theme-btn { width: 100%; padding: 10px; border: 1px solid var(--border); background: var(--card); color: var(--text); border-radius: 10px; cursor: pointer; }
+.sidebar-footer { position: absolute; bottom: 16px; left: 12px; right: 12px; }
+.theme-btn { width: 100%; padding: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text); border-radius: 8px; cursor: pointer; font-size: 13px; }
 
-.main { margin-left: 250px; width: calc(100% - 250px); padding: 26px; }
+.main { margin-left: 240px; width: calc(100% - 240px); padding: 24px; }
 .page { display: none; }
 .page.active { display: block; }
 
-.topbar { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 24px; }
-.topbar h2 { margin: 0; font-size: 26px; }
-.topbar p { color: var(--muted); margin: 6px 0 0; }
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 20px; }
+.topbar h2 { margin: 0; font-size: 22px; }
+.topbar p { color: var(--muted); margin: 4px 0 0; font-size: 13px; }
 
-.connection { border: 1px solid var(--border); padding: 8px 12px; border-radius: 999px; font-size: 12px; color: var(--muted); white-space: nowrap; }
-.connection.ok { color: var(--accent); border-color: rgba(34,197,94,.35); }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); margin-bottom: 16px; }
+.card h3 { margin: 0 0 4px; font-size: 16px; }
+.card-subtitle { color: var(--muted); font-size: 12px; margin-bottom: 14px; }
 
-.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); margin-bottom: 18px; }
-.card h3 { margin: 0 0 5px; }
-.card-subtitle { color: var(--muted); font-size: 13px; margin-bottom: 18px; }
-
-.grid { display: grid; gap: 16px; }
+.grid { display: grid; gap: 12px; }
 .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
-.form-group { display: flex; flex-direction: column; gap: 7px; }
-.form-group label { font-size: 13px; color: var(--muted); font-weight: 600; }
-input, select, textarea { width: 100%; border: 1px solid var(--border); background: var(--card2); color: var(--text); border-radius: 10px; padding: 11px 12px; outline: none; }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-group label { font-size: 12px; color: var(--muted); font-weight: 600; }
+input, select, textarea { width: 100%; border: 1px solid var(--border); background: var(--card2); color: var(--text); border-radius: 8px; padding: 9px 11px; outline: none; font-size: 13px; }
 input[type="number"] { font-variant-numeric: tabular-nums; text-align: right; }
-input[readonly] { opacity: .78; cursor: not-allowed; }
+input[readonly] { opacity: .75; cursor: not-allowed; }
 input:focus, select:focus, textarea:focus { border-color: var(--accent2); }
-textarea { resize: vertical; min-height: 90px; }
+textarea { resize: vertical; min-height: 70px; }
 
-.actions { display: flex; gap: 10px; flex-wrap: wrap; }
-.btn { border: 0; border-radius: 10px; padding: 11px 16px; font-weight: 700; transition: .2s; cursor: pointer; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn { border: 0; border-radius: 8px; padding: 9px 14px; font-weight: 700; transition: .2s; cursor: pointer; font-size: 13px; }
 .btn:hover { transform: translateY(-1px); }
 .btn-primary { background: var(--accent); color: #052e16; }
 .btn-secondary { background: var(--accent2); color: #fff; }
 .btn-dark { background: var(--card2); border: 1px solid var(--border); color: var(--text); }
-.btn-danger { background: rgba(239,68,68,.12); color: #f87171; border: 1px solid rgba(239,68,68,.25); }
-.btn-warning { background: rgba(245,158,11,.12); color: #fbbf24; border: 1px solid rgba(245,158,11,.25); }
-.btn-small { padding: 7px 10px; font-size: 12px; }
+.btn-danger { background: rgba(239,68,68,.1); color: #f87171; border: 1px solid rgba(239,68,68,.2); }
+.btn-warning { background: rgba(245,158,11,.1); color: #fbbf24; border: 1px solid rgba(245,158,11,.2); }
+.btn-small { padding: 6px 10px; font-size: 11px; }
 
-.badge { display: inline-block; padding: 7px 10px; background: rgba(34,197,94,.12); color: var(--accent); border-radius: 999px; font-size: 12px; font-weight: 700; }
+.badge { display: inline-block; padding: 5px 8px; background: rgba(34,197,94,.1); color: var(--accent); border-radius: 999px; font-size: 11px; font-weight: 700; }
 
-.dropzone { border: 2px dashed var(--border); background: var(--card2); min-height: 170px; border-radius: 16px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 25px; transition: .2s; cursor: pointer; }
-.dropzone.dragover { border-color: var(--accent); background: rgba(34,197,94,.08); }
-.dropzone strong { display: block; font-size: 18px; margin-bottom: 8px; }
-.dropzone span { color: var(--muted); font-size: 13px; }
-.file-badge { display: inline-block; padding: 6px 10px; border-radius: 999px; background: rgba(14,165,233,.12); color: var(--accent2); font-size: 12px; margin-top: 10px; }
+.dropzone { border: 2px dashed var(--border); background: var(--card2); min-height: 130px; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 15px; transition: .2s; cursor: pointer; }
+.dropzone.dragover { border-color: var(--accent); background: rgba(34,197,94,.06); }
+.dropzone strong { display: block; font-size: 15px; margin-bottom: 4px; }
+.dropzone span { color: var(--muted); font-size: 12px; }
+.file-badge { display: inline-block; padding: 4px 8px; border-radius: 999px; background: rgba(14,165,233,.1); color: var(--accent2); font-size: 11px; margin-top: 6px; }
 
-.analysis-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
-.analysis-item { background: var(--card2); border: 1px solid var(--border); border-radius: 12px; padding: 13px; }
-.analysis-item .label { font-size: 11px; color: var(--muted); }
-.analysis-item .value { font-size: 16px; font-weight: 800; margin-top: 5px; }
-.analysis-source { margin-top: 12px; color: var(--muted); font-size: 12px; }
+.analysis-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+.analysis-item { background: var(--card2); border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
+.analysis-item .label { font-size: 10px; color: var(--muted); }
+.analysis-item .value { font-size: 14px; font-weight: 800; margin-top: 3px; }
+.analysis-source { margin-top: 10px; color: var(--muted); font-size: 11px; }
 
-.filament-bar { display: grid; grid-template-columns: 1fr 1fr 1fr auto; align-items: end; gap: 10px; }
+.filament-bar { display: grid; grid-template-columns: 1fr 1fr 1fr auto; align-items: end; gap: 8px; }
 
-.summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-.price-card { border: 1px solid var(--border); border-radius: 15px; padding: 18px; background: var(--card2); }
-.price-card.featured { border-color: rgba(34,197,94,.55); box-shadow: 0 0 0 1px rgba(34,197,94,.08); }
-.price-card h4 { margin: 0; font-size: 13px; color: var(--muted); }
-.price { font-size: 29px; font-weight: 900; margin: 8px 0; }
-.profit { color: var(--accent); font-weight: 800; font-size: 14px; }
-.margin { color: var(--muted); font-size: 12px; margin-top: 4px; }
+.summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.price-card { border: 1px solid var(--border); border-radius: 12px; padding: 14px; background: var(--card2); }
+.price-card.featured { border-color: rgba(34,197,94,.4); box-shadow: 0 0 0 1px rgba(34,197,94,.06); }
+.price-card h4 { margin: 0; font-size: 12px; color: var(--muted); }
+.price { font-size: 24px; font-weight: 900; margin: 6px 0; }
+.profit { color: var(--accent); font-weight: 800; font-size: 13px; }
+.margin { color: var(--muted); font-size: 11px; margin-top: 3px; }
 
-.cost-table { display: flex; flex-direction: column; gap: 10px; }
-.cost-row { display: flex; justify-content: space-between; gap: 20px; border-bottom: 1px solid var(--border); padding-bottom: 9px; }
+.cost-table { display: flex; flex-direction: column; gap: 8px; }
+.cost-row { display: flex; justify-content: space-between; gap: 15px; border-bottom: 1px solid var(--border); padding-bottom: 7px; font-size: 13px; }
 .cost-row:last-child { border-bottom: 0; }
 .cost-row span:first-child { color: var(--muted); }
-.total-row { font-size: 18px; color: var(--accent); }
+.total-row { font-size: 16px; color: var(--accent); }
 
-.toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; }
-.toolbar > * { flex: 1; min-width: 180px; }
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.toolbar > * { flex: 1; min-width: 150px; }
 
-.catalog-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-.product-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
-.product-thumb { height: 180px; background: var(--card2); display: flex; align-items: center; justify-content: center; }
-.no-thumb { color: var(--muted); font-size: 13px; }
-.product-body { padding: 16px; }
-.product-body h3 { margin: 0 0 5px; }
-.product-code { color: var(--muted); font-size: 12px; }
-.product-info { margin: 14px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.product-info div { background: var(--card2); border-radius: 9px; padding: 9px; }
+.catalog-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.product-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.product-thumb { height: 140px; background: var(--card2); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.product-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.no-thumb { color: var(--muted); font-size: 12px; }
+.product-body { padding: 12px; }
+.product-body h3 { margin: 0 0 3px; font-size: 14px; }
+.product-code { color: var(--muted); font-size: 11px; }
+.product-info { margin: 10px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.product-info div { background: var(--card2); border-radius: 8px; padding: 7px; }
 .product-info small { display: block; font-size: 10px; color: var(--muted); }
-.product-info strong { display: block; margin-top: 3px; }
-.product-price { color: var(--accent); font-size: 22px; font-weight: 900; }
-.product-actions { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 14px; }
+.product-info strong { display: block; margin-top: 2px; font-size: 12px; }
+.product-price { color: var(--accent); font-size: 18px; font-weight: 900; }
+.product-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
 
-.metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 18px; }
-.metric { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 17px; }
-.metric span { color: var(--muted); font-size: 12px; }
-.metric strong { display: block; font-size: 25px; margin-top: 7px; }
+.metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
+.metric { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+.metric span { color: var(--muted); font-size: 11px; }
+.metric strong { display: block; font-size: 20px; margin-top: 4px; }
 
-.order-items { display: flex; flex-direction: column; gap: 10px; }
-.order-item { display: grid; grid-template-columns: 2fr .7fr 1fr 1fr auto; gap: 8px; align-items: center; background: var(--card2); padding: 10px; border-radius: 10px; border: 1px solid var(--border); }
-.order-summary { margin-top: 15px; background: var(--card2); border-radius: 12px; padding: 15px; border: 1px solid var(--border); }
-.order-summary-row { display: flex; justify-content: space-between; padding: 5px 0; }
-.order-summary-row.total { border-top: 1px solid var(--border); margin-top: 7px; padding-top: 12px; font-size: 19px; font-weight: 900; }
+.order-items { display: flex; flex-direction: column; gap: 8px; }
+.order-item { display: grid; grid-template-columns: 2fr .7fr 1fr 1fr auto; gap: 6px; align-items: center; background: var(--card2); padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 13px; }
+.order-summary { margin-top: 12px; background: var(--card2); border-radius: 10px; padding: 12px; border: 1px solid var(--border); }
+.order-summary-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px; }
+.order-summary-row.total { border-top: 1px solid var(--border); margin-top: 6px; padding-top: 10px; font-size: 16px; font-weight: 900; }
 .order-summary-row.profit { color: var(--accent); }
 
-.list { display: flex; flex-direction: column; gap: 12px; }
-.list-item { background: var(--card2); border: 1px solid var(--border); border-radius: 12px; padding: 15px; }
-.list-item-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.list-item-title { font-weight: 800; }
-.list-item-meta { color: var(--muted); font-size: 12px; margin-top: 5px; }
+.list { display: flex; flex-direction: column; gap: 10px; }
+.list-item { background: var(--card2); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+.list-item-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.list-item-title { font-weight: 800; font-size: 14px; }
+.list-item-meta { color: var(--muted); font-size: 11px; margin-top: 4px; }
 
-.status { display: inline-block; border-radius: 999px; padding: 5px 9px; font-size: 11px; font-weight: 800; }
-.status-pendente { color: #fbbf24; background: rgba(245,158,11,.12); }
-.status-pago { color: #60a5fa; background: rgba(59,130,246,.12); }
-.status-producao { color: #c084fc; background: rgba(168,85,247,.12); }
-.status-enviado { color: #22d3ee; background: rgba(6,182,212,.12); }
-.status-concluido { color: #4ade80; background: rgba(34,197,94,.12); }
-.status-cancelado { color: #f87171; background: rgba(239,68,68,.12); }
+.status { display: inline-block; border-radius: 999px; padding: 4px 8px; font-size: 10px; font-weight: 800; }
+.status-pendente { color: #fbbf24; background: rgba(245,158,11,.1); }
+.status-pago { color: #60a5fa; background: rgba(59,130,246,.1); }
+.status-producao { color: #c084fc; background: rgba(168,85,247,.1); }
+.status-enviado { color: #22d3ee; background: rgba(6,182,212,.1); }
+.status-concluido { color: #4ade80; background: rgba(34,197,94,.1); }
+.status-cancelado { color: #f87171; background: rgba(239,68,68,.1); }
 
-.empty { text-align: center; color: var(--muted); padding: 30px; border: 1px dashed var(--border); border-radius: 12px; }
-.script-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; }
-.script-buttons button { border: 1px solid var(--border); background: var(--card2); color: var(--text); padding: 8px 12px; border-radius: 9px; cursor: pointer; }
+.empty { text-align: center; color: var(--muted); padding: 20px; border: 1px dashed var(--border); border-radius: 10px; font-size: 13px; }
+.script-buttons { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.script-buttons button { border: 1px solid var(--border); background: var(--card2); color: var(--text); padding: 7px 10px; border-radius: 8px; cursor: pointer; font-size: 12px; }
 
-.assistant-card { border-color: rgba(14,165,233,.28); background: linear-gradient(180deg, var(--card), rgba(14,165,233,.035)); }
-.assistant-head { display: flex; justify-content: space-between; gap: 15px; align-items: flex-start; }
-.assistant-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 4px 0 15px; }
-.assistant-step { display: flex; align-items: center; gap: 8px; padding: 9px 10px; border: 1px solid var(--border); border-radius: 10px; color: var(--muted); font-size: 12px; }
-.assistant-step b { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--card2); color: var(--muted); }
-.assistant-step.active { border-color: rgba(34,197,94,.4); color: var(--text); }
+.assistant-card { border-color: rgba(14,165,233,.25); background: linear-gradient(180deg, var(--card), rgba(14,165,233,.02)); }
+.assistant-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.assistant-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 4px 0 12px; }
+.assistant-step { display: flex; align-items: center; gap: 6px; padding: 7px 8px; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-size: 11px; }
+.assistant-step b { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--card2); color: var(--muted); font-size: 10px; }
+.assistant-step.active { border-color: rgba(34,197,94,.35); color: var(--text); }
 .assistant-step.active b { background: var(--accent); color: #052e16; }
-.assistant-step.done { border-color: rgba(34,197,94,.25); color: var(--accent); }
-.assistant-result { display: flex; flex-direction: column; gap: 5px; background: var(--card2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
-.assistant-result strong { font-size: 15px; }
-.assistant-result span { color: var(--muted); font-size: 13px; line-height: 1.5; }
-.assistant-actions { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 12px; }
+.assistant-step.done { border-color: rgba(34,197,94,.2); color: var(--accent); }
+.assistant-result { display: flex; flex-direction: column; gap: 4px; background: var(--card2); border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-size: 12px; }
+.assistant-result strong { font-size: 14px; }
+.assistant-result span { color: var(--muted); font-size: 12px; line-height: 1.4; }
+.assistant-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
 
 .mobile-nav { display: none; }
-.toast { position: fixed; right: 20px; bottom: 20px; background: #020617; color: #fff; padding: 13px 17px; border-radius: 11px; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transform: translateY(10px); transition: .25s; z-index: 100; max-width: 420px; }
+.toast { position: fixed; right: 16px; bottom: 16px; background: #020617; color: #fff; padding: 11px 15px; border-radius: 10px; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transform: translateY(10px); transition: .25s; z-index: 100; max-width: 380px; font-size: 13px; }
 .toast.show { opacity: 1; transform: translateY(0); }
 
 @media(max-width: 1100px) {
@@ -200,10 +198,10 @@ textarea { resize: vertical; min-height: 90px; }
 }
 @media(max-width: 850px) {
     .sidebar { display: none; }
-    .main { margin-left: 0; width: 100%; padding: 16px; padding-bottom: 90px; }
-    .mobile-nav { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; background: var(--panel); border-top: 1px solid var(--border); padding: 8px; gap: 5px; }
-    .mobile-nav button { flex: 1; border: 0; background: transparent; color: var(--muted); font-size: 10px; padding: 7px 2px; border-radius: 9px; cursor: pointer; }
-    .mobile-nav button.active { color: var(--accent); background: rgba(34,197,94,.1); }
+    .main { margin-left: 0; width: 100%; padding: 14px; padding-bottom: 80px; }
+    .mobile-nav { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; background: var(--panel); border-top: 1px solid var(--border); padding: 6px; gap: 4px; }
+    .mobile-nav button { flex: 1; border: 0; background: transparent; color: var(--muted); font-size: 9px; padding: 6px 2px; border-radius: 8px; cursor: pointer; text-align: center; }
+    .mobile-nav button.active { color: var(--accent); background: rgba(34,197,94,.08); }
     .grid-2, .grid-3, .grid-4, .summary-grid { grid-template-columns: 1fr; }
     .filament-bar { grid-template-columns: 1fr 1fr; }
     .filament-bar button { grid-column: 1 / -1; }
@@ -212,7 +210,7 @@ textarea { resize: vertical; min-height: 90px; }
     .catalog-grid, .analysis-grid { grid-template-columns: 1fr; }
     .metrics, .order-item { grid-template-columns: 1fr 1fr; }
     .topbar { align-items: flex-start; }
-    .topbar h2 { font-size: 21px; }
+    .topbar h2 { font-size: 19px; }
 }
 </style>
 </head>
@@ -229,46 +227,45 @@ textarea { resize: vertical; min-height: 90px; }
         <button type="button" data-page="historico">📊 Histórico</button>
     </nav>
     <div class="sidebar-footer">
-        <div style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:8px">Navegação ativa</div>
         <button type="button" class="theme-btn" id="btnTheme">🌙 Tema</button>
     </div>
 </aside>
 <main class="main">
 <section id="page-calc" class="page active">
-<div class="topbar"><div><h2>Calculadora PRO</h2><p>Envie o arquivo → confira o resultado → salve o produto ou registre a venda.</p></div><div id="firebaseStatus" class="connection ok">Modo local / IndexedDB</div></div>
-<div class="card"><h3>🚀 Análise automática</h3><div class="card-subtitle">Na maioria dos casos você só precisa enviar o 3MF ou G-code. Peso e tempo são preenchidos automaticamente.</div><div id="dropzone" class="dropzone"><div><strong>📁 Arraste seu arquivo aqui</strong><span>ou clique para selecionar</span><br><span>3MF, G-code ou STL</span><br><span id="arquivoTipoBadge" class="file-badge">Aguardando arquivo</span><input id="arquivoProjeto" type="file" accept=".3mf,.gcode,.gc,.gco,.stl" style="display:none"></div></div><div id="analiseStatus" style="margin-top:12px;color:var(--muted)">Nenhum arquivo analisado.</div><div id="analiseGrid" class="analysis-grid"></div><div id="analysisSource" class="analysis-source"></div></div>
+<div class="topbar"><div><h2>Calculadora PRO</h2><p>Envie o ficheiro → verifique o preço → guarde ou venda.</p></div><div id="firebaseStatus" class="connection ok">Modo Local</div></div>
+<div class="card"><h3>🚀 Análise Automática</h3><div class="card-subtitle">Arraste o seu 3MF ou G-code para preencher peso e tempo num instante.</div><div id="dropzone" class="dropzone"><div><strong>📁 Arraste o seu ficheiro aqui</strong><span>ou clique para selecionar (3MF, G-code, STL)</span><br><span id="arquivoTipoBadge" class="file-badge">Aguardando ficheiro</span><input id="arquivoProjeto" type="file" accept=".3mf,.gcode,.gc,.gco,.stl" style="display:none"></div></div><div id="analiseStatus" style="margin-top:10px;color:var(--muted);font-size:12px">Nenhum ficheiro analisado.</div><div id="analiseGrid" class="analysis-grid"></div><div id="analysisSource" class="analysis-source"></div></div>
 <div class="card assistant-card" id="assistantCard">
   <div class="assistant-head">
-    <div><h3>🤖 Modo Assistente</h3><div class="card-subtitle">O BambuCalc analisa o arquivo, preenche o que conseguir e calcula automaticamente.</div></div>
+    <div><h3>🤖 Assistente Inteligente</h3><div class="card-subtitle">Preenche e calcula automaticamente com base no ficheiro enviado.</div></div>
     <span class="badge" id="assistantModeBadge">Ativo</span>
   </div>
   <div class="assistant-steps" id="assistantSteps">
-    <div class="assistant-step active"><b>1</b><span>Envie o arquivo</span></div>
-    <div class="assistant-step"><b>2</b><span>Confira os dados</span></div>
-    <div class="assistant-step"><b>3</b><span>Veja o preço</span></div>
-    <div class="assistant-step"><b>4</b><span>Salve ou venda</span></div>
+    <div class="assistant-step active"><b>1</b><span>Ficheiro</span></div>
+    <div class="assistant-step"><b>2</b><span>Dados</span></div>
+    <div class="assistant-step"><b>3</b><span>Preço</span></div>
+    <div class="assistant-step"><b>4</b><span>Salvar</span></div>
   </div>
-  <div class="assistant-result" id="assistantResult"><strong>👋 Vamos começar</strong><span>Envie um 3MF ou G-code para o Assistente preencher peso, tempo e nome automaticamente.</span></div>
+  <div class="assistant-result" id="assistantResult"><strong>👋 Vamos começar</strong><span>Envie um 3MF ou G-code para preencher peso, tempo e nome.</span></div>
   <div class="assistant-actions"><button type="button" class="btn btn-primary" onclick="executarAssistente()">🤖 Calcular com Assistente</button></div>
 </div>
-<div class="card"><h3>🧵 Filamento</h3><div class="card-subtitle">Preço do rolo usado no cálculo.</div><div class="filament-bar"><div class="form-group"><label>Preset</label><select id="filamentoPreset" onchange="aplicarFilamentoPreset()"><option value="">Selecione...</option></select></div><div class="form-group"><label>Preço do rolo (£)</label><input id="precoRolo" type="number" min="0" step="0.01" value="12.41"></div><div class="form-group"><label>Peso do rolo (g)</label><input id="pesoRolo" type="number" min="1" step="1" value="1000"></div><button type="button" class="btn btn-secondary" onclick="salvarNovoFilamento()">+ Salvar</button></div></div>
-<div class="card"><h3>📦 Produto</h3><div class="card-subtitle">Os dados detectados podem ser ajustados manualmente.</div><div class="grid grid-3"><div class="form-group"><label>Nome</label><input id="nomeProduto" type="text" maxlength="120" placeholder="Ex.: Vaso espiral"></div><div class="form-group"><label>Código</label><input id="codigoProduto" type="text" maxlength="60" placeholder="Ex.: VAS-001"></div><div class="form-group"><label>Categoria</label><input id="categoriaProduto" type="text" maxlength="60" placeholder="Ex.: Decoração"></div></div><br><div class="grid grid-3"><div class="form-group"><label>Peso da peça (g)</label><input id="pesoPeca" type="number" min="0" step="0.01" value="0"></div><div class="form-group"><label>Tempo de impressão</label><input id="tempoManual" type="text" placeholder="Ex.: 3h18m ou 3:18"></div><div class="form-group"><label>Horas calculadas</label><input id="horasPeca" type="number" min="0" step="0.0001" readonly value="0"></div></div></div>
+<div class="card"><h3>🧵 Filamento</h3><div class="card-subtitle">Preço do rolo utilizado no cálculo.</div><div class="filament-bar"><div class="form-group"><label>Preset</label><select id="filamentoPreset" onchange="aplicarFilamentoPreset()"><option value="">Selecionar...</option></select></div><div class="form-group"><label>Preço rolo (£)</label><input id="precoRolo" type="number" min="0" step="0.01" value="12.41"></div><div class="form-group"><label>Peso rolo (g)</label><input id="pesoRolo" type="number" min="1" step="1" value="1000"></div><button type="button" class="btn btn-secondary" onclick="salvarNovoFilamento()">+ Guardar</button></div></div>
+<div class="card"><h3>📦 Produto</h3><div class="card-subtitle">Ajuste os dados se necessário.</div><div class="grid grid-3"><div class="form-group"><label>Nome</label><input id="nomeProduto" type="text" maxlength="120" placeholder="Ex.: Vaso espiral"></div><div class="form-group"><label>Código</label><input id="codigoProduto" type="text" maxlength="60" placeholder="Ex.: VAS-001"></div><div class="form-group"><label>Categoria</label><input id="categoriaProduto" type="text" maxlength="60" placeholder="Ex.: Decoração"></div></div><br><div class="grid grid-3"><div class="form-group"><label>Peso da peça (g)</label><input id="pesoPeca" type="number" min="0" step="0.01" value="0"></div><div class="form-group"><label>Tempo de impressão</label><input id="tempoManual" type="text" placeholder="Ex.: 3h18m ou 3:18"></div><div class="form-group"><label>Horas calculadas</label><input id="horasPeca" type="number" min="0" step="0.0001" readonly value="0"></div></div></div>
 <div class="card"><h3>⚙️ Custos</h3><div class="grid grid-4"><div class="form-group"><label>Potência (W)</label><input id="potenciaWatts" type="number" min="0" step="1" value="80"></div><div class="form-group"><label>Tarifa (£/kWh)</label><input id="tarifaLuz" type="number" min="0" step="0.01" value="0.25"></div><div class="form-group"><label>Custo máquina (£/h)</label><input id="custoHora" type="number" min="0" step="0.01" value="0.50"></div><div class="form-group"><label>Margem desejada (%)</label><input id="margem" type="number" min="0" step="1" value="60"></div><div class="form-group"><label>Reserva falhas (%)</label><input id="taxaFalha" type="number" min="0" step="0.5" value="5"></div><div class="form-group"><label>Custos extras (£)</label><input id="custosExtras" type="number" min="0" step="0.01" value="0"></div><div class="form-group"><label>Embalagem (£)</label><input id="embalagem" type="number" min="0" step="0.01" value="0"></div></div></div>
-<div class="card"><h3>🛍️ Venda / Vinted</h3><div class="grid grid-2"><div class="form-group"><label>Link Vinted</label><input id="vintedLink" type="url" placeholder="https://www.vinted.co.uk/..."></div><div class="form-group"><label>Data do anúncio</label><input id="vintedData" type="date"></div><div class="form-group"><label>Link externo do arquivo</label><input id="fileDownloadLink" type="url" placeholder="https://..."></div><div class="form-group"><label>Observações</label><textarea id="observacoes" maxlength="1000"></textarea></div></div></div>
-<div class="card"><h3>💷 Resultado da calculadora</h3><div class="card-subtitle">Lucro = preço de venda − custo total de produção.</div><div class="cost-table"><div class="cost-row"><span>Material</span><strong id="custoMaterial">£ 0.00</strong></div><div class="cost-row"><span>Energia</span><strong id="custoEnergiaOut">£ 0.00</strong></div><div class="cost-row"><span>Máquina</span><strong id="custoMaquinaOut">£ 0.00</strong></div><div class="cost-row"><span>Extras + embalagem</span><strong id="custoExtrasOut">£ 0.00</strong></div><div class="cost-row"><span>Reserva para falhas</span><strong id="custoFalhaOut">£ 0.00</strong></div><div class="cost-row total-row"><span>CUSTO TOTAL</span><strong id="custoTotal">£ 0.00</strong></div></div><br><div class="summary-grid"><div class="price-card"><h4>Preço mínimo</h4><div class="price" id="precoMinimo">£ 0.00</div><div class="profit">Lucro: <span id="lucroMinimo">£ 0.00</span></div><div class="margin">Margem: <span id="margemMinima">0%</span></div></div><div class="price-card featured"><h4>⭐ Preço ideal</h4><div class="price" id="precoIdeal">£ 0.00</div><div class="profit">Lucro: <span id="lucroIdeal">£ 0.00</span></div><div class="margin">Margem: <span id="margemIdeal">0%</span></div></div><div class="price-card"><h4>💎 Preço premium</h4><div class="price" id="precoPremium">£ 0.00</div><div class="profit">Lucro: <span id="lucroPremium">£ 0.00</span></div><div class="margin">Margem: <span id="margemPremium">0%</span></div></div></div></div>
-<div class="card"><div class="actions"><button type="button" class="btn btn-primary" onclick="salvarProduto()">💾 Salvar produto</button><button type="button" class="btn btn-secondary" onclick="registrarHistorico()">📊 Registrar cálculo</button><button type="button" class="btn btn-dark" onclick="exportarOrcamento()">📄 Exportar orçamento</button><button type="button" class="btn btn-warning" onclick="limparCalculadora()">🧹 Limpar</button></div></div>
+<div class="card"><h3>🛍️ Venda / Vinted</h3><div class="grid grid-2"><div class="form-group"><label>Link Vinted</label><input id="vintedLink" type="url" placeholder="https://www.vinted.co.uk/..."></div><div class="form-group"><label>Data do anúncio</label><input id="vintedData" type="date"></div><div class="form-group"><label>Link da imagem (Thumbnail)</label><input id="produtoImagem" type="url" placeholder="https://exemplo.com/foto.jpg"></div><div class="form-group"><label>Link externo do ficheiro</label><input id="fileDownloadLink" type="url" placeholder="https://..."></div><div class="form-group" style="grid-column:1/-1"><label>Observações</label><textarea id="observacoes" maxlength="1000"></textarea></div></div></div>
+<div class="card"><h3>💷 Resultados</h3><div class="cost-table"><div class="cost-row"><span>Material</span><strong id="custoMaterial">£ 0.00</strong></div><div class="cost-row"><span>Energia</span><strong id="custoEnergiaOut">£ 0.00</strong></div><div class="cost-row"><span>Máquina</span><strong id="custoMaquinaOut">£ 0.00</strong></div><div class="cost-row"><span>Extras + embalagem</span><strong id="custoExtrasOut">£ 0.00</strong></div><div class="cost-row"><span>Reserva falhas</span><strong id="custoFalhaOut">£ 0.00</strong></div><div class="cost-row total-row"><span>CUSTO TOTAL</span><strong id="custoTotal">£ 0.00</strong></div></div><br><div class="summary-grid"><div class="price-card"><h4>Preço Mínimo</h4><div class="price" id="precoMinimo">£ 0.00</div><div class="profit">Lucro: <span id="lucroMinimo">£ 0.00</span></div><div class="margin">Margem: <span id="margemMinima">0%</span></div></div><div class="price-card featured"><h4>⭐ Preço Ideal</h4><div class="price" id="precoIdeal">£ 0.00</div><div class="profit">Lucro: <span id="lucroIdeal">£ 0.00</span></div><div class="margin">Margem: <span id="margemIdeal">0%</span></div></div><div class="price-card"><h4>💎 Preço Premium</h4><div class="price" id="precoPremium">£ 0.00</div><div class="profit">Lucro: <span id="lucroPremium">£ 0.00</span></div><div class="margin">Margem: <span id="margemPremium">0%</span></div></div></div></div>
+<div class="card"><div class="actions"><button type="button" class="btn btn-primary" onclick="salvarProduto()">💾 Guardar Produto</button><button type="button" class="btn btn-secondary" onclick="registrarHistorico()">📊 Registar Cálculo</button><button type="button" class="btn btn-dark" onclick="exportarOrcamento()">📄 Exportar Orçamento</button><button type="button" class="btn btn-warning" onclick="limparCalculadora()">🧹 Limpar</button></div></div>
 </section>
 
 <section id="page-catalogo" class="page">
-<div class="topbar"><div><h2>📦 Catálogo</h2><p>Pesquise, edite e venda seus produtos em poucos cliques.</p></div><div class="actions"><span id="catalogCount" class="badge">0 produtos</span><button type="button" class="btn btn-primary" onclick="novoProdutoRapido()">＋ Novo produto</button></div></div>
-<div class="card"><div class="toolbar"><input id="catalogSearch" type="search" placeholder="🔎 Procurar produto..." oninput="renderCatalogo()"><select id="catalogCategory" onchange="renderCatalogo()"><option value="">Todas as categorias</option></select><button type="button" class="btn btn-secondary" onclick="renderCatalogo()">🔄 Atualizar</button><button type="button" class="btn btn-dark" onclick="exportarBackup()">💾 Backup</button><button type="button" class="btn btn-dark" onclick="importarBackup()">📥 Importar</button></div><div id="catalogGrid" class="catalog-grid"></div></div>
+<div class="topbar"><div><h2>📦 Catálogo</h2><p>Consulte e gira os seus produtos.</p></div><div class="actions"><span id="catalogCount" class="badge">0 produtos</span><button type="button" class="btn btn-primary" onclick="novoProdutoRapido()">＋ Novo</button></div></div>
+<div class="card"><div class="toolbar"><input id="catalogSearch" type="search" placeholder="🔎 Pesquisar produto..." oninput="renderCatalogo()"><select id="catalogCategory" onchange="renderCatalogo()"><option value="">Todas as categorias</option></select><button type="button" class="btn btn-secondary" onclick="renderCatalogo()">🔄 Atualizar</button><button type="button" class="btn btn-dark" onclick="exportarBackup()">💾 Backup</button><button type="button" class="btn btn-dark" onclick="importarBackup()">📥 Importar</button></div><div id="catalogGrid" class="catalog-grid"></div></div>
 </section>
 
 <section id="page-vendas" class="page">
-<div class="topbar"><div><h2>💰 Vendas</h2><p>Crie pedidos, acompanhe o status e veja faturamento e lucro.</p></div><button type="button" class="btn btn-primary" onclick="focarNovoPedido()">＋ Novo pedido</button></div>
-<div class="metrics"><div class="metric"><span>Pedidos</span><strong id="metricPedidos">0</strong></div><div class="metric"><span>Itens vendidos</span><strong id="metricVendas">0</strong></div><div class="metric"><span>Faturamento</span><strong id="metricFaturamento">£ 0.00</strong></div><div class="metric"><span>Lucro</span><strong id="metricLucro">£ 0.00</strong></div></div>
-<div class="card"><h3>🧾 Novo pedido</h3><div class="grid grid-4"><div class="form-group"><label>Cliente</label><input id="pedidoCliente" type="text"></div><div class="form-group"><label>Canal</label><select id="pedidoCanal"><option>Vinted</option><option>WhatsApp</option><option>Facebook</option><option>Instagram</option><option>Loja própria</option><option>Outro</option></select></div><div class="form-group"><label>Data</label><input id="pedidoData" type="date"></div><div class="form-group"><label>Status</label><select id="pedidoStatus"><option value="pendente">Pendente</option><option value="pago">Pago</option><option value="producao">Em produção</option><option value="enviado">Enviado</option><option value="concluido">Concluído</option><option value="cancelado">Cancelado</option></select></div></div><br><div class="grid grid-4"><div class="form-group"><label>Produto</label><select id="vendaProduto" onchange="preencherPrecoVenda()"><option value="">Selecione...</option></select></div><div class="form-group"><label>Quantidade</label><input id="vendaQtd" type="number" min="1" step="1" value="1"></div><div class="form-group"><label>Preço unitário (£)</label><input id="vendaPreco" type="number" min="0" step="0.01"></div><div class="form-group"><label>&nbsp;</label><button type="button" class="btn btn-primary" onclick="adicionarItemPedido()">+ Adicionar item</button></div></div><br><div id="pedidoItens" class="order-items"></div><div class="grid grid-4" style="margin-top:16px"><div class="form-group"><label>Frete cobrado (£)</label><input id="pedidoFrete" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="form-group"><label>Custo real frete (£)</label><input id="pedidoCustoFrete" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="form-group"><label>Desconto (£)</label><input id="pedidoDesconto" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="form-group"><label>Taxas plataforma (£)</label><input id="pedidoTaxas" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="form-group"><label>Embalagem (£)</label><input id="pedidoEmbalagem" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div></div><div id="pedidoResumo" class="order-summary"></div><br><div class="actions"><button type="button" class="btn btn-primary" onclick="salvarPedido()">💾 Salvar pedido</button><button type="button" class="btn btn-warning" onclick="limparPedidoEditor()">🧹 Limpar pedido</button></div></div>
-<div class="card"><div class="toolbar"><input id="vendaBusca" type="search" placeholder="🔎 Buscar cliente ou canal..." oninput="renderVendas()"><select id="vendaFiltroStatus" onchange="renderVendas()"><option value="">Todos os status</option><option value="pendente">Pendente</option><option value="pago">Pago</option><option value="producao">Em produção</option><option value="enviado">Enviado</option><option value="concluido">Concluído</option><option value="cancelado">Cancelado</option></select></div><h3>📋 Pedidos registrados</h3><div id="vendasLista" class="list"></div></div>
+<div class="topbar"><div><h2>💰 Vendas</h2><p>Registo de pedidos e faturação.</p></div><button type="button" class="btn btn-primary" onclick="focarNovoPedido()">＋ Novo Pedido</button></div>
+<div class="metrics"><div class="metric"><span>Pedidos</span><strong id="metricPedidos">0</strong></div><div class="metric"><span>Itens Vendidos</span><strong id="metricVendas">0</strong></div><div class="metric"><span>Faturamento</span><strong id="metricFaturamento">£ 0.00</strong></div><div class="metric"><span>Lucro</span><strong id="metricLucro">£ 0.00</strong></div></div>
+<div class="card"><h3>🧾 Novo Pedido</h3><div class="grid grid-4"><div class="form-group"><label>Cliente</label><input id="pedidoCliente" type="text"></div><div class="form-group"><label>Canal</label><select id="pedidoCanal"><option>Vinted</option><option>WhatsApp</option><option>Facebook</option><option>Instagram</option><option>Loja própria</option><option>Outro</option></select></div><div class="form-group"><label>Data</label><input id="pedidoData" type="date"></div><div class="form-group"><label>Status</label><select id="pedidoStatus"><option value="pendente">Pendente</option><option value="pago">Pago</option><option value="producao">Em produção</option><option value="enviado">Enviado</option><option value="concluido">Concluído</option><option value="cancelado">Cancelado</option></select></div></div><br><div class="grid grid-4"><div class="form-group"><label>Produto</label><select id="vendaProduto" onchange="preencherPrecoVenda()"><option value="">Selecionar...</option></select></div><div class="form-group"><label>Quantidade</label><input id="vendaQtd" type="number" min="1" step="1" value="1"></div><div class="form-group"><label>Preço unitário (£)</label><input id="vendaPreco" type="number" min="0" step="0.01"></div><div class="form-group"><label>&nbsp;</label><button type="button" class="btn btn-primary" onclick="adicionarItemPedido()">+ Adicionar item</button></div></div><br><div id="pedidoItens" class="order-items"></div><div class="grid grid-4" style="margin-top:12px"><div class="form-group"><label>Frete cobrado (£)</label><input id="pedidoFrete" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="form-group"><label>Custo real frete (£)</label><input id="pedidoCustoFrete" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="form-group"><label>Desconto (£)</label><input id="pedidoDesconto" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="form-group"><label>Taxas plataforma (£)</label><input id="pedidoTaxas" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="form-group"><label>Embalagem (£)</label><input id="pedidoEmbalagem" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div></div><div id="pedidoResumo" class="order-summary"></div><br><div class="actions"><button type="button" class="btn btn-primary" onclick="salvarPedido()">💾 Guardar Pedido</button><button type="button" class="btn btn-warning" onclick="limparPedidoEditor()">🧹 Limpar</button></div></div>
+<div class="card"><div class="toolbar"><input id="vendaBusca" type="search" placeholder="🔎 Pesquisar cliente ou canal..." oninput="renderVendas()"><select id="vendaFiltroStatus" onchange="renderVendas()"><option value="">Todos os status</option><option value="pendente">Pendente</option><option value="pago">Pago</option><option value="producao">Em produção</option><option value="enviado">Enviado</option><option value="concluido">Concluído</option><option value="cancelado">Cancelado</option></select></div><h3>📋 Pedidos Registados</h3><div id="vendasLista" class="list"></div></div>
 </section>
 
 <section id="page-vinted" class="page">
@@ -282,7 +279,7 @@ textarea { resize: vertical; min-height: 90px; }
 </section>
 
 <section id="page-historico" class="page">
-<div class="topbar"><div><h2>📊 Histórico</h2><p>Registros dos cálculos.</p></div><div class="actions"><button type="button" class="btn btn-secondary" onclick="exportarHistorico()">📄 CSV</button><button type="button" class="btn btn-danger" onclick="limparHistorico()">🗑️ Limpar</button></div></div>
+<div class="topbar"><div><h2>📊 Histórico</h2><p>Registros dos cálculos efetuados.</p></div><div class="actions"><button type="button" class="btn btn-secondary" onclick="exportarHistorico()">📄 CSV</button><button type="button" class="btn btn-danger" onclick="limparHistorico()">🗑️ Limpar</button></div></div>
 <div class="card"><div id="historicoLista" class="list"></div></div>
 </section>
 </main>
@@ -574,8 +571,8 @@ async function parseGCode(file) {
 
 async function analyzeFile(file) {
     currentFile = file; currentAnalysis = null;
-    $("arquivoTipoBadge").textContent = "Analisando...";
-    $("analiseStatus").textContent = "⏳ Analisando arquivo localmente...";
+    $("arquivoTipoBadge").textContent = "A a analisar...";
+    $("analiseStatus").textContent = "⏳ A analisar ficheiro localmente...";
     $("analiseGrid").innerHTML = "";
     setAssistantStep(1);
     const ext = file.name.toLowerCase().split('.').pop();
@@ -585,7 +582,7 @@ async function analyzeFile(file) {
         preencherCategoriaAutomatica(sugerirCategoria(autoName), true);
         currentAnalysis = { type: 'STL', weight: 0, hours: 0, filament: '', printer: '', source: 'STL', embedded: 0, productName: $('nomeProduto').value || autoName, category: $('categoriaProduto').value || sugerirCategoria(autoName) };
         renderAnalysis(currentAnalysis);
-        $('analiseStatus').textContent = 'ℹ️ STL não contém dados de peso/tempo de fatiamento. Nome e categoria sugeridos.';
+        $('analiseStatus').textContent = 'ℹ️ STL não contém dados de peso/tempo. Nome e categoria sugeridos.';
         saveDraft(); updateAssistant(); return;
     }
     try {
@@ -600,14 +597,14 @@ async function analyzeFile(file) {
         preencherCategoriaAutomatica(autoCategory, true);
         renderAnalysis(d); calc(); saveDraft();
         const complete = d.weight > 0 && d.hours > 0;
-        $('analiseStatus').textContent = complete ? '✅ Dados completos detectados automaticamente!' : '⚠️ Dados parciais detectados. Confira e ajuste se necessário.';
+        $('analiseStatus').textContent = complete ? '✅ Dados detetados com sucesso!' : '⚠️ Dados parciais detetados. Confira se necessário.';
         setAssistantStep(2); updateAssistant();
-        toast(complete ? 'Arquivo analisado com sucesso!' : 'Nome e categoria sugeridos; preencha o restante se necessário.');
+        toast(complete ? 'Ficheiro analisado com sucesso!' : 'Nome e categoria sugeridos.');
     } catch (e) {
         console.error(e);
-        $('analiseStatus').textContent = '❌ Não foi possível analisar o arquivo.';
-        $('analysisSource').textContent = 'Tente outro arquivo ou preencha manualmente.';
-        updateAssistant(); toast('Falha na análise do arquivo.');
+        $('analiseStatus').textContent = '❌ Não foi possível analisar o ficheiro.';
+        $('analysisSource').textContent = 'Tente outro ficheiro ou preencha manualmente.';
+        updateAssistant(); toast('Falha na análise.');
     }
 }
 
@@ -616,8 +613,8 @@ function renderAnalysis(d) {
         ["Formato", d.type || "-"],
         ["Peso", d.weight > 0 ? d.weight.toFixed(2) + " g" : "Não encontrado"],
         ["Tempo", d.hours > 0 ? formatTime(d.hours) : "Não encontrado"],
-        ["Material", d.filament || "Não detectado"],
-        ["Impressora", d.printer || "Não detectada"],
+        ["Material", d.filament || "Não detetado"],
+        ["Impressora", d.printer || "Não detetada"],
         ["Nome sugerido", d.productName || "-"],
         ["Categoria", d.category || "Diversos"]
     ];
@@ -634,25 +631,17 @@ fi.addEventListener("change", e => e.target.files[0] && analyzeFile(e.target.fil
 dz.addEventListener("drop", e => e.dataTransfer.files[0] && analyzeFile(e.dataTransfer.files[0]));
 
 function calc() {
-    const peso = +$('pesoPeca').value || 0, pr = +$('precoRolo').value || 0, gr = +$('pesoRolo').value || 1000, h = parseTime($('tempoManual').value) || (+$('horasPeca').value || 0), w = +$('potenciaWatts').value || 0, tar = +$('tarifaLuz').value || 0, mh = +$('custoHora').value || 0, mg = +$('margem').value || 0, fail = +$('taxaFalha').value || 0, extra = +$('custosExtras').value || 0, emb = +$('embalagem').value || 0;
-    const material = peso * (pr / gr), energy = w / 1000 * h * tar, machine = h * mh, extras = extra + emb, base = material + energy + machine + extras, failure = base * fail / 100, total = base + failure, min = total * 1.2, ideal = total * (1 + mg / 100), premium = total * 1.8;
+    const peso = +$('pesoPeca').value \vert{}\vert{} 0, pr = +$('precoRolo').value || 0, gr = +$('pesoRolo').value \vert{}\vert{} 1000, h = parseTime($('tempoManual').value) || (+$('horasPeca').value \vert{}\vert{} 0), w = +$('potenciaWatts').value || 0, tar = +$('tarifaLuz').value \vert{}\vert{} 0, mh = +$('custoHora').value || 0, mg = +$('margem').value \vert{}\vert{} 0, fail = +$('taxaFalha').value || 0, extra = +$('custosExtras').value \vert{}\vert{} 0, emb = +$('embalagem').value || 0;
+    const material = peso * (pr / gr), energy = w / 1000 * h * tar, machine = h * mh, extras = extra + emb, base = material + energy + machine + extras, failure = base * fail / 100, total = base + failure, min = total * 1.2, ideal = total * (1 + mg / 100), premium = ideal * 1.25;
     const out = { peso, hours: h, precoRolo: pr, pesoRolo: gr, custoMaterial: material, custoEnergia: energy, custoMaquina: machine, custosExtras: extras, custoFalha: failure, total, minimum: min, ideal, premium, profitMinimum: min - total, profitIdeal: ideal - total, profitPremium: premium - total, marginMinimum: min ? (min - total) / min * 100 : 0, marginIdeal: ideal ? (ideal - total) / ideal * 100 : 0, marginPremium: premium ? (premium - total) / premium * 100 : 0 };
-    $('horasPeca').value = h.toFixed(4);
-    $('custoMaterial').textContent = money(material);
-    $('custoEnergiaOut').textContent = money(energy);
-    $('custoMaquinaOut').textContent = money(machine);
-    $('custoExtrasOut').textContent = money(extras);
-    $('custoFalhaOut').textContent = money(failure);
-    $('custoTotal').textContent = money(total);
-    $('precoMinimo').textContent = money(min);
-    $('precoIdeal').textContent = money(ideal);
-    $('precoPremium').textContent = money(premium);
-    $('lucroMinimo').textContent = money(min - total);
-    $('lucroIdeal').textContent = money(ideal - total);
-    $('lucroPremium').textContent = money(premium - total);
-    $('margemMinima').textContent = out.marginMinimum.toFixed(1) + '%';
-    $('margemIdeal').textContent = out.marginIdeal.toFixed(1) + '%';
-    $('margemPremium').textContent = out.marginPremium.toFixed(1) + '%';
+    $('horasPeca').value = h.toFixed(4);$('custoMaterial').textContent = money(material);
+    $('custoEnergiaOut').textContent = money(energy);$('custoMaquinaOut').textContent = money(machine);
+    $('custoExtrasOut').textContent = money(extras);$('custoFalhaOut').textContent = money(failure);
+    $('custoTotal').textContent = money(total);$('precoMinimo').textContent = money(min);
+    $('precoIdeal').textContent = money(ideal);$('precoPremium').textContent = money(premium);
+    $('lucroMinimo').textContent = money(min - total);$('lucroIdeal').textContent = money(ideal - total);
+    $('lucroPremium').textContent = money(premium - total);$('margemMinima').textContent = out.marginMinimum.toFixed(1) + '%';
+    $('margemIdeal').textContent = out.marginIdeal.toFixed(1) + '\%';$('margemPremium').textContent = out.marginPremium.toFixed(1) + '%';
     updateAssistant(out);
     return out;
 }
@@ -672,7 +661,7 @@ function updateAssistant(v) {
     if (v.hours <= 0) missing.push('tempo');
     if (!name || name === 'Produto sem nome') missing.push('nome');
     if (missing.length) {
-        box.innerHTML = `<strong>⚠️ Faltam ${missing.join(', ')}.</strong><span>Preencha os campos indicados para gerar o preço ideal.</span>`;
+        box.innerHTML = `<strong>⚠️ Faltam ${missing.join(', ')}.</strong><span>Preencha os campos para gerar o preço ideal.</span>`;
         setAssistantStep(2); return;
     }
     box.innerHTML = `<strong>✅ ${esc(name)}</strong><span>⚖️ ${v.peso.toFixed(2)} g · ⏱️ ${formatTime(v.hours)} · Custo ${money(v.total)}</span><span>💰 Preço ideal <strong>${money(v.ideal)}</strong> · Lucro <strong>${money(v.profitIdeal)}</strong></span>`;
@@ -686,16 +675,16 @@ function executarAssistente() {
     }
     const v = calc();
     if (v.peso <= 0 || v.hours <= 0) {
-        toast('Informe peso e tempo para calcular o preço.');
+        toast('Informe o peso e o tempo para calcular.');
         setAssistantStep(2); return;
     }
-    if (!$('nomeProduto').value.trim()) $('nomeProduto').value = 'Produto sem nome';
+    if (!$('nomeProduto').value.trim())$('nomeProduto').value = 'Produto sem nome';
     calc(); setAssistantStep(3);
     $('precoIdeal')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    toast('Preço calculado com sucesso!');
+    toast('Preço calculado!');
 }
 
-["pesoPeca", "precoRolo", "pesoRolo", "tempoManual", "potenciaWatts", "tarifaLuz", "custoHora", "margem", "taxaFalha", "custosExtras", "embalagem", "nomeProduto", "codigoProduto", "categoriaProduto", "vintedLink", "vintedData", "fileDownloadLink", "observacoes"].forEach(id => {
+["pesoPeca", "precoRolo", "pesoRolo", "tempoManual", "potenciaWatts", "tarifaLuz", "custoHora", "margem", "taxaFalha", "custosExtras", "embalagem", "nomeProduto", "codigoProduto", "categoriaProduto", "vintedLink", "vintedData", "produtoImagem", "fileDownloadLink", "observacoes"].forEach(id => {
     const e = $(id);
     if (!e) return;
     e.addEventListener("input", () => { calc(); saveDraft(); updateAssistant(); });
@@ -703,7 +692,7 @@ function executarAssistente() {
 
 function saveDraft() {
     const d = {};
-    ["nomeProduto", "codigoProduto", "categoriaProduto", "pesoPeca", "tempoManual", "precoRolo", "pesoRolo", "potenciaWatts", "tarifaLuz", "custoHora", "margem", "taxaFalha", "custosExtras", "embalagem", "vintedLink", "vintedData", "fileDownloadLink", "observacoes"].forEach(id => d[id] = $(id).value);
+    ["nomeProduto", "codigoProduto", "categoriaProduto", "pesoPeca", "tempoManual", "precoRolo", "pesoRolo", "potenciaWatts", "tarifaLuz", "custoHora", "margem", "taxaFalha", "custosExtras", "embalagem", "vintedLink", "vintedData", "produtoImagem", "fileDownloadLink", "observacoes"].forEach(id => d[id] = $(id).value);
     try { localStorage.setItem(KEY.draft, JSON.stringify(d)); } catch {}
 }
 
@@ -720,13 +709,13 @@ function getLocal(key, def = []) {
 }
 
 function setLocal(key, val) {
-    try { localStorage.setItem(key, JSON.stringify(val)); } catch { toast("Não foi possível salvar localmente."); }
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch { toast("Erro ao guardar localmente."); }
 }
 
 function initFilaments() {
     filamentos = getLocal(KEY.filaments, [{ id: uid(), name: "PLA", price: 12.41, weight: 1000 }]);
     const s = $("filamentoPreset");
-    s.innerHTML = '<option value="">Selecione...</option>' + filamentos.map(f => `<option value="${esc(f.id)}">${esc(f.name)} — £${Number(f.price).toFixed(2)}/kg</option>`).join("");
+    s.innerHTML = '<option value="">Selecionar...</option>' + filamentos.map(f => `<option value="${esc(f.id)}">${esc(f.name)} — £${Number(f.price).toFixed(2)}/kg</option>`).join("");
 }
 
 function aplicarFilamentoPreset() {
@@ -739,9 +728,9 @@ function aplicarFilamentoPreset() {
 function salvarNovoFilamento() {
     const name = prompt("Nome do filamento:", "PLA");
     if (!name) return;
-    const f = { id: uid(), name: name.trim(), price: +$("precoRolo").value || 0, weight: +$("pesoRolo").value || 1000 };
+    const f = { id: uid(), name: name.trim(), price: +$("precoRolo").value \vert{}\vert{} 0, weight: +$("pesoRolo").value || 1000 };
     filamentos.push(f); setLocal(KEY.filaments, filamentos); initFilaments(); $("filamentoPreset").value = f.id;
-    toast("Filamento salvo.");
+    toast("Filamento guardado.");
 }
 
 function openPage(page) {
@@ -832,7 +821,7 @@ async function fileDel(id) {
 async function salvarProduto() {
     const v = calc();
     if (v.peso <= 0 && v.hours <= 0) {
-        toast("Informe peso ou tempo antes de salvar.");
+        toast("Informe o peso ou o tempo antes de guardar.");
         return;
     }
     const id = editingProductId || uid();
@@ -850,13 +839,14 @@ async function salvarProduto() {
         category: $("categoriaProduto").value.trim() || "Sem categoria",
         weight: v.peso, hours: v.hours, ideal: v.ideal, min: v.minimum, premium: v.premium, cost: v.total, profit: v.profitIdeal,
         analysis: currentAnalysis, vintedLink: $("vintedLink").value.trim(), vintedData: $("vintedData").value,
+        produtoImagem: $("produtoImagem").value.trim(),
         downloadLink: $("fileDownloadLink").value.trim(), observacoes: $("observacoes").value.trim(), fileId,
         createdAt: editingProductId ? (catalogo.find(x => x.id === editingProductId)?.createdAt || new Date().toISOString()) : new Date().toISOString(),
         updatedAt: new Date().toISOString()
     };
     catalogo = editingProductId ? catalogo.map(x => x.id === id ? item : x) : [item, ...catalogo];
     setLocal("bambu_catalog", catalogo);
-    toast(editingProductId ? "Produto atualizado." : "Produto salvo no catálogo.");
+    toast(editingProductId ? "Produto atualizado." : "Produto guardado no catálogo.");
     editingProductId = null; renderCatalogo(); setAssistantStep(4); updateAssistant();
 }
 
@@ -875,8 +865,9 @@ async function renderCatalogo() {
     for (const p of list) {
         const card = document.createElement("article");
         card.className = "product-card";
-        let thumb = "<div class='no-thumb'>📦 Sem prévia</div>";
-        card.innerHTML = `<div class="product-thumb">${thumb}</div><div class="product-body"><h3>${esc(p.name)}</h3><div class="product-code">${esc(p.code)} · ${esc(p.category)}</div><div class="product-info"><div><small>Peso</small><strong>${Number(p.weight || 0).toFixed(2)} g</strong></div><div><small>Tempo</small><strong>${formatTime(p.hours)}</strong></div><div><small>Custo</small><strong>${money(p.cost)}</strong></div><div><small>Lucro ideal</small><strong>${money(p.profit)}</strong></div></div><div class="product-price">${money(p.ideal)}</div><div class="product-actions"><button type="button" class="btn btn-small btn-secondary" onclick="editarProduto('${p.id}')">Editar</button><button type="button" class="btn btn-small btn-dark" onclick="baixarArquivo('${p.id}')">Arquivo</button><button type="button" class="btn btn-small btn-danger" onclick="excluirProduto('${p.id}')">Excluir</button></div></div>`;
+        const imgUrl = safeUrl(p.produtoImagem);
+        let thumb = imgUrl ? `<img src="${esc(imgUrl)}" alt="${esc(p.name)}" loading="lazy">` : "<div class='no-thumb'>📦 Sem prévia</div>";
+        card.innerHTML = `<div class="product-thumb">${thumb}</div><div class="product-body"><h3>${esc(p.name)}</h3><div class="product-code">${esc(p.code)} · ${esc(p.category)}</div><div class="product-info"><div><small>Peso</small><strong>${Number(p.weight || 0).toFixed(2)} g</strong></div><div><small>Tempo</small><strong>${formatTime(p.hours)}</strong></div><div><small>Custo</small><strong>${money(p.cost)}</strong></div><div><small>Lucro ideal</small><strong>${money(p.profit)}</strong></div></div><div class="product-price">${money(p.ideal)}</div><div class="product-actions"><button type="button" class="btn btn-small btn-secondary" onclick="editarProduto('${p.id}')">Editar</button><button type="button" class="btn btn-small btn-dark" onclick="baixarArquivo('${p.id}')">Ficheiro</button><button type="button" class="btn btn-small btn-danger" onclick="excluirProduto('${p.id}')">Excluir</button></div></div>`;
         grid.appendChild(card);
     }
 }
@@ -885,21 +876,21 @@ async function editarProduto(id) {
     const p = catalogo.find(x => x.id === id);
     if (!p) return;
     editingProductId = id;
-    Object.entries({ nomeProduto: p.name, codigoProduto: p.code, categoriaProduto: p.category, pesoPeca: p.weight, tempoManual: formatTime(p.hours), horasPeca: p.hours, vintedLink: p.vintedLink, vintedData: p.vintedData, fileDownloadLink: p.downloadLink, observacoes: p.observacoes }).forEach(([k, v]) => $(k).value = v ?? "");
+    Object.entries({ nomeProduto: p.name, codigoProduto: p.code, categoriaProduto: p.category, pesoPeca: p.weight, tempoManual: formatTime(p.hours), horasPeca: p.hours, vintedLink: p.vintedLink, vintedData: p.vintedData, produtoImagem: p.produtoImagem, fileDownloadLink: p.downloadLink, observacoes: p.observacoes }).forEach(([k, v]) => $(k).value = v ?? "");
     currentAnalysis = p.analysis || null; currentFile = null;
     openPage("calc"); calc(); toast("Produto carregado para edição.");
 }
 
 async function baixarArquivo(id) {
     const p = catalogo.find(x => x.id === id);
-    if (!p?.fileId) { toast("Este produto não possui arquivo local."); return; }
+    if (!p?.fileId) { toast("Este produto não possui ficheiro local."); return; }
     const f = await fileGet(p.fileId);
-    if (!f) { toast("Arquivo não encontrado."); return; }
+    if (!f) { toast("Ficheiro não encontrado."); return; }
     downloadBlob(f.blob, f.name);
 }
 
 async function excluirProduto(id) {
-    if (!confirm("Excluir este produto?")) return;
+    if (!confirm("Pretende excluir este produto?")) return;
     const p = catalogo.find(x => x.id === id);
     catalogo = catalogo.filter(x => x.id !== id);
     setLocal("bambu_catalog", catalogo);
@@ -923,18 +914,18 @@ function alterarStatusVenda(id) {
 function registrarHistorico() {
     const v = calc();
     const item = { id: uid(), date: new Date().toISOString(), name: $("nomeProduto").value.trim() || "Sem nome", weight: v.peso, hours: v.hours, cost: v.total, price: v.ideal, profit: v.profitIdeal };
-    historico = [item, ...historico]; setLocal(KEY.history, historico); toast("Cálculo registrado.");
+    historico = [item, ...historico]; setLocal(KEY.history, historico); toast("Cálculo registado.");
 }
 
 function renderHistorico() {
     historico = getLocal(KEY.history, []);
     const el = $("historicoLista");
-    if (!historico.length) { el.innerHTML = '<div class="empty">Nenhum cálculo registrado.</div>'; return; }
-    el.innerHTML = historico.map(h => `<div class="list-item"><div class="list-item-header"><div class="list-item-title">${esc(h.name)}</div><strong>${money(h.price)}</strong></div><div class="list-item-meta">${new Date(h.date).toLocaleString("pt-BR")} · ${Number(h.weight).toFixed(2)} g · ${formatTime(h.hours)} · Custo ${money(h.cost)} · Lucro ${money(h.profit)}</div></div>`).join("");
+    if (!historico.length) { el.innerHTML = '<div class="empty">Nenhum cálculo registado.</div>'; return; }
+    el.innerHTML = historico.map(h => `<div class="list-item"><div class="list-item-header"><div class="list-item-title">${esc(h.name)}</div><strong>${money(h.price)}</strong></div><div class="list-item-meta">${new Date(h.date).toLocaleString("pt-PT")} · ${Number(h.weight).toFixed(2)} g · ${formatTime(h.hours)} · Custo ${money(h.cost)} · Lucro ${money(h.profit)}</div></div>`).join("");
 }
 
 function limparHistorico() {
-    if (!confirm("Limpar histórico?")) return;
+    if (!confirm("Pretende limpar o histórico?")) return;
     historico = []; setLocal(KEY.history, historico); renderHistorico();
 }
 
@@ -952,15 +943,15 @@ function exportarOrcamento() {
 
 function limparCalculadora() {
     editingProductId = null; currentFile = null; currentAnalysis = null;
-    ["nomeProduto", "codigoProduto", "categoriaProduto", "tempoManual", "vintedLink", "vintedData", "fileDownloadLink", "observacoes"].forEach(id => $(id).value = "");
-    $("pesoPeca").value = 0; $("horasPeca").value = 0; $("arquivoProjeto").value = ""; $("arquivoTipoBadge").textContent = "Aguardando arquivo"; $("analiseStatus").textContent = "Nenhum arquivo analisado."; $("analiseGrid").innerHTML = ""; $("analysisSource").textContent = "";
+    ["nomeProduto", "codigoProduto", "categoriaProduto", "tempoManual", "vintedLink", "vintedData", "produtoImagem", "fileDownloadLink", "observacoes"].forEach(id => $(id).value = "");
+    $("pesoPeca").value = 0; $("horasPeca").value = 0; $("arquivoProjeto").value = ""; $("arquivoTipoBadge").textContent = "Aguardando ficheiro"; $("analiseStatus").textContent = "Nenhum ficheiro analisado."; $("analiseGrid").innerHTML = ""; $("analysisSource").textContent = "";
     calc(); toast("Calculadora limpa.");
 }
 
 function fillProductsSelect() {
     loadCatalog();
     const s = $("vendaProduto"), old = s.value;
-    s.innerHTML = '<option value="">Selecione...</option>' + catalogo.map(p => `<option value="${esc(p.id)}">${esc(p.name)} — ${money(p.ideal)}</option>`).join("");
+    s.innerHTML = '<option value="">Selecionar...</option>' + catalogo.map(p => `<option value="${esc(p.id)}">${esc(p.name)} — ${money(p.ideal)}</option>`).join("");
     if (old) s.value = old;
 }
 
@@ -975,7 +966,7 @@ function addOrderItem(p, q, price) {
 }
 
 function adicionarItemPedido() {
-    const p = catalogo.find(x => x.id === $("vendaProduto").value), q = Math.max(1, +$("vendaQtd").value || 1), price = Math.max(0, +$("vendaPreco").value || 0);
+    const p = catalogo.find(x => x.id === $("vendaProduto").value), q = Math.max(1, +$("vendaQtd").value \vert{}\vert{} 1), price = Math.max(0, +$("vendaPreco").value || 0);
     if (!p) { toast("Selecione um produto."); return; }
     addOrderItem(p, q, price); $("vendaQtd").value = 1;
 }
@@ -983,7 +974,7 @@ function adicionarItemPedido() {
 function renderPedidoEditor() {
     const el = $("pedidoItens");
     el.innerHTML = pedidoItens.length ? pedidoItens.map((x, i) => `<div class="order-item"><strong>${esc(x.name)}</strong><span>${x.qty}x</span><span>${money(x.price)}</span><strong>${money(x.qty * x.price)}</strong><button type="button" class="btn btn-small btn-danger" onclick="pedidoItens.splice(${i},1);renderPedidoEditor()">×</button></div>`).join("") : '<div class="empty">Nenhum item no pedido.</div>';
-    const sales = pedidoItens.reduce((a, x) => a + x.qty * x.price, 0), cost = pedidoItens.reduce((a, x) => a + x.qty * x.cost, 0), frete = +$("pedidoFrete").value || 0, cfrete = +$("pedidoCustoFrete").value || 0, desc = +$("pedidoDesconto").value || 0, tax = +$("pedidoTaxas").value || 0, emb = +$("pedidoEmbalagem").value || 0, revenue = sales + frete - desc, totalCost = cost + cfrete + tax + emb, profit = revenue - totalCost;
+    const sales = pedidoItens.reduce((a, x) => a + x.qty * x.price, 0), cost = pedidoItens.reduce((a, x) => a + x.qty * x.cost, 0), frete = +$("pedidoFrete").value || 0, cfrete = +$("pedidoCustoFrete").value \vert{}\vert{} 0, desc = +$("pedidoDesconto").value || 0, tax = +$("pedidoTaxas").value \vert{}\vert{} 0, emb = +$("pedidoEmbalagem").value || 0, revenue = sales + frete - desc, totalCost = cost + cfrete + tax + emb, profit = revenue - totalCost;
     $("pedidoResumo").innerHTML = `<div class="order-summary-row"><span>Itens</span><strong>${money(sales)}</strong></div><div class="order-summary-row"><span>Frete cobrado</span><strong>${money(frete)}</strong></div><div class="order-summary-row"><span>Desconto</span><strong>- ${money(desc)}</strong></div><div class="order-summary-row"><span>Custo total</span><strong>${money(totalCost)}</strong></div><div class="order-summary-row total"><span>Faturamento</span><strong>${money(revenue)}</strong></div><div class="order-summary-row profit"><span>Lucro</span><strong>${money(profit)}</strong></div>`;
     return { sales, cost, frete, cfrete, desc, tax, emb, revenue, totalCost, profit };
 }
@@ -997,8 +988,8 @@ function limparPedidoEditor() {
 
 function salvarPedido() {
     if (!pedidoItens.length) { toast("Adicione pelo menos um produto."); return; }
-    const r = renderPedidoEditor(), o = { id: uid(), client: $("pedidoCliente").value.trim() || "Cliente", channel: $("pedidoCanal").value, date: $("pedidoData").value || today(), status: $("pedidoStatus").value, items: pedidoItens.map(x => ({ ...x })), ...r };
-    vendas = [o, ...vendas]; setLocal(KEY.sales, vendas); toast("Pedido salvo."); limparPedidoEditor(); renderVendas();
+    const r = renderPedidoEditor(), o = { id: uid(), client: $("pedidoCliente").value.trim() \vert{}\vert{} "Cliente", channel: $("pedidoCanal").value, date: $("pedidoData").value \vert{}\vert{} today(), status: $("pedidoStatus").value, items: pedidoItens.map(x => ({ ...x })), ...r };
+    vendas = [o, ...vendas]; setLocal(KEY.sales, vendas); toast("Pedido guardado."); limparPedidoEditor(); renderVendas();
 }
 
 function renderVendas() {
@@ -1006,14 +997,14 @@ function renderVendas() {
     fillProductsSelect();
     const itens = vendas.reduce((a, o) => a + o.items.reduce((b, x) => b + x.qty, 0), 0), fat = vendas.filter(o => o.status !== "cancelado").reduce((a, o) => a + o.revenue, 0), luc = vendas.filter(o => o.status !== "cancelado").reduce((a, o) => a + o.profit, 0);
     $("metricPedidos").textContent = vendas.length; $("metricVendas").textContent = itens; $("metricFaturamento").textContent = money(fat); $("metricLucro").textContent = money(luc);
-    const q = ($("vendaBusca")?.value || "").toLowerCase(), st = $("vendaFiltroStatus")?.value || "", lista = vendas.filter(o => (!q || (`${o.client} ${o.channel}`.toLowerCase().includes(q))) && (!st || o.status === st));
+    const q = ($("vendaBusca")?.value \vert{}\vert{} "").toLowerCase(), st = $("vendaFiltroStatus")?.value || "", lista = vendas.filter(o => (!q || (`${o.client} ${o.channel}`.toLowerCase().includes(q))) && (!st || o.status === st));
     const el = $("vendasLista");
     if (!lista.length) { el.innerHTML = '<div class="empty">Nenhum pedido encontrado.</div>'; return; }
-    el.innerHTML = lista.map(o => `<div class="list-item"><div class="list-item-header"><div><div class="list-item-title">${esc(o.client)} · ${o.items.length} item(s)</div><div class="list-item-meta">${esc(o.channel)} · ${esc(o.date)}</div></div><span class="status status-${esc(o.status)}">${esc(o.status)}</span></div><div class="list-item-meta" style="margin-top:8px">${o.items.map(x => esc(x.name) + " × " + x.qty).join(" · ")}</div><div class="list-item-meta">Faturamento: <strong>${money(o.revenue)}</strong> · Lucro: <strong>${money(o.profit)}</strong></div><div class="actions" style="margin-top:10px"><button type="button" class="btn btn-small btn-secondary" onclick="alterarStatusVenda('${o.id}')">↻ Próximo status</button><button type="button" class="btn btn-small btn-danger" onclick="excluirVenda('${o.id}')">Excluir</button></div></div>`).join("");
+    el.innerHTML = lista.map(o => `<div class="list-item"><div class="list-item-header"><div><div class="list-item-title">${esc(o.client)} · ${o.items.length} item(s)</div><div class="list-item-meta">${esc(o.channel)} · ${esc(o.date)}</div></div><span class="status status-${esc(o.status)}">${esc(o.status)}</span></div><div class="list-item-meta" style="margin-top:6px">${o.items.map(x => esc(x.name) + " × " + x.qty).join(" · ")}</div><div class="list-item-meta">Faturamento: <strong>${money(o.revenue)}</strong> · Lucro: <strong>${money(o.profit)}</strong></div><div class="actions" style="margin-top:8px"><button type="button" class="btn btn-small btn-secondary" onclick="alterarStatusVenda('${o.id}')">↻ Próximo status</button><button type="button" class="btn btn-small btn-danger" onclick="excluirVenda('${o.id}')">Excluir</button></div></div>`).join("");
 }
 
 function excluirVenda(id) {
-    if (!confirm("Excluir pedido?")) return;
+    if (!confirm("Pretende excluir o pedido?")) return;
     vendas = vendas.filter(x => x.id !== id);
     setLocal(KEY.sales, vendas); renderVendas();
 }
@@ -1027,10 +1018,10 @@ function renderVinted() {
 
 const scripts = {
     saudacao: ["Olá! 👋 Obrigado pelo seu contacto. Como posso ajudar?", "Hello! 👋 Thank you for your message. How can I help you?"],
-    pedido: ["Olá! Seu pedido foi recebido e já está registrado. Vou mantê-lo atualizado.", "Hello! Your order has been received and registered. I will keep you updated."],
-    producao: ["Olá! 🖨️ Seu pedido está em produção. Avisarei assim que estiver pronto.", "Hello! 🖨️ Your order is now in production. I will let you know when it is ready."],
-    envio: ["Olá! 🚚 Seu pedido foi enviado. Obrigado pela compra!", "Hello! 🚚 Your order has been shipped. Thank you for your purchase!"],
-    obrigado: ["Muito obrigado pela compra! ❤️ Espero que goste do seu produto.", "Thank you very much for your purchase! ❤️ I hope you enjoy your product."]
+    pedido: ["Olá! O seu pedido foi recebido e já está registado. Vou mantê-lo atualizado.", "Hello! Your order has been received and registered. I will keep you updated."],
+    producao: ["Olá! 🖨️ O seu pedido está em produção. Avisarei assim que estiver pronto.", "Hello! 🖨️ Your order is now in production. I will let you know when it is ready."],
+    envio: ["Olá! 🚚 O seu pedido foi enviado. Obrigado pela compra!", "Hello! 🚚 Your order has been shipped. Thank you for your purchase!"],
+    obrigado: ["Muito obrigado pela compra! ❤️ Espero que goste do produto.", "Thank you very much for your purchase! ❤️ I hope you enjoy your product."]
 };
 
 function selecionarScript(k) {
@@ -1039,13 +1030,13 @@ function selecionarScript(k) {
 }
 
 async function copiarScript() {
-    const text = $("scriptEN").value || $("scriptPT").value;
+    const text = $("scriptEN").value \vert{}\vert{} $("scriptPT").value;
     if (!text) return toast("Selecione uma mensagem.");
     try { await navigator.clipboard.writeText(text); toast("Mensagem copiada."); } catch { toast("Não foi possível copiar."); }
 }
 
 function abrirWhatsAppScript() {
-    const text = $("scriptEN").value || $("scriptPT").value;
+    const text = $("scriptEN").value \vert{}\vert{} $("scriptPT").value;
     if (!text) return;
     window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank", "noopener");
 }
@@ -1066,7 +1057,7 @@ function importarBackup() {
             if (!Array.isArray(d.catalogo)) throw new Error("Backup inválido");
             catalogo = d.catalogo; historico = d.historico || []; vendas = d.vendas || []; filamentos = d.filamentos || filamentos;
             setLocal("bambu_catalog", catalogo); setLocal(KEY.history, historico); setLocal(KEY.sales, vendas); setLocal(KEY.filamentos, filamentos);
-            initFilaments(); renderCatalogo(); toast("Backup importado.");
+            initFilaments(); renderCatalogo(); toast("Backup importado com sucesso.");
         } catch (e) { toast("Backup inválido ou corrompido."); }
     };
     i.click();
