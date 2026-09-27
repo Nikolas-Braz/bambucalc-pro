@@ -245,6 +245,17 @@ input,select,textarea{padding:8px 10px;border-radius:9px}
 @media(max-width:1200px){.catalog-grid{grid-template-columns:repeat(3,1fr)}.calc-layout,.sales-layout{grid-template-columns:1fr}.calc-side,.sales-form{position:static}}
 @media(max-width:900px){.compact-grid{grid-template-columns:repeat(2,1fr)}.catalog-toolbar{grid-template-columns:1fr 1fr}.catalog-toolbar .wide{grid-column:1/-1}.catalog-grid{grid-template-columns:repeat(2,1fr)}.order-extra{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.main{padding:12px}.upload-mini{grid-template-columns:1fr}.compact-grid,.catalog-grid,.order-add,.order-extra{grid-template-columns:1fr}.catalog-toolbar{grid-template-columns:1fr}.result-main{align-items:flex-start;flex-direction:column}.quick-actions{grid-template-columns:1fr}.analysis-grid{grid-template-columns:1fr 1fr}.metrics{grid-template-columns:1fr 1fr}}
+
+.profit-simulator{border:1px solid rgba(34,197,94,.28);background:linear-gradient(135deg,var(--card),rgba(34,197,94,.035));}
+.simulator-grid{display:grid;grid-template-columns:1.1fr 1.1fr 1fr;gap:10px;align-items:end;}
+.simulator-result{margin-top:12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.sim-box{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px;}
+.sim-box span{display:block;color:var(--muted);font-size:10px;}
+.sim-box strong{display:block;margin-top:3px;font-size:18px;}
+.sim-box.highlight{border-color:rgba(34,197,94,.35);}
+.sim-help{color:var(--muted);font-size:11px;line-height:1.4;margin-top:8px;}
+@media(max-width:850px){.simulator-grid,.simulator-result{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.simulator-grid,.simulator-result{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -275,6 +286,22 @@ input,select,textarea{padding:8px 10px;border-radius:9px}
 </div>
 <div class="calc-side">
 <div class="result-hero"><div class="result-main"><div><div class="result-label">PREÇO IDEAL</div><div class="result-price" id="precoIdeal">£ 0.00</div><div class="result-profit">Lucro: <span id="lucroIdeal">£ 0.00</span> · <span id="margemIdeal">0%</span></div></div><span class="badge">⭐ Recomendado pelo cálculo</span></div><div class="cost-table"><div class="cost-row"><span>Material</span><strong id="custoMaterial">£ 0.00</strong></div><div class="cost-row"><span>Energia</span><strong id="custoEnergiaOut">£ 0.00</strong></div><div class="cost-row"><span>Máquina</span><strong id="custoMaquinaOut">£ 0.00</strong></div><div class="cost-row"><span>Extras + embalagem</span><strong id="custoExtrasOut">£ 0.00</strong></div><div class="cost-row"><span>Reserva falhas</span><strong id="custoFalhaOut">£ 0.00</strong></div><div class="cost-row total-row"><span>CUSTO TOTAL</span><strong id="custoTotal">£ 0.00</strong></div></div><div class="summary-grid"><div class="price-card"><h4>Mínimo</h4><div class="price" id="precoMinimo">£ 0.00</div><div class="profit">Lucro <span id="lucroMinimo">£ 0.00</span></div><div class="margin"><span id="margemMinima">0%</span></div></div><div class="price-card"><h4>Premium</h4><div class="price" id="precoPremium">£ 0.00</div><div class="profit">Lucro <span id="lucroPremium">£ 0.00</span></div><div class="margin"><span id="margemPremium">0%</span></div></div></div></div>
+<div class="simple-card profit-simulator">
+<div class="section-head"><div><h3>🎯 Simulador de Lucro Desejado</h3><span>Defina quanto quer ganhar e veja imediatamente o preço necessário.</span></div><span class="badge">Calculado sobre o custo total</span></div>
+<div class="simulator-grid">
+<div class="form-group"><label>Tipo de objetivo</label><select id="simulatorMode" onchange="updateProfitSimulator()"><option value="profit">Lucro desejado (£)</option><option value="margin">Margem desejada (%)</option></select></div>
+<div class="form-group"><label id="simulatorLabel">Lucro desejado (£)</label><input id="simulatorTarget" type="number" min="0" step="0.01" value="10" oninput="updateProfitSimulator()"></div>
+<div class="form-group"><label>Preço calculado</label><input id="simulatorPriceInput" type="number" min="0" step="0.01" oninput="updateSimulatorFromPrice()"></div>
+</div>
+<div class="simulator-result">
+<div class="sim-box"><span>Custo total</span><strong id="simulatorCost">£ 0.00</strong></div>
+<div class="sim-box highlight"><span>Preço para atingir objetivo</span><strong id="simulatorPrice">£ 0.00</strong></div>
+<div class="sim-box"><span>Lucro resultante</span><strong id="simulatorProfit">£ 0.00</strong></div>
+</div>
+<div class="sim-help" id="simulatorHelp">Ex.: se o custo for £10 e quiser ganhar £10, o preço calculado será £20.</div>
+<div class="quick-actions" style="margin-top:10px"><button type="button" class="btn btn-primary" onclick="aplicarPrecoSimulado()">🎯 Usar este preço</button></div>
+</div>
+
 <div class="quick-actions"><button type="button" class="btn btn-primary" onclick="salvarProduto()">💾 Guardar produto</button><button type="button" class="btn btn-secondary" onclick="registrarHistorico()">📊 Histórico</button><button type="button" class="btn btn-dark" onclick="exportarOrcamento()">📄 Orçamento</button><button type="button" class="btn btn-warning" onclick="limparCalculadora()">🧹 Limpar</button></div>
 </div></div>
 </section>
@@ -664,9 +691,78 @@ function calc() {
     $('precoIdeal').textContent = money(ideal);$('precoPremium').textContent = money(premium);
     $('lucroMinimo').textContent = money(min - total);$('lucroIdeal').textContent = money(ideal - total);
     $('lucroPremium').textContent = money(premium - total);$('margemMinima').textContent = out.marginMinimum.toFixed(1) + '%';
-    $('margemIdeal').textContent = out.marginIdeal.toFixed(1) + '\%';$('margemPremium').textContent = out.marginPremium.toFixed(1) + '%';
+    $('margemIdeal').textContent = out.marginIdeal.toFixed(1) + '%';$('margemPremium').textContent = out.marginPremium.toFixed(1) + '%';
+    updateProfitSimulator(out);
     updateAssistant(out);
     return out;
+}
+
+function updateProfitSimulator(v) {
+    const mode = $('simulatorMode');
+    const target = $('simulatorTarget');
+    if (!mode || !target) return;
+    v = v || calc();
+    const cost = Number(v.total) || 0;
+    const value = Math.max(0, Number(target.value) || 0);
+    let price = cost, profit = 0, margin = 0;
+    if (mode.value === 'margin') {
+        const m = Math.min(99.99, value);
+        price = m >= 100 ? cost : cost / Math.max(0.0001, 1 - m / 100);
+        profit = price - cost;
+        margin = price > 0 ? profit / price * 100 : 0;
+        $('simulatorLabel').textContent = 'Margem desejada (%)';
+        $('simulatorHelp').textContent = `Com custo de ${money(cost)}, uma margem de ${m.toFixed(1)}% exige um preço de ${money(price)}.`;
+    } else {
+        price = cost + value;
+        profit = value;
+        margin = price > 0 ? profit / price * 100 : 0;
+        $('simulatorLabel').textContent = 'Lucro desejado (£)';
+        $('simulatorHelp').textContent = `Com custo de ${money(cost)}, para ganhar ${money(value)} o preço necessário é ${money(price)}.`;
+    }
+    $('simulatorCost').textContent = money(cost);
+    $('simulatorPrice').textContent = money(price);
+    $('simulatorProfit').textContent = money(profit);
+    $('simulatorPriceInput').value = price.toFixed(2);
+    $('simulatorPriceInput').dataset.margin = ((price / Math.max(cost,0.0001) - 1) * 100).toFixed(4);
+    $('simulatorPriceInput').dataset.price = price.toFixed(2);
+    return { price, profit, margin, cost };
+}
+
+function updateSimulatorFromPrice() {
+    const input = $('simulatorPriceInput');
+    if (!input) return;
+
+    // Guardamos o valor digitado ANTES de recalcular, porque calc()
+    // atualiza o simulador e poderia sobrescrever o campo.
+    const typedValue = input.value;
+    const current = calc();
+    const cost = Number(current?.total) || 0;
+    const price = Math.max(0, Number(typedValue) || 0);
+    const profit = price - cost;
+    const margin = price > 0 ? (profit / price) * 100 : 0;
+    const markup = cost > 0 ? ((price / cost) - 1) * 100 : 0;
+
+    // Recoloca o valor que o utilizador acabou de digitar.
+    input.value = typedValue;
+    input.dataset.margin = margin.toFixed(4);
+    input.dataset.price = price.toFixed(2);
+
+    $('simulatorCost').textContent = money(cost);
+    $('simulatorPrice').textContent = money(price);
+    $('simulatorProfit').textContent = money(profit);
+
+    const help = $('simulatorHelp');
+    if (help) help.textContent = `Preço manual de ${money(price)} → lucro de ${money(profit)} e margem de ${margin.toFixed(1)}%.`;
+    return { price, profit, margin, markup, cost };
+}
+
+function aplicarPrecoSimulado() {
+    const sim = updateSimulatorFromPrice();
+    if (!sim || sim.cost <= 0) { toast('Calcule primeiro o custo do produto.'); return; }
+    $('margem').value = Math.max(0, sim.markup).toFixed(2);
+    calc();
+    $('precoIdeal')?.scrollIntoView({ behavior:'smooth', block:'center' });
+    toast(`Preço aplicado: ${money(sim.price)}.`);
 }
 
 function setAssistantStep(step) {
