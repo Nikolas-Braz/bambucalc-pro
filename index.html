@@ -2,1191 +2,527 @@
 <html lang="pt-PT">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="description" content="BambuCalc 3D PRO — calculadora, catálogo, vendas e atendimento">
-<meta name="theme-color" content="#22c55e">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="BambuCalc 3D PRO — calculadora e catálogo inteligente">
 <title>BambuCalc 3D PRO — uai 3D printing</title>
 <style>
-:root {
-    --bg: #0f172a;
-    --panel: #020617;
-    --card: #111827;
-    --card2: #172033;
-    --text: #f8fafc;
-    --muted: #94a3b8;
-    --border: #263449;
-    --accent: #22c55e;
-    --accent2: #0ea5e9;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --shadow: 0 10px 30px rgba(0,0,0,.2);
-    --radius: 12px;
+:root{
+  --bg:#0f172a;--panel:#020617;--card:#111827;--card2:#172033;
+  --text:#f8fafc;--muted:#94a3b8;--border:#263449;
+  --accent:#22c55e;--blue:#0ea5e9;--danger:#ef4444;--warn:#f59e0b;
+  --shadow:0 8px 24px rgba(0,0,0,.14);--radius:14px;
 }
-
-:root[data-theme="light"] {
-    --bg: #f1f5f9;
-    --panel: #ffffff;
-    --card: #ffffff;
-    --card2: #f8fafc;
-    --text: #0f172a;
-    --muted: #64748b;
-    --border: #dbe3ec;
-    --shadow: 0 8px 20px rgba(15,23,42,.06);
+:root[data-theme="light"]{
+  --bg:#f1f5f9;--panel:#fff;--card:#fff;--card2:#f8fafc;
+  --text:#0f172a;--muted:#64748b;--border:#dbe3ec;--shadow:0 6px 18px rgba(15,23,42,.06);
 }
-
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body { margin: 0; font-family: Inter, Segoe UI, Arial, sans-serif; background: var(--bg); color: var(--text); }
-button, input, select, textarea { font: inherit; }
-button { cursor: pointer; }
-a { color: var(--accent2); text-decoration: none; }
-
-.app { display: flex; min-height: 100vh; }
-
-.sidebar {
-    width: 240px; background: var(--panel); border-right: 1px solid var(--border);
-    padding: 16px 12px; position: fixed; left: 0; top: 0; bottom: 0; z-index: 20;
-}
-.brand { padding: 8px 8px 16px; }
-.brand h1 { font-size: 19px; margin: 0; font-weight: 800; }
-.brand p { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
-
-.nav { display: flex; flex-direction: column; gap: 6px; }
-.nav button {
-    width: 100%; border: 0; background: transparent; color: var(--muted);
-    padding: 10px 12px; border-radius: 10px; text-align: left; cursor: pointer;
-    transition: .2s; font-size: 14px;
-}
-.nav button:hover { background: var(--card); color: var(--text); }
-.nav button.active { background: rgba(34,197,94,.12); color: var(--accent); font-weight: 700; }
-
-.sidebar-footer { position: absolute; bottom: 16px; left: 12px; right: 12px; }
-.theme-btn { width: 100%; padding: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text); border-radius: 8px; cursor: pointer; font-size: 13px; }
-
-.main { margin-left: 240px; width: calc(100% - 240px); padding: 24px; }
-.page { display: none; }
-.page.active { display: block; }
-
-.topbar { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 20px; }
-.topbar h2 { margin: 0; font-size: 22px; }
-.topbar p { color: var(--muted); margin: 4px 0 0; font-size: 13px; }
-
-.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); margin-bottom: 16px; }
-.card h3 { margin: 0 0 4px; font-size: 16px; }
-.card-subtitle { color: var(--muted); font-size: 12px; margin-bottom: 14px; }
-
-.grid { display: grid; gap: 12px; }
-.grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-
-.form-group { display: flex; flex-direction: column; gap: 5px; }
-.form-group label { font-size: 12px; color: var(--muted); font-weight: 600; }
-input, select, textarea { width: 100%; border: 1px solid var(--border); background: var(--card2); color: var(--text); border-radius: 8px; padding: 9px 11px; outline: none; font-size: 13px; }
-input[type="number"] { font-variant-numeric: tabular-nums; text-align: right; }
-input[readonly] { opacity: .75; cursor: not-allowed; }
-input:focus, select:focus, textarea:focus { border-color: var(--accent2); }
-textarea { resize: vertical; min-height: 70px; }
-
-.actions { display: flex; gap: 8px; flex-wrap: wrap; }
-.btn { border: 0; border-radius: 8px; padding: 9px 14px; font-weight: 700; transition: .2s; cursor: pointer; font-size: 13px; }
-.btn:hover { transform: translateY(-1px); }
-.btn-primary { background: var(--accent); color: #052e16; }
-.btn-secondary { background: var(--accent2); color: #fff; }
-.btn-dark { background: var(--card2); border: 1px solid var(--border); color: var(--text); }
-.btn-danger { background: rgba(239,68,68,.1); color: #f87171; border: 1px solid rgba(239,68,68,.2); }
-.btn-warning { background: rgba(245,158,11,.1); color: #fbbf24; border: 1px solid rgba(245,158,11,.2); }
-.btn-small { padding: 6px 10px; font-size: 11px; }
-
-.badge { display: inline-block; padding: 5px 8px; background: rgba(34,197,94,.1); color: var(--accent); border-radius: 999px; font-size: 11px; font-weight: 700; }
-
-.dropzone { border: 2px dashed var(--border); background: var(--card2); min-height: 130px; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 15px; transition: .2s; cursor: pointer; }
-.dropzone.dragover { border-color: var(--accent); background: rgba(34,197,94,.06); }
-.dropzone strong { display: block; font-size: 15px; margin-bottom: 4px; }
-.dropzone span { color: var(--muted); font-size: 12px; }
-.file-badge { display: inline-block; padding: 4px 8px; border-radius: 999px; background: rgba(14,165,233,.1); color: var(--accent2); font-size: 11px; margin-top: 6px; }
-
-.analysis-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
-.analysis-item { background: var(--card2); border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
-.analysis-item .label { font-size: 10px; color: var(--muted); }
-.analysis-item .value { font-size: 14px; font-weight: 800; margin-top: 3px; }
-.analysis-source { margin-top: 10px; color: var(--muted); font-size: 11px; }
-
-.filament-bar { display: grid; grid-template-columns: 1fr 1fr 1fr auto; align-items: end; gap: 8px; }
-
-.summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-.price-card { border: 1px solid var(--border); border-radius: 12px; padding: 14px; background: var(--card2); }
-.price-card.featured { border-color: rgba(34,197,94,.4); box-shadow: 0 0 0 1px rgba(34,197,94,.06); }
-.price-card h4 { margin: 0; font-size: 12px; color: var(--muted); }
-.price { font-size: 24px; font-weight: 900; margin: 6px 0; }
-.profit { color: var(--accent); font-weight: 800; font-size: 13px; }
-.margin { color: var(--muted); font-size: 11px; margin-top: 3px; }
-
-.cost-table { display: flex; flex-direction: column; gap: 8px; }
-.cost-row { display: flex; justify-content: space-between; gap: 15px; border-bottom: 1px solid var(--border); padding-bottom: 7px; font-size: 13px; }
-.cost-row:last-child { border-bottom: 0; }
-.cost-row span:first-child { color: var(--muted); }
-.total-row { font-size: 16px; color: var(--accent); }
-
-.toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-.toolbar > * { flex: 1; min-width: 150px; }
-
-.catalog-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.product-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-.product-thumb { height: 140px; background: var(--card2); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.product-thumb img { width: 100%; height: 100%; object-fit: cover; }
-.no-thumb { color: var(--muted); font-size: 12px; }
-.product-body { padding: 12px; }
-.product-body h3 { margin: 0 0 3px; font-size: 14px; }
-.product-code { color: var(--muted); font-size: 11px; }
-.product-info { margin: 10px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.product-info div { background: var(--card2); border-radius: 8px; padding: 7px; }
-.product-info small { display: block; font-size: 10px; color: var(--muted); }
-.product-info strong { display: block; margin-top: 2px; font-size: 12px; }
-.product-price { color: var(--accent); font-size: 18px; font-weight: 900; }
-.product-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
-
-.metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
-.metric { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
-.metric span { color: var(--muted); font-size: 11px; }
-.metric strong { display: block; font-size: 20px; margin-top: 4px; }
-
-.order-items { display: flex; flex-direction: column; gap: 8px; }
-.order-item { display: grid; grid-template-columns: 2fr .7fr 1fr 1fr auto; gap: 6px; align-items: center; background: var(--card2); padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 13px; }
-.order-summary { margin-top: 12px; background: var(--card2); border-radius: 10px; padding: 12px; border: 1px solid var(--border); }
-.order-summary-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px; }
-.order-summary-row.total { border-top: 1px solid var(--border); margin-top: 6px; padding-top: 10px; font-size: 16px; font-weight: 900; }
-.order-summary-row.profit { color: var(--accent); }
-
-.list { display: flex; flex-direction: column; gap: 10px; }
-.list-item { background: var(--card2); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
-.list-item-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.list-item-title { font-weight: 800; font-size: 14px; }
-.list-item-meta { color: var(--muted); font-size: 11px; margin-top: 4px; }
-
-.status { display: inline-block; border-radius: 999px; padding: 4px 8px; font-size: 10px; font-weight: 800; }
-.status-pendente { color: #fbbf24; background: rgba(245,158,11,.1); }
-.status-pago { color: #60a5fa; background: rgba(59,130,246,.1); }
-.status-producao { color: #c084fc; background: rgba(168,85,247,.1); }
-.status-enviado { color: #22d3ee; background: rgba(6,182,212,.1); }
-.status-concluido { color: #4ade80; background: rgba(34,197,94,.1); }
-.status-cancelado { color: #f87171; background: rgba(239,68,68,.1); }
-
-.empty { text-align: center; color: var(--muted); padding: 20px; border: 1px dashed var(--border); border-radius: 10px; font-size: 13px; }
-.script-buttons { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
-.script-buttons button { border: 1px solid var(--border); background: var(--card2); color: var(--text); padding: 7px 10px; border-radius: 8px; cursor: pointer; font-size: 12px; }
-
-.assistant-card { border-color: rgba(14,165,233,.25); background: linear-gradient(180deg, var(--card), rgba(14,165,233,.02)); }
-.assistant-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
-.assistant-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 4px 0 12px; }
-.assistant-step { display: flex; align-items: center; gap: 6px; padding: 7px 8px; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-size: 11px; }
-.assistant-step b { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--card2); color: var(--muted); font-size: 10px; }
-.assistant-step.active { border-color: rgba(34,197,94,.35); color: var(--text); }
-.assistant-step.active b { background: var(--accent); color: #052e16; }
-.assistant-step.done { border-color: rgba(34,197,94,.2); color: var(--accent); }
-.assistant-result { display: flex; flex-direction: column; gap: 4px; background: var(--card2); border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-size: 12px; }
-.assistant-result strong { font-size: 14px; }
-.assistant-result span { color: var(--muted); font-size: 12px; line-height: 1.4; }
-.assistant-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-
-.mobile-nav { display: none; }
-.toast { position: fixed; right: 16px; bottom: 16px; background: #020617; color: #fff; padding: 11px 15px; border-radius: 10px; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transform: translateY(10px); transition: .25s; z-index: 100; max-width: 380px; font-size: 13px; }
-.toast.show { opacity: 1; transform: translateY(0); }
-
-@media(max-width: 1100px) {
-    .catalog-grid, .analysis-grid, .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media(max-width: 850px) {
-    .sidebar { display: none; }
-    .main { margin-left: 0; width: 100%; padding: 14px; padding-bottom: 80px; }
-    .mobile-nav { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; background: var(--panel); border-top: 1px solid var(--border); padding: 6px; gap: 4px; }
-    .mobile-nav button { flex: 1; border: 0; background: transparent; color: var(--muted); font-size: 9px; padding: 6px 2px; border-radius: 8px; cursor: pointer; text-align: center; }
-    .mobile-nav button.active { color: var(--accent); background: rgba(34,197,94,.08); }
-    .grid-2, .grid-3, .grid-4, .summary-grid { grid-template-columns: 1fr; }
-    .filament-bar { grid-template-columns: 1fr 1fr; }
-    .filament-bar button { grid-column: 1 / -1; }
-}
-@media(max-width: 600px) {
-    .catalog-grid, .analysis-grid { grid-template-columns: 1fr; }
-    .metrics, .order-item { grid-template-columns: 1fr 1fr; }
-    .topbar { align-items: flex-start; }
-    .topbar h2 { font-size: 19px; }
-}
-
-/* ===== V16 — UI simplificada ===== */
-:root{--radius:14px;--shadow:0 6px 18px rgba(0,0,0,.14)}
-.main{padding:20px;max-width:1500px}
-.card{padding:14px;margin-bottom:12px;box-shadow:none}
-.topbar{margin-bottom:14px}.topbar h2{font-size:21px}.topbar p{font-size:12px}
-.simple-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px}
-.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-.section-head h3{margin:0;font-size:14px}.section-head span{font-size:11px;color:var(--muted)}
-.compact-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
-.compact-grid .form-group{min-width:0}.form-group label{font-size:11px}
-input,select,textarea{padding:8px 10px;border-radius:9px}
-.calc-layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(320px,.75fr);gap:12px;align-items:start}
-.calc-main,.calc-side{min-width:0}.calc-side{position:sticky;top:12px}
-.upload-mini{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
-.dropzone{min-height:105px}.analysis-grid{grid-template-columns:repeat(4,1fr);margin-top:8px}
-.assistant-card{padding:12px}.assistant-steps{grid-template-columns:repeat(4,1fr);margin:3px 0 9px}.assistant-result{padding:10px}
-.compact-details{border:1px solid var(--border);border-radius:12px;background:var(--card);margin-bottom:12px}
-.compact-details summary{cursor:pointer;list-style:none;padding:12px 14px;font-size:13px;font-weight:800}.compact-details summary::-webkit-details-marker{display:none}
-.compact-details summary:after{content:'＋';float:right;color:var(--muted)}.compact-details[open] summary:after{content:'−'}
-.compact-details .details-body{padding:0 14px 14px}
-.result-hero{background:linear-gradient(135deg,rgba(34,197,94,.10),rgba(14,165,233,.06));border:1px solid rgba(34,197,94,.28);border-radius:14px;padding:15px}
-.result-main{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}.result-label{font-size:11px;color:var(--muted)}.result-price{font-size:32px;font-weight:950;line-height:1.05;margin-top:3px}.result-profit{font-size:13px;color:var(--accent);font-weight:800;margin-top:5px}
-.cost-table{gap:5px;margin-top:10px}.cost-row{padding-bottom:5px;font-size:12px}.total-row{font-size:14px;padding-top:4px}
-.summary-grid{gap:7px;margin-top:10px}.price-card{padding:10px}.price{font-size:19px}.price-card h4{font-size:11px}.profit{font-size:11px}.margin{font-size:10px}
-.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.quick-actions .btn{width:100%}
-.catalog-toolbar{display:grid;grid-template-columns:minmax(220px,2fr) minmax(170px,1fr) auto auto auto;gap:8px;margin-bottom:12px}
-.catalog-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.product-card{border-radius:12px}.product-thumb{height:125px}.product-body{padding:10px}.product-info{margin:8px 0;gap:5px}.product-info div{padding:6px}.product-price{font-size:17px}.product-actions{margin-top:8px}.product-actions .btn{flex:1}
-.sales-layout{display:grid;grid-template-columns:minmax(320px,.8fr) minmax(0,1.5fr);gap:12px;align-items:start}.sales-form{position:sticky;top:12px}.metrics{grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}.metric{padding:11px;border-radius:11px}.metric strong{font-size:18px}
-.order-add{display:grid;grid-template-columns:2fr .7fr 1fr auto;gap:7px;align-items:end}.order-extra{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:10px}.order-summary{padding:10px;margin-top:10px}.sales-list-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.sales-list-head h3{margin:0;font-size:14px}
-@media(max-width:1200px){.catalog-grid{grid-template-columns:repeat(3,1fr)}.calc-layout,.sales-layout{grid-template-columns:1fr}.calc-side,.sales-form{position:static}}
-@media(max-width:900px){.compact-grid{grid-template-columns:repeat(2,1fr)}.catalog-toolbar{grid-template-columns:1fr 1fr}.catalog-toolbar .wide{grid-column:1/-1}.catalog-grid{grid-template-columns:repeat(2,1fr)}.order-extra{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){.main{padding:12px}.upload-mini{grid-template-columns:1fr}.compact-grid,.catalog-grid,.order-add,.order-extra{grid-template-columns:1fr}.catalog-toolbar{grid-template-columns:1fr}.result-main{align-items:flex-start;flex-direction:column}.quick-actions{grid-template-columns:1fr}.analysis-grid{grid-template-columns:1fr 1fr}.metrics{grid-template-columns:1fr 1fr}}
-
-.profit-simulator{border:1px solid rgba(34,197,94,.28);background:linear-gradient(135deg,var(--card),rgba(34,197,94,.035));}
-.simulator-grid{display:grid;grid-template-columns:1.1fr 1.1fr 1fr;gap:10px;align-items:end;}
-.simulator-result{margin-top:12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
-.sim-box{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px;}
-.sim-box span{display:block;color:var(--muted);font-size:10px;}
-.sim-box strong{display:block;margin-top:3px;font-size:18px;}
-.sim-box.highlight{border-color:rgba(34,197,94,.35);}
-.sim-help{color:var(--muted);font-size:11px;line-height:1.4;margin-top:8px;}
-@media(max-width:850px){.simulator-grid,.simulator-result{grid-template-columns:1fr 1fr;}}
-@media(max-width:600px){.simulator-grid,.simulator-result{grid-template-columns:1fr;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}
+.app{min-height:100vh}
+.sidebar{position:fixed;inset:0 auto 0 0;width:210px;background:var(--panel);border-right:1px solid var(--border);padding:18px 12px;z-index:10}
+.brand{padding:5px 8px 22px}.brand h1{font-size:18px;margin:0;font-weight:850}.brand p{margin:4px 0;color:var(--muted);font-size:11px}
+.nav{display:grid;gap:6px}.nav button{border:0;background:transparent;color:var(--muted);padding:11px 12px;border-radius:10px;text-align:left;font-size:14px}
+.nav button:hover,.nav button.active{background:rgba(34,197,94,.1);color:var(--accent);font-weight:750}
+.sidebar-footer{position:absolute;bottom:15px;left:12px;right:12px}
+.main{margin-left:210px;padding:22px;max-width:1450px}
+.page{display:none}.page.active{display:block}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:14px}
+.topbar h2{margin:0;font-size:22px}.topbar p{margin:4px 0;color:var(--muted);font-size:12px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:9px}.grid-2{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(4,1fr)}
+label{display:block;color:var(--muted);font-size:11px;font-weight:700;margin-bottom:5px}
+input,select{width:100%;border:1px solid var(--border);background:var(--card2);color:var(--text);border-radius:9px;padding:9px 10px;outline:0}
+input:focus,select:focus{border-color:var(--blue)}
+input[type=number]{text-align:right;font-variant-numeric:tabular-nums}
+.btn{border:0;border-radius:9px;padding:9px 13px;font-weight:750;font-size:12px}
+.btn-primary{background:var(--accent);color:#052e16}.btn-blue{background:var(--blue);color:#fff}.btn-dark{background:var(--card2);border:1px solid var(--border);color:var(--text)}
+.btn-danger{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:#f87171}
+.btn-warn{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:#fbbf24}
+.actions{display:flex;gap:7px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;background:rgba(34,197,94,.1);color:var(--accent);font-size:10px;font-weight:800}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.section-head h3{margin:0;font-size:14px}.section-head span{font-size:10px;color:var(--muted)}
+.calc-layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(330px,.75fr);gap:12px;align-items:start}
+.sticky{position:sticky;top:12px}
+.dropzone{min-height:135px;border:2px dashed var(--border);background:var(--card2);border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;cursor:pointer}
+.dropzone.drag{border-color:var(--accent);background:rgba(34,197,94,.06)}
+.dropzone strong{display:block;font-size:15px;margin-bottom:4px}.dropzone span{font-size:11px;color:var(--muted)}
+.file-name{margin-top:8px;font-size:11px;color:var(--muted);word-break:break-word}
+.analysis{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:9px}
+.analysis div{background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:8px}
+.analysis small{display:block;color:var(--muted);font-size:9px}.analysis strong{display:block;margin-top:2px;font-size:12px}
+.hero{background:linear-gradient(135deg,rgba(34,197,94,.1),rgba(14,165,233,.06));border:1px solid rgba(34,197,94,.28);border-radius:14px;padding:15px}
+.hero-label{font-size:10px;color:var(--muted)}.hero-price{font-size:34px;font-weight:950;line-height:1.05;margin:4px 0}
+.hero-profit{color:var(--accent);font-weight:800;font-size:12px}
+.costs{margin-top:12px;display:grid;gap:5px}.cost{display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:6px;font-size:12px}.cost:last-child{border:0}.cost span{color:var(--muted)}.cost.total{font-size:14px;color:var(--accent);font-weight:850}
+.price-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}.price-box{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:9px}.price-box small{color:var(--muted);font-size:9px}.price-box strong{display:block;font-size:17px;margin-top:3px}
+.sim{margin-top:10px}.sim-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.sim-result{margin-top:8px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:9px;display:flex;justify-content:space-between;gap:10px;align-items:center}.sim-result span{color:var(--muted);font-size:10px}.sim-result strong{font-size:18px}
+details{border:1px solid var(--border);border-radius:11px;background:var(--card);margin-top:10px}summary{padding:11px 12px;cursor:pointer;font-size:12px;font-weight:800}details>div{padding:0 12px 12px}
+.catalog-toolbar{display:grid;grid-template-columns:minmax(250px,2.4fr) 1.2fr 1fr 1.2fr auto auto;gap:7px;margin-bottom:9px}.catalog-toolbar .search-wrap{position:relative}.catalog-toolbar .search-wrap input{padding-right:34px}.search-clear{position:absolute;right:7px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:14px;display:none}.search-clear.show{display:block}.catalog-subbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:0 0 11px}.catalog-result{font-size:10px;color:var(--muted)}.view-toggle{display:flex;gap:4px}.view-toggle button{min-width:32px;padding:6px 8px;border:1px solid var(--border);border-radius:7px;background:var(--card2);color:var(--muted);cursor:pointer}.view-toggle button.active{border-color:rgba(34,197,94,.5);color:var(--accent);background:rgba(34,197,94,.08)}
+.catalog-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}.product{border:1px solid var(--border);border-radius:13px;background:var(--card);overflow:hidden;transition:.16s;min-width:0}.product:hover{transform:translateY(-2px);border-color:rgba(34,197,94,.35);box-shadow:0 8px 22px rgba(0,0,0,.08)}.thumb{height:145px;background:var(--card2);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}.thumb img{width:100%;height:100%;object-fit:cover}.no-thumb{font-size:36px;opacity:.45}.thumb-badge{position:absolute;top:8px;left:8px;background:rgba(2,6,23,.78);color:#fff;padding:4px 7px;border-radius:6px;font-size:9px;font-weight:800}.thumb-file{position:absolute;right:8px;top:8px;background:rgba(255,255,255,.88);color:#111827;padding:4px 7px;border-radius:6px;font-size:9px;font-weight:800;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.product-body{padding:11px}.product-title{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.product h3{font-size:14px;line-height:1.25;margin:0}.product-code{font-size:9px;color:var(--muted);margin-top:3px;word-break:break-all}.category-pill{display:inline-block;margin-top:6px;padding:3px 7px;border-radius:999px;background:rgba(14,165,233,.09);color:#0ea5e9;font-size:9px;font-weight:800}.meta{font-size:10px;color:var(--muted)}.info{display:grid;grid-template-columns:repeat(2,1fr);gap:5px;margin:9px 0}.info div{background:var(--card2);border-radius:8px;padding:7px}.info small{display:block;color:var(--muted);font-size:8px}.info strong{display:block;font-size:11px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.product-finance{display:grid;grid-template-columns:1fr 1fr;gap:7px;border-top:1px solid var(--border);padding-top:8px}.finance-label{font-size:8px;color:var(--muted)}.product-price{font-size:19px;font-weight:950;color:var(--accent);line-height:1.05}.product-profit{font-size:12px;font-weight:850}.profit-good{color:var(--accent)}.profit-bad{color:#ef4444}.product-actions{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:5px;margin-top:9px}.product-actions .btn{min-width:0;padding:7px 6px;font-size:10px}.catalog-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:10px}.catalog-stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:9px 10px}.catalog-stat small{display:block;color:var(--muted);font-size:9px}.catalog-stat strong{display:block;font-size:15px;margin-top:2px}.empty{text-align:center;color:var(--muted);padding:38px 20px;border:1px dashed var(--border);border-radius:11px;grid-column:1/-1;font-size:12px}.empty strong{display:block;color:var(--text);font-size:14px;margin-bottom:4px}.catalog-grid.list-view{grid-template-columns:1fr}.catalog-grid.list-view .product{display:grid;grid-template-columns:180px 1fr}.catalog-grid.list-view .thumb{height:100%;min-height:150px}.catalog-grid.list-view .info{grid-template-columns:repeat(4,1fr)}
+.mobile-nav{display:none}
+.toast{position:fixed;right:15px;bottom:15px;background:#020617;color:#fff;padding:10px 13px;border-radius:9px;opacity:0;pointer-events:none;transform:translateY(8px);transition:.2s;z-index:50;font-size:12px;max-width:360px}.toast.show{opacity:1;transform:none}
+@media(max-width:1200px){.catalog-grid{grid-template-columns:repeat(3,1fr)}.calc-layout{grid-template-columns:1fr}.sticky{position:static}.catalog-stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){.sidebar{display:none}.main{margin:0;padding:14px 14px 78px}.mobile-nav{display:flex;position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--border);padding:5px;gap:4px;z-index:20}.mobile-nav button{flex:1;border:0;background:transparent;color:var(--muted);padding:7px 2px;border-radius:8px;font-size:9px}.mobile-nav button.active{color:var(--accent);background:rgba(34,197,94,.08)}.catalog-grid{grid-template-columns:repeat(2,1fr)}.catalog-toolbar{grid-template-columns:1fr 1fr}.catalog-toolbar .search-wrap{grid-column:1/-1}.grid-4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.topbar{align-items:flex-start}.topbar h2{font-size:19px}.catalog-grid,.catalog-toolbar,.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.catalog-stats{grid-template-columns:1fr 1fr}.catalog-grid.list-view .product{display:block}.catalog-grid.list-view .thumb{height:145px}.catalog-grid.list-view .info{grid-template-columns:1fr 1fr}.analysis{grid-template-columns:1fr 1fr}.sim-grid{grid-template-columns:1fr}.price-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
 <div class="app">
 <aside class="sidebar">
-    <div class="brand"><h1>uai 3D printing</h1><p>BambuCalc 3D PRO</p></div>
-    <nav class="nav">
-        <button type="button" class="active" data-page="calc">🧮 Calculadora</button>
-        <button type="button" data-page="catalogo">📦 Catálogo</button>
-        <button type="button" data-page="vendas">💰 Vendas</button>
-        <button type="button" data-page="vinted">🛍️ Vinted</button>
-        <button type="button" data-page="atendimento">💬 Atendimento</button>
-        <button type="button" data-page="historico">📊 Histórico</button>
-    </nav>
-    <div class="sidebar-footer">
-        <button type="button" class="theme-btn" id="btnTheme">🌙 Tema</button>
-    </div>
+  <div class="brand"><h1>uai 3D printing</h1><p>BambuCalc 3D PRO</p></div>
+  <nav class="nav">
+    <button class="active" data-page="calc">🧮 Calculadora</button>
+    <button data-page="catalogo">📦 Catálogo</button>
+  </nav>
+  <div class="sidebar-footer"><button class="btn btn-dark" style="width:100%" id="themeBtn">🌙 Tema</button></div>
 </aside>
+
 <main class="main">
 <section id="page-calc" class="page active">
-<div class="topbar"><div><h2>🧮 Calculadora</h2><p>Envie o ficheiro, confirme os dados e veja custo, preço e lucro.</p></div><div id="firebaseStatus" class="connection ok">Modo Local</div></div>
-<div class="calc-layout">
-<div class="calc-main">
-<div class="simple-card"><div class="section-head"><div><h3>📁 Ficheiro 3D</h3><span>3MF, G-code ou STL</span></div><span id="arquivoTipoBadge" class="file-badge">Aguardando</span></div><div class="upload-mini"><div id="dropzone" class="dropzone"><div><strong>Arraste o ficheiro aqui</strong><span>ou clique para selecionar</span><input id="arquivoProjeto" type="file" accept=".3mf,.gcode,.gc,.gco,.stl" style="display:none"></div></div><div class="assistant-result" id="assistantResult"><strong>👋 Pronto</strong><span>Envie um 3MF/G-code para preencher peso, tempo e nome.</span></div></div><div id="analiseStatus" style="margin-top:8px;color:var(--muted);font-size:11px">Nenhum ficheiro analisado.</div><div id="analiseGrid" class="analysis-grid"></div><div id="analysisSource" class="analysis-source"></div></div>
-<div class="simple-card"><div class="section-head"><div><h3>📦 Produto</h3><span>Os dados podem ser preenchidos automaticamente.</span></div><span class="badge" id="assistantModeBadge">Assistente ativo</span></div><div class="compact-grid"><div class="form-group"><label>Nome</label><input id="nomeProduto" type="text" maxlength="120" placeholder="Ex.: Vaso espiral"></div><div class="form-group"><label>Código</label><input id="codigoProduto" type="text" maxlength="60" placeholder="Ex.: VAS-001"></div><div class="form-group"><label>Categoria</label><input id="categoriaProduto" type="text" maxlength="60" placeholder="Ex.: Decoração"></div><div class="form-group"><label>Peso (g)</label><input id="pesoPeca" type="number" min="0" step="0.01" value="0"></div><div class="form-group"><label>Tempo</label><input id="tempoManual" type="text" placeholder="3h18m ou 3:18"></div><div class="form-group"><label>Horas</label><input id="horasPeca" type="number" min="0" step="0.0001" readonly value="0"></div></div><div class="assistant-actions" style="margin-top:10px"><button type="button" class="btn btn-primary" onclick="executarAssistente()">🤖 Calcular automaticamente</button></div></div>
-<div class="simple-card"><div class="section-head"><div><h3>🧵 Filamento</h3><span>Escolha um preset ou ajuste manualmente.</span></div></div><div class="compact-grid"><div class="form-group"><label>Preset</label><select id="filamentoPreset" onchange="aplicarFilamentoPreset()"><option value="">Selecionar...</option></select></div><div class="form-group"><label>Preço do rolo (£)</label><input id="precoRolo" type="number" min="0" step="0.01" value="12.41"></div><div class="form-group"><label>Peso do rolo (g)</label><input id="pesoRolo" type="number" min="1" step="1" value="1000"></div><div class="form-group"><label>&nbsp;</label><button type="button" class="btn btn-secondary" onclick="salvarNovoFilamento()">+ Guardar filamento</button></div></div></div>
-<details class="compact-details"><summary>⚙️ Mais opções de custo e venda</summary><div class="details-body"><div class="compact-grid"><div class="form-group"><label>Potência (W)</label><input id="potenciaWatts" type="number" min="0" step="1" value="80"></div><div class="form-group"><label>Tarifa (£/kWh)</label><input id="tarifaLuz" type="number" min="0" step="0.01" value="0.25"></div><div class="form-group"><label>Máquina (£/h)</label><input id="custoHora" type="number" min="0" step="0.01" value="0.50"></div><div class="form-group"><label>Margem (%)</label><input id="margem" type="number" min="0" step="1" value="60"></div><div class="form-group"><label>Falhas (%)</label><input id="taxaFalha" type="number" min="0" step="0.5" value="5"></div><div class="form-group"><label>Extras (£)</label><input id="custosExtras" type="number" min="0" step="0.01" value="0"></div><div class="form-group"><label>Embalagem (£)</label><input id="embalagem" type="number" min="0" step="0.01" value="0"></div></div><br><div class="compact-grid"><div class="form-group"><label>Link Vinted</label><input id="vintedLink" type="url" placeholder="https://www.vinted.co.uk/..."></div><div class="form-group"><label>Data do anúncio</label><input id="vintedData" type="date"></div><div class="form-group"><label>Imagem</label><input id="produtoImagem" type="url" placeholder="https://..."></div><div class="form-group"><label>Ficheiro externo</label><input id="fileDownloadLink" type="url" placeholder="https://..."></div></div><br><div class="form-group"><label>Observações</label><textarea id="observacoes" maxlength="1000"></textarea></div></div></details>
-</div>
-<div class="calc-side">
-<div class="result-hero"><div class="result-main"><div><div class="result-label">PREÇO IDEAL</div><div class="result-price" id="precoIdeal">£ 0.00</div><div class="result-profit">Lucro: <span id="lucroIdeal">£ 0.00</span> · <span id="margemIdeal">0%</span></div></div><span class="badge">⭐ Recomendado pelo cálculo</span></div><div class="cost-table"><div class="cost-row"><span>Material</span><strong id="custoMaterial">£ 0.00</strong></div><div class="cost-row"><span>Energia</span><strong id="custoEnergiaOut">£ 0.00</strong></div><div class="cost-row"><span>Máquina</span><strong id="custoMaquinaOut">£ 0.00</strong></div><div class="cost-row"><span>Extras + embalagem</span><strong id="custoExtrasOut">£ 0.00</strong></div><div class="cost-row"><span>Reserva falhas</span><strong id="custoFalhaOut">£ 0.00</strong></div><div class="cost-row total-row"><span>CUSTO TOTAL</span><strong id="custoTotal">£ 0.00</strong></div></div><div class="summary-grid"><div class="price-card"><h4>Mínimo</h4><div class="price" id="precoMinimo">£ 0.00</div><div class="profit">Lucro <span id="lucroMinimo">£ 0.00</span></div><div class="margin"><span id="margemMinima">0%</span></div></div><div class="price-card"><h4>Premium</h4><div class="price" id="precoPremium">£ 0.00</div><div class="profit">Lucro <span id="lucroPremium">£ 0.00</span></div><div class="margin"><span id="margemPremium">0%</span></div></div></div></div>
-<div class="simple-card profit-simulator">
-<div class="section-head"><div><h3>🎯 Simulador de Lucro Desejado</h3><span>Defina quanto quer ganhar e veja imediatamente o preço necessário.</span></div><span class="badge">Calculado sobre o custo total</span></div>
-<div class="simulator-grid">
-<div class="form-group"><label>Tipo de objetivo</label><select id="simulatorMode" onchange="updateProfitSimulator()"><option value="profit">Lucro desejado (£)</option><option value="margin">Margem desejada (%)</option></select></div>
-<div class="form-group"><label id="simulatorLabel">Lucro desejado (£)</label><input id="simulatorTarget" type="number" min="0" step="0.01" value="10" oninput="updateProfitSimulator()"></div>
-<div class="form-group"><label>Preço calculado</label><input id="simulatorPriceInput" type="number" min="0" step="0.01" oninput="updateSimulatorFromPrice()"></div>
-</div>
-<div class="simulator-result">
-<div class="sim-box"><span>Custo total</span><strong id="simulatorCost">£ 0.00</strong></div>
-<div class="sim-box highlight"><span>Preço para atingir objetivo</span><strong id="simulatorPrice">£ 0.00</strong></div>
-<div class="sim-box"><span>Lucro resultante</span><strong id="simulatorProfit">£ 0.00</strong></div>
-</div>
-<div class="sim-help" id="simulatorHelp">Ex.: se o custo for £10 e quiser ganhar £10, o preço calculado será £20.</div>
-<div class="quick-actions" style="margin-top:10px"><button type="button" class="btn btn-primary" onclick="aplicarPrecoSimulado()">🎯 Usar este preço</button></div>
-</div>
+  <div class="topbar">
+    <div><h2>🧮 Calculadora</h2><p>Envie o arquivo. O sistema faz o resto.</p></div>
+    <span class="badge" id="statusBadge">Pronto</span>
+  </div>
 
-<div class="quick-actions"><button type="button" class="btn btn-primary" onclick="salvarProduto()">💾 Guardar produto</button><button type="button" class="btn btn-secondary" onclick="registrarHistorico()">📊 Histórico</button><button type="button" class="btn btn-dark" onclick="exportarOrcamento()">📄 Orçamento</button><button type="button" class="btn btn-warning" onclick="limparCalculadora()">🧹 Limpar</button></div>
-</div></div>
+  <div class="calc-layout">
+    <div>
+      <div class="card">
+        <div class="section-head"><div><h3>📁 Arquivo 3D</h3><span>3MF, G-code ou STL</span></div><span id="fileBadge" class="badge">Aguardando</span></div>
+        <div id="dropzone" class="dropzone">
+          <div><strong>Arraste o arquivo aqui</strong><span>ou clique para selecionar</span><input id="fileInput" type="file" accept=".3mf,.gcode,.gc,.gco,.stl" hidden></div>
+        </div>
+        <div id="fileName" class="file-name"></div>
+        <div id="analysisStatus" style="margin-top:8px;font-size:11px;color:var(--muted)">Nenhum arquivo analisado.</div>
+        <div id="analysis" class="analysis"></div>
+      </div>
+
+      <div class="card">
+        <div class="section-head"><div><h3>🤖 Dados automáticos</h3><span>Você pode corrigir qualquer campo.</span></div><span class="badge">Automático</span></div>
+        <div class="grid grid-4">
+          <div><label>Nome do produto</label><input id="name" placeholder="Ex.: Vaso espiral"></div>
+          <div><label>Código</label><input id="code" placeholder="Será gerado automaticamente"></div>
+          <div><label>Categoria</label><input id="category" placeholder="Será sugerida automaticamente"></div>
+          <div><label>Imagem URL (opcional)</label><input id="image" type="url" placeholder="https://..."></div>
+          <div><div><label>Peso (g)</label><input id="weight" type="number" min="0" step="0.01"></div></div>
+          <div><label>Tempo</label><input id="time" placeholder="3h18m ou 3:18"></div>
+          <div><label>Horas calculadas</label><input id="hours" type="number" readonly></div>
+          <div><label>Preço calculado (£)</label><input id="priceManual" type="number" min="0" step="0.01"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-head"><div><h3>🧵 Filamento</h3><span>Preset para acelerar novos cálculos.</span></div></div>
+        <div class="grid grid-3">
+          <div><label>Preset</label><select id="filamentPreset"><option value="">Selecionar...</option></select></div>
+          <div><label>Preço do rolo (£)</label><input id="rollPrice" type="number" min="0" step=".01" value="18"></div>
+          <div><label>Peso do rolo (g)</label><input id="rollWeight" type="number" min="1" step="1" value="1000"></div>
+        </div>
+        <div class="actions" style="margin-top:8px"><button class="btn btn-blue" id="saveFilament">+ Guardar preset</button></div>
+      </div>
+
+      <details>
+        <summary>⚙️ Custos avançados</summary>
+        <div class="grid grid-4">
+          <div><label>Potência (W)</label><input id="watts" type="number" min="0" value="80"></div>
+          <div><label>Eletricidade (£/kWh)</label><input id="tariff" type="number" min="0" step=".01" value=".25"></div>
+          <div><label>Máquina (£/h)</label><input id="machine" type="number" min="0" step=".01" value=".50"></div>
+          <div><label>Margem ideal (%)</label><input id="markup" type="number" min="0" step="1" value="60"></div>
+          <div><label>Reserva falhas (%)</label><input id="failure" type="number" min="0" step=".5" value="5"></div>
+          <div><label>Extras (£)</label><input id="extras" type="number" min="0" step=".01" value="0"></div>
+          <div><label>Embalagem (£)</label><input id="packaging" type="number" min="0" step=".01" value="0"></div>
+        </div>
+      </details>
+
+      <div class="card sim">
+        <div class="section-head"><div><h3>🎯 Preço por objetivo</h3><span>O preço abaixo também é editável.</span></div><span class="badge">Lucro instantâneo</span></div>
+        <div class="sim-grid">
+          <div><label>Objetivo</label><select id="simMode"><option value="profit">Lucro desejado (£)</option><option value="margin">Margem desejada (%)</option></select></div>
+          <div><label id="simLabel">Lucro desejado (£)</label><input id="simTarget" type="number" min="0" step=".01" value="10"></div>
+        </div>
+        <div class="sim-result"><div><span>Preço sugerido</span><strong id="simPrice">£ 0.00</strong></div><div><span>Lucro</span><strong id="simProfit">£ 0.00</strong></div></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="saveProduct">💾 Guardar no catálogo</button>
+        <button class="btn btn-blue" id="newProduct">＋ Novo cálculo</button>
+        <button class="btn btn-dark" id="backup">💾 Backup</button>
+        <button class="btn btn-dark" id="import">📥 Importar</button>
+      </div>
+    </div>
+
+    <aside class="sticky">
+      <div class="hero">
+        <div class="hero-label">PREÇO IDEAL</div>
+        <div class="hero-price" id="ideal">£ 0.00</div>
+        <div class="hero-profit">Lucro: <span id="idealProfit">£ 0.00</span> · Margem <span id="idealMargin">0%</span></div>
+        <div class="costs">
+          <div class="cost"><span>Material</span><strong id="material">£ 0.00</strong></div>
+          <div class="cost"><span>Energia</span><strong id="energy">£ 0.00</strong></div>
+          <div class="cost"><span>Máquina</span><strong id="machineCost">£ 0.00</strong></div>
+          <div class="cost"><span>Extras + embalagem</span><strong id="extraCost">£ 0.00</strong></div>
+          <div class="cost"><span>Reserva de falhas</span><strong id="failureCost">£ 0.00</strong></div>
+          <div class="cost total"><span>CUSTO TOTAL</span><strong id="total">£ 0.00</strong></div>
+        </div>
+        <div class="price-grid">
+          <div class="price-box"><small>Preço mínimo</small><strong id="minimum">£ 0.00</strong></div>
+          <div class="price-box"><small>Preço premium</small><strong id="premium">£ 0.00</strong></div>
+        </div>
+        <div style="margin-top:10px"><label>Preço calculado/editável (£)</label><input id="priceResult" type="number" min="0" step=".01"></div>
+        <div id="priceInfo" style="font-size:11px;color:var(--muted);margin-top:6px">Digite um preço para ver o lucro.</div>
+      </div>
+    </aside>
+  </div>
 </section>
 
 <section id="page-catalogo" class="page">
-<div class="topbar"><div><h2>📦 Catálogo</h2><p>Uma visão simples dos seus produtos.</p></div><div class="actions"><span id="catalogCount" class="badge">0 produtos</span><button type="button" class="btn btn-primary" onclick="novoProdutoRapido()">＋ Novo produto</button></div></div>
-<div class="simple-card"><div class="catalog-toolbar"><input class="wide" id="catalogSearch" type="search" placeholder="🔎 Pesquisar produto..." oninput="renderCatalogo()"><select id="catalogCategory" onchange="renderCatalogo()"><option value="">Todas as categorias</option></select><button type="button" class="btn btn-dark" onclick="renderCatalogo()">↻ Atualizar</button><button type="button" class="btn btn-dark" onclick="exportarBackup()">💾 Backup</button><button type="button" class="btn btn-dark" onclick="importarBackup()">📥 Importar</button></div><div id="catalogGrid" class="catalog-grid"></div></div>
-</section>
-
-<section id="page-vendas" class="page">
-<div class="topbar"><div><h2>💰 Vendas</h2><p>Pedidos, faturamento e lucro em poucos passos.</p></div><button type="button" class="btn btn-primary" onclick="focarNovoPedido()">＋ Novo pedido</button></div>
-<div class="metrics"><div class="metric"><span>Pedidos</span><strong id="metricPedidos">0</strong></div><div class="metric"><span>Itens vendidos</span><strong id="metricVendas">0</strong></div><div class="metric"><span>Faturamento</span><strong id="metricFaturamento">£ 0.00</strong></div><div class="metric"><span>Lucro</span><strong id="metricLucro">£ 0.00</strong></div></div>
-<div class="sales-layout"><div class="sales-form simple-card"><div class="section-head"><div><h3>🧾 Novo pedido</h3><span>Funciona com vários produtos no mesmo pedido.</span></div></div><div class="compact-grid"><div class="form-group"><label>Cliente</label><input id="pedidoCliente" type="text"></div><div class="form-group"><label>Canal</label><select id="pedidoCanal"><option>Vinted</option><option>WhatsApp</option><option>Facebook</option><option>Instagram</option><option>Loja própria</option><option>Outro</option></select></div><div class="form-group"><label>Data</label><input id="pedidoData" type="date"></div><div class="form-group"><label>Status</label><select id="pedidoStatus"><option value="pendente">Pendente</option><option value="pago">Pago</option><option value="producao">Em produção</option><option value="enviado">Enviado</option><option value="concluido">Concluído</option><option value="cancelado">Cancelado</option></select></div></div><div class="order-add" style="margin-top:10px"><div class="form-group"><label>Produto</label><select id="vendaProduto" onchange="preencherPrecoVenda()"><option value="">Selecionar...</option></select></div><div class="form-group"><label>Qtd.</label><input id="vendaQtd" type="number" min="1" step="1" value="1"></div><div class="form-group"><label>Preço unitário (£)</label><input id="vendaPreco" type="number" min="0" step="0.01"></div><button type="button" class="btn btn-primary" onclick="adicionarItemPedido()">+ Adicionar</button></div><div id="pedidoItens" class="order-items" style="margin-top:10px"></div><details class="compact-details" style="margin-top:10px"><summary>⚙️ Frete, desconto e taxas</summary><div class="details-body"><div class="order-extra"><div class="form-group"><label>Frete cobrado</label><input id="pedidoFrete" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="form-group"><label>Custo frete</label><input id="pedidoCustoFrete" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="form-group"><label>Desconto</label><input id="pedidoDesconto" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="form-group"><label>Taxas</label><input id="pedidoTaxas" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div><div class="form-group"><label>Embalagem</label><input id="pedidoEmbalagem" type="number" min="0" step="0.01" value="0" oninput="renderPedidoEditor()"></div></div></div></details><div id="pedidoResumo" class="order-summary"></div><div class="quick-actions"><button type="button" class="btn btn-primary" onclick="salvarPedido()">💾 Guardar pedido</button><button type="button" class="btn btn-warning" onclick="limparPedidoEditor()">🧹 Limpar</button></div></div>
-<div class="simple-card"><div class="sales-list-head"><h3>📋 Pedidos</h3><span class="badge">Mais recentes primeiro</span></div><div class="toolbar"><input id="vendaBusca" type="search" placeholder="🔎 Cliente ou canal..." oninput="renderVendas()"><select id="vendaFiltroStatus" onchange="renderVendas()"><option value="">Todos os status</option><option value="pendente">Pendente</option><option value="pago">Pago</option><option value="producao">Em produção</option><option value="enviado">Enviado</option><option value="concluido">Concluído</option><option value="cancelado">Cancelado</option></select></div><div id="vendasLista" class="list"></div></div></div>
-</section>
-
-<section id="page-vinted" class="page">
-<div class="topbar"><div><h2>🛍️ Vinted</h2><p>Produtos com links de anúncio.</p></div></div>
-<div class="card"><div id="vintedLista" class="list"></div></div>
-</section>
-
-<section id="page-atendimento" class="page">
-<div class="topbar"><div><h2>💬 Atendimento</h2><p>Mensagens prontas em português e inglês.</p></div></div>
-<div class="card"><div class="script-buttons"><button type="button" onclick="selecionarScript('saudacao')">👋 Saudação</button><button type="button" onclick="selecionarScript('pedido')">📦 Pedido</button><button type="button" onclick="selecionarScript('producao')">🖨️ Produção</button><button type="button" onclick="selecionarScript('envio')">🚚 Envio</button><button type="button" onclick="selecionarScript('obrigado')">❤️ Obrigado</button></div><div class="grid grid-2"><div class="form-group"><label>Português</label><textarea id="scriptPT"></textarea></div><div class="form-group"><label>Inglês</label><textarea id="scriptEN"></textarea></div></div><br><div class="actions"><button type="button" class="btn btn-primary" onclick="copiarScript()">📋 Copiar</button><button type="button" class="btn btn-secondary" onclick="abrirWhatsAppScript()">💬 WhatsApp</button></div></div>
-</section>
-
-<section id="page-historico" class="page">
-<div class="topbar"><div><h2>📊 Histórico</h2><p>Registros dos cálculos efetuados.</p></div><div class="actions"><button type="button" class="btn btn-secondary" onclick="exportarHistorico()">📄 CSV</button><button type="button" class="btn btn-danger" onclick="limparHistorico()">🗑️ Limpar</button></div></div>
-<div class="card"><div id="historicoLista" class="list"></div></div>
+  <div class="topbar"><div><h2>📦 Catálogo inteligente</h2><p>Encontre rapidamente qualquer produto e veja custo, preço, lucro e dados da impressão.</p></div><div class="actions"><span class="badge" id="catalogCount">0 produtos</span><button class="btn btn-primary" id="catalogNew">＋ Novo</button></div></div>
+  <div class="catalog-stats"><div class="catalog-stat"><small>Produtos</small><strong id="statProducts">0</strong></div><div class="catalog-stat"><small>Preço do catálogo</small><strong id="statValue">£ 0.00</strong></div><div class="catalog-stat"><small>Custo total</small><strong id="statCost">£ 0.00</strong></div><div class="catalog-stat"><small>Lucro potencial</small><strong id="statProfit">£ 0.00</strong></div></div>
+  <div class="card"><div class="catalog-toolbar"><div class="search-wrap"><input id="search" class="wide" type="search" placeholder="🔎 Nome, código, categoria, material ou impressora..." autocomplete="off"><button class="search-clear" id="searchClear" type="button">✕</button></div><select id="filter"><option value="">Todas as categorias</option></select><select id="formatFilter"><option value="">Todos os formatos</option><option value="3MF">3MF</option><option value="G-code">G-code</option><option value="STL">STL</option></select><select id="sort"><option value="new">Mais recentes</option><option value="name">Nome A-Z</option><option value="price">Preço maior</option><option value="profit">Lucro maior</option><option value="weight">Peso maior</option><option value="time">Tempo maior</option></select><button class="btn btn-dark" id="catalogBackup">💾 Backup</button><button class="btn btn-dark" id="catalogImport">📥 Importar</button></div><div class="catalog-subbar"><span class="catalog-result" id="catalogResult">0 resultados</span><div class="view-toggle"><button id="gridView" class="active" type="button" title="Grade">▦</button><button id="listView" type="button" title="Lista">☷</button></div></div><div id="catalogGrid" class="catalog-grid"></div></div>
 </section>
 </main>
 </div>
 
 <nav class="mobile-nav">
-    <button type="button" class="active" data-page="calc">🧮<br>Calc</button>
-    <button type="button" data-page="catalogo">📦<br>Catálogo</button>
-    <button type="button" data-page="vendas">💰<br>Vendas</button>
-    <button type="button" data-page="vinted">🛍️<br>Vinted</button>
-    <button type="button" data-page="atendimento">💬<br>Chat</button>
-    <button type="button" data-page="historico">📊<br>Hist.</button>
+  <button class="active" data-page="calc">🧮<br>Calc</button>
+  <button data-page="catalogo">📦<br>Catálogo</button>
 </nav>
-
 <div id="toast" class="toast"></div>
 
-<!-- JSZip para leitura de arquivos 3MF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
 <script>
 "use strict";
+const $=id=>document.getElementById(id);
+const money=v=>"£ "+Number(v||0).toFixed(2);
+const uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random();
+const KEY={catalog:"bambucalc_catalog_v17",draft:"bambucalc_draft_v17",filaments:"bambucalc_filaments_v17",theme:"bambucalc_theme_v17"};
+let catalog=[],filaments=[],currentFile=null,currentAnalysis=null,editingId=null,dbPromise=null;
 
-const $ = id => document.getElementById(id);
-const money = v => "£ " + Number(v || 0).toFixed(2);
-const uid = () => crypto.randomUUID ? crypto.randomUUID() : Date.now() + "-" + Math.random();
-const today = () => new Date().toISOString().slice(0, 10);
-const KEY = { theme: "bambu_theme", draft: "bambu_draft", filaments: "bambu_filaments", history: "bambu_history", sales: "bambu_sales" };
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove("show"),2800)}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function safeUrl(v){try{const u=new URL(v);return /^https?:$/.test(u.protocol)?u.href:""}catch{return""}}
+function getLocal(k,d){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch{return d}}
+function setLocal(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{toast("Não foi possível guardar localmente.")}}
+function downloadBlob(blob,name){const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)}
+function downloadText(text,name,type="text/plain;charset=utf-8"){downloadBlob(new Blob([text],{type}),name)}
 
-let catalogo = [], historico = [], vendas = [], filamentos = [], pedidoItens = [], currentFile = null, currentAnalysis = null, editingProductId = null, dbPromise = null;
-
-function esc(v) {
-    return String(v || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+function normalizeNumber(v){
+  if(v==null)return NaN;let s=String(v).trim().replace(/\s/g,"");
+  if(/^-?\d+,\d+$/.test(s))s=s.replace(",",".");
+  else if(/^-?\d{1,3}(?:\.\d{3})+$/.test(s))s=s.replace(/\./g,"");
+  const n=Number(s);return Number.isFinite(n)?n:NaN;
 }
-
-function toast(m) {
-    const t = $("toast");
-    if (!t) return;
-    t.textContent = m;
-    t.classList.add("show");
-    clearTimeout(window.__toast);
-    window.__toast = setTimeout(() => t.classList.remove("show"), 3200);
+function timeUnits(s){
+  s=String(s||"").trim().toLowerCase().replace(/,/g,".");if(!s)return 0;
+  let h=0,m=0,sec=0,found=false,x;
+  x=s.match(/(\d+(?:\.\d+)?)\s*(?:hours?|hrs?|h)\b/);if(x){h=+x[1];found=true}
+  x=s.match(/(\d+(?:\.\d+)?)\s*(?:minutes?|mins?|m)\b/);if(x){m=+x[1];found=true}
+  x=s.match(/(\d+(?:\.\d+)?)\s*(?:seconds?|secs?|s)\b/);if(x){sec=+x[1];found=true}
+  if(found)return h+m/60+sec/3600;
+  x=s.match(/^(\d+)\s*:\s*(\d{1,2})(?::(\d{1,2}))?$/);
+  return x?(x[3]?+x[1]+(+x[2])/60+(+x[3])/3600:+x[1]+(+x[2])/60):0;
 }
-window.toast = toast;
-
-function downloadBlob(blob, name) {
-    const u = URL.createObjectURL(blob), a = document.createElement("a");
-    a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(u), 1000);
+function parseBambuTime(v,key=""){
+  const s=String(v??"").trim(),u=timeUnits(s);if(u>0)return u;
+  const n=normalizeNumber(s);if(!Number.isFinite(n)||n<0)return 0;
+  return /prediction|print_time|estimated|duration|seconds?|time/i.test(key)?n/3600:n;
 }
-
-function downloadText(text, name, type = "text/plain;charset=utf-8") {
-    downloadBlob(new Blob([text], { type }), name);
+function parseTime(v){if(v==null)return 0;if(typeof v==="number")return v>100?v/3600:v;return timeUnits(v)||(+String(v).replace(",","." )||0)}
+function extractTime(text){
+  const s=String(text||""),patterns=[
+    /prediction\s*["']?\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)/i,
+    /total\s+estimated\s+printing\s+time[^:=]*[:=]\s*([^\n\r;}]+)/i,
+    /estimated\s+printing\s+time[^:=]*[:=]\s*([^\n\r;}]+)/i,
+    /estimated\s+print(?:ing)?\s+time[^:=]*[:=]\s*([^\n\r;}]+)/i,
+    /total\s+print(?:ing)?\s+time[^:=]*[:=]\s*([^\n\r;}]+)/i,
+    /print(?:ing)?\s+time[^:=]*[:=]\s*([^\n\r;}]+)/i,
+    /(?:total_time|print_time|estimated_time|printing_time|printTime|totalPrintTime)\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)/i
+  ];
+  for(const r of patterns){const m=s.match(r);if(m){const h=parseBambuTime(m[1],r.source);if(h>0&&h<100000)return h}}
+  let m,re=/(?:["']?)([A-Za-z0-9_ -]*(?:print|printing|estimated|total)[A-Za-z0-9_ -]*(?:time|duration))(?:["']?)\s*[:=]\s*["']?([^"',;\n\r}]+)/gi;
+  while((m=re.exec(s))){const h=parseBambuTime(m[2],m[1]);if(h>0&&h<100000)return h}
+  return 0;
 }
-
-function safeUrl(v) {
-    try {
-        const u = new URL(v);
-        return ["http:", "https:"].includes(u.protocol) ? u.href : "";
-    } catch { return ""; }
+function extractWeight(text){
+  const s=String(text||""),patterns=[
+    /filament\s+used\s*\[\s*g\s*\]\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)/i,
+    /filament\s+used\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)\s*g/i,
+    /(?:total[_\s-]*filament[_\s-]*(?:weight|used)|filament[_\s-]*(?:weight|used)|total[_\s-]*weight|filament_weight)\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)/i
+  ];
+  for(const r of patterns){const m=s.match(r),n=m&&normalizeNumber(m[1]);if(n>0&&n<100000)return n}
+  const vals=[];let m,re=/(?:["']?)(filament[_\s-]*used[_\s-]*g|used_g|filament[_\s-]*weight|total_weight)(?:["']?)\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)/gi;
+  while((m=re.exec(s))){const n=normalizeNumber(m[2]);if(n>0&&n<100000)vals.push(n)}
+  return vals.length?vals.reduce((a,b)=>a+b,0):0;
 }
-
-function formatTime(h) {
-    let m = Math.round(Number(h || 0) * 60);
-    const hh = Math.floor(m / 60);
-    m %= 60;
-    return hh ? `${hh}h ${String(m).padStart(2, "0")}m` : `${m}min`;
+function extractFilament(s){for(const r of [/"filament_type"\s*:\s*\[\s*"([^"]+)/i,/filament_type\s*[:=]\s*["']?([^"',;\n\r}]+)/i,/material\s*[:=]\s*["']?([^"',;\n\r}]+)/i]){const m=String(s||"").match(r);if(m)return m[1].trim().slice(0,80)}return""}
+function extractPrinter(s){for(const r of [/"printer_model"\s*:\s*"([^"]+)/i,/printer_model\s*[:=]\s*["']?([^"',;\n\r}]+)/i]){const m=String(s||"").match(r);if(m)return m[1].trim().slice(0,100)}return""}
+function cleanName(v){return String(v||"").replace(/\.[a-z0-9]{1,8}$/i,"").replace(/[._-]+/g," ").replace(/\s+/g," ").trim().replace(/^\d+[ _-]*/,"").slice(0,120)}
+function suggestName(fileName,text=""){
+  for(const r of [/project_name\s*[:=]\s*["']?([^"',;\n\r}]+)/i,/projectname\s*[:=]\s*["']?([^"',;\n\r}]+)/i,/model_name\s*[:=]\s*["']?([^"',;\n\r}]+)/i,/title\s*[:=]\s*["']?([^"',;\n\r}]+)/i]){
+    const m=String(text||"").match(r);if(m&&cleanName(m[1]))return cleanName(m[1])
+  }
+  return cleanName(fileName)
 }
-
-function normalizarNumero(v) {
-    if (v == null) return NaN;
-    let s = String(v).trim().replace(/\s/g, "");
-    if (/^-?\d+,\d+$/.test(s)) s = s.replace(",", ".");
-    else if (/^-?\d{1,3}(?:\.\d{3})+$/.test(s)) s = s.replace(/\./g, "");
-    const n = Number(s);
-    return Number.isFinite(n) ? n : NaN;
+function suggestCategory(name,text=""){
+  const s=(String(name)+" "+String(text)).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  const rules=[
+    ["Vasos e Plantas",/\b(vaso|vasos|planter|flower|flor|cachepot|pot)\b/],
+    ["Suportes",/\b(suporte|stand|holder|mount|dock|bracket)\b/],
+    ["Organização",/\b(organizador|organizer|storage|caixa|box|case|estojo)\b/],
+    ["Decoração",/\b(decoracao|decor|enfeite|ornamento|ornament|natal|christmas|halloween|pascoa|coelho|abobora|snowflake|floco)\b/],
+    ["Cozinha",/\b(cozinha|kitchen|mug|caneca|copo|plate|prato|utensilio|spoon|colher)\b/],
+    ["Iluminação",/\b(luminaria|lamp|lampada|light|abajur)\b/],
+    ["Acessórios",/\b(chaveiro|keychain|badge|tag|porta[- ]?chave)\b/],
+    ["Brinquedos",/\b(brinquedo|toy|puzzle|jogo|game|fidget|dice|dado)\b/],
+    ["Miniaturas",/\b(miniatura|miniature|figure|figurine|diorama|statue)\b/],
+    ["Cosplay",/\b(cosplay|mascara|mask|helmet|capacete|armor|armadura)\b/],
+    ["Pets",/\b(pet|cachorro|dog|gato|cat|passaro|bird|animal)\b/],
+    ["Ferramentas",/\b(ferramenta|tool|wrench|gabarito|jig)\b/]
+  ];
+  for(const [cat,re] of rules)if(re.test(s))return cat;
+  return "Diversos";
 }
+function formatTime(h){let m=Math.round((+h||0)*60),hh=Math.floor(m/60);m%=60;return hh?`${hh}h ${String(m).padStart(2,"0")}m`:`${m}min`}
 
-function tempoComUnidades(s) {
-    s = String(s || "").trim().toLowerCase().replace(/,/g, ".");
-    if (!s) return 0;
-    let h = 0, m = 0, sec = 0, found = false;
-    let x = s.match(/(\d+(?:\.\d+)?)\s*(?:hours?|hrs?|h)\b/);
-    if (x) { h = +x[1]; found = true; }
-    x = s.match(/(\d+(?:\.\d+)?)\s*(?:minutes?|mins?|m)\b/);
-    if (x) { m = +x[1]; found = true; }
-    x = s.match(/(\d+(?:\.\d+)?)\s*(?:seconds?|secs?|s)\b/);
-    if (x) { sec = +x[1]; found = true; }
-    if (found) return h + m / 60 + sec / 3600;
-    x = s.match(/^(\d+)\s*:\s*(\d{1,2})(?::(\d{1,2}))?$/);
-    if (x) { return x[3] ? +x[1] + +x[2] / 60 + +x[3] / 3600 : +x[1] + +x[2] / 60; }
-    return 0;
-}
-
-function parseBambuTime(v, key = "") {
-    const s = String(v ?? "").trim();
-    if (!s) return 0;
-    const u = tempoComUnidades(s);
-    if (u > 0) return u;
-    const n = normalizarNumero(s);
-    if (!Number.isFinite(n) || n < 0) return 0;
-    return /prediction|print_time|estimated|duration|seconds?|time/.test(key.toLowerCase()) ? n / 3600 : n;
-}
-
-function parseTime(v) {
-    if (v == null) return 0;
-    if (typeof v === "number") return v > 100 ? v / 3600 : v;
-    const s = String(v).trim();
-    return tempoComUnidades(s) || ((Number(s.replace(",", ".")) || 0));
-}
-
-function extractTime(text) {
-    const s = String(text || "");
-    const priority = [
-        /prediction\s*["']?\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)/i,
-        /total\s+estimated\s+printing\s+time[^:=]*[:=]\s*([^\n\r;}]+)/i,
-        /estimated\s+printing\s+time[^:=]*[:=]\s*([^\n\r;}]+)/i,
-        /estimated\s+print(?:ing)?\s+time[^:=]*[:=]\s*([^\n\r;}]+)/i,
-        /total\s+print(?:ing)?\s+time[^:=]*[:=]\s*([^\n\r;}]+)/i,
-        /print(?:ing)?\s+time[^:=]*[:=]\s*([^\n\r;}]+)/i,
-        /(?:total_time|print_time|estimated_time|printing_time|printTime|totalPrintTime)\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)/i
-    ];
-    for (const r of priority) {
-        const m = s.match(r);
-        if (m) {
-            const h = parseBambuTime(m[1], r.source);
-            if (h > 0 && h < 100000) return h;
-        }
+async function parse3MF(file){
+  if(!window.JSZip)throw Error("JSZip não carregado");
+  const zip=await JSZip.loadAsync(file),names=Object.keys(zip.files),get=async n=>zip.files[n]?zip.files[n].async("string"):"";
+  let weight=0,hours=0,filament="",printer="",source="",plates=[];
+  const slice=names.find(n=>/metadata\/slice_info\.config$/i.test(n));
+  if(slice){
+    source="Metadata/slice_info.config";const xml=await get(slice);
+    try{
+      const doc=new DOMParser().parseFromString(xml,"application/xml");
+      // Bambu Studio grava os dados de cada placa dentro de <plate>.
+      // Nunca usamos MAX() entre as placas: para um projeto multi-placas
+      // o peso e o tempo corretos são a soma das placas exportadas.
+      const plateNodes=[...doc.querySelectorAll("plate")];
+      const readMeta=(plate,keyRegex)=>{
+        const n=[...plate.querySelectorAll(":scope > metadata")].find(x=>keyRegex.test(x.getAttribute("key")||""));
+        return n?n.getAttribute("value"):"";
+      };
+      for(let i=0;i<plateNodes.length;i++){
+        const plate=plateNodes[i];
+        const index=normalizeNumber(readMeta(plate,/^index$/i))||i+1;
+        let pw=parseBambuTime(readMeta(plate,/^(?:weight|total_weight|filament_weight)$/i),"weight");
+        // weight é em gramas; parseBambuTime não é apropriado para peso,
+        // portanto lemos novamente como número simples.
+        const weightValue=readMeta(plate,/^(?:weight|total_weight|filament_weight)$/i);
+        pw=normalizeNumber(weightValue);
+        let ph=parseBambuTime(readMeta(plate,/^(?:prediction|print_time|estimated_time|printing_time|total_time)$/i),"prediction");
+        const filaments=[...plate.querySelectorAll(":scope > filament")]
+          .map(n=>normalizeNumber(n.getAttribute("used_g")))
+          .filter(n=>n>0);
+        if(!(pw>0) && filaments.length)pw=filaments.reduce((a,b)=>a+b,0);
+        if(pw>0 || ph>0)plates.push({index,weight:pw>0?pw:0,hours:ph>0?ph:0});
+      }
+      // Compatibilidade com exports em que os metadados não estão diretamente
+      // no elemento <plate> ou em versões que usam uma estrutura diferente.
+      if(!plates.length){
+        const nodes=[...doc.querySelectorAll("metadata")];
+        const weights=nodes.filter(n=>/^(weight|total_weight|filament_weight)$/i.test(n.getAttribute("key")||"")).map(n=>normalizeNumber(n.getAttribute("value"))).filter(n=>n>0);
+        const preds=nodes.filter(n=>/^(prediction|print_time|estimated_time|printing_time|total_time)$/i.test(n.getAttribute("key")||"")).map(n=>parseBambuTime(n.getAttribute("value"),n.getAttribute("key")||"")).filter(n=>n>0);
+        if(weights.length || preds.length)plates=[{index:1,weight:weights.length?Math.max(...weights):0,hours:preds.length?Math.max(...preds):0}];
+        const used=[...doc.querySelectorAll("filament")].map(n=>normalizeNumber(n.getAttribute("used_g"))).filter(n=>n>0);
+        if(plates.length && !(plates[0].weight>0) && used.length)plates[0].weight=used.reduce((a,b)=>a+b,0);
+      }
+      if(plates.length){
+        weight=plates.reduce((sum,p)=>sum+(p.weight||0),0);
+        hours=plates.reduce((sum,p)=>sum+(p.hours||0),0);
+      }
+      filament=extractFilament(xml);printer=extractPrinter(xml);
+    }catch{weight=extractWeight(xml);hours=extractTime(xml)}
+    if(!weight)weight=extractWeight(xml);if(!hours)hours=extractTime(xml);filament=filament||extractFilament(xml);printer=printer||extractPrinter(xml);
+  }
+  // Se slice_info não trouxe todas as placas, procura plate_N.gcode e usa
+  // o G-code como fallback. Não substitui os valores já encontrados.
+  const plateGcodes=names.filter(n=>/metadata\/plate_\d+\.(?:gcode|gc|gco)$/i.test(n));
+  if(plateGcodes.length){
+    const byPlate=new Map(plates.map(p=>[Number(p.index),p]));
+    for(const n of plateGcodes){
+      const m=n.match(/plate_(\d+)\./i),idx=m?Number(m[1]):byPlate.size+1,t=await get(n),w=extractWeight(t),h=extractTime(t);
+      let p=byPlate.get(idx);
+      if(!p){p={index:idx,weight:0,hours:0};byPlate.set(idx,p)}
+      if(!(p.weight>0)&&w>0)p.weight=w;
+      if(!(p.hours>0)&&h>0)p.hours=h;
+      filament=filament||extractFilament(t);
+      printer=printer||extractPrinter(t);
     }
-    let m;
-    const re = /(?:["']?)([A-Za-z0-9_ -]*(?:print|printing|estimated|total)[A-Za-z0-9_ -]*(?:time|duration))(?:["']?)\s*[:=]\s*["']?([^"',;\n\r}]+)/gi;
-    while ((m = re.exec(s))) {
-        const h = parseBambuTime(m[2], m[1]);
-        if (h > 0 && h < 100000) return h;
-    }
-    return 0;
+    plates=[...byPlate.values()].sort((a,b)=>a.index-b.index);
+    const hasPlateValues=plates.some(p=>p.weight>0||p.hours>0);
+    if(hasPlateValues){weight=plates.reduce((sum,p)=>sum+(p.weight||0),0);hours=plates.reduce((sum,p)=>sum+(p.hours||0),0)}
+  }
+  const project=names.find(n=>/project_settings\.config$/i.test(n));
+  if(project){const t=await get(project);filament=filament||extractFilament(t);printer=printer||extractPrinter(t);weight=weight||extractWeight(t);hours=hours||extractTime(t)}
+  return{type:"3MF",weight,hours,filament,printer,source:source||"3MF",embedded:plateGcodes.length||names.filter(n=>/\.(gcode|gc|gco)$/i.test(n)).length,plates,plateCount:plates.length,projectName:""}
+}
+async function parseGCode(file){const t=await file.text();return{type:"G-code",weight:extractWeight(t),hours:extractTime(t),filament:extractFilament(t),printer:extractPrinter(t),source:"G-code",embedded:1,projectName:suggestName(file.name,t)}}
+
+function renderAnalysis(d){
+  const rows=[["Formato",d.type||"-"],["Peso",d.weight>0?d.weight.toFixed(2)+" g":"Não encontrado"],["Tempo",d.hours>0?formatTime(d.hours):"Não encontrado"],["Placas",d.plateCount>0?String(d.plateCount):"1"],["Material",d.filament||"Não detetado"],["Impressora",d.printer||"Não detetada"],["Categoria",d.category||"Diversos"]];
+  $("analysis").innerHTML=rows.map(r=>`<div><small>${esc(r[0])}</small><strong>${esc(r[1])}</strong></div>`).join("");
+  if(d.plateCount>1){
+    const details=d.plates.map(p=>`Placa ${esc(p.index)}: ${p.weight>0?p.weight.toFixed(2)+" g":"—"} · ${p.hours>0?formatTime(p.hours):"—"}`).join("<br>");
+    $("analysis").insertAdjacentHTML("beforeend",`<div style="grid-column:1/-1"><small>Leitura do slicer</small><strong style="font-size:11px;line-height:1.5">${details}<br><b>Total: ${d.weight.toFixed(2)} g · ${formatTime(d.hours)}</b></strong></div>`);
+  }
 }
 
-function extractWeight(text) {
-    const s = String(text || "");
-    const patterns = [
-        /filament\s+used\s*\[\s*g\s*\]\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)/i,
-        /filament\s+used\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)\s*g/i,
-        /(?:total[_\s-]*filament[_\s-]*(?:weight|used)|filament[_\s-]*(?:weight|used)|total[_\s-]*weight|filament_weight)\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)/i
-    ];
-    for (const r of patterns) {
-        const m = s.match(r);
-        if (m) {
-            const n = normalizarNumero(m[1]);
-            if (n > 0 && n < 100000) return n;
-        }
-    }
-    const vals = [];
-    let m;
-    const re = /(?:["']?)(filament[_\s-]*used[_\s-]*g|used_g|filament[_\s-]*weight|total_weight)(?:["']?)\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)/gi;
-    while ((m = re.exec(s))) {
-        const n = normalizarNumero(m[2]);
-        if (n > 0 && n < 100000) vals.push(n);
-    }
-    return vals.length ? vals.reduce((a, b) => a + b, 0) : 0;
+async function analyze(file){
+  currentFile=file;currentAnalysis=null;$("fileName").textContent=file.name;$("analysisStatus").textContent="⏳ A analisar localmente...";$("statusBadge").textContent="A analisar";$("fileBadge").textContent="A analisar";
+  const ext=file.name.toLowerCase().split(".").pop();
+  try{
+    let d=ext==="3mf"?await parse3MF(file):ext==="stl"?{type:"STL",weight:0,hours:0,filament:"",printer:"",source:"STL",embedded:0,projectName:""}:await parseGCode(file);
+    const name=suggestName(file.name,d.projectName||"");d.productName=name;d.category=suggestCategory(name,d.filament||"");currentAnalysis=d;
+    $("name").value=name;
+    $("category").value=d.category;
+    $("code").value=makeCode(name);
+    if(d.weight>0)$("weight").value=d.weight.toFixed(2);
+    if(d.hours>0){$("hours").value=d.hours.toFixed(4);$("time").value=formatTime(d.hours)}
+    renderAnalysis(d);calc();
+    const ok=d.weight>0&&d.hours>0;
+    $("analysisStatus").textContent=ext==="stl"?"ℹ️ STL não guarda peso/tempo. Nome e categoria foram sugeridos.":ok?"✅ Peso e tempo encontrados automaticamente.":"⚠️ Dados parciais encontrados. Confira os campos.";
+    $("statusBadge").textContent=ok?"Calculado":"Revisar";
+    $("fileBadge").textContent=ok?"Dados encontrados":"Dados parciais";
+    saveDraft();toast(ok?"Arquivo analisado e preço calculado.":"Arquivo analisado; revise os dados.");
+  }catch(e){console.error(e);$("analysisStatus").textContent="❌ Falha ao analisar o arquivo.";toast("Não foi possível analisar o arquivo.")}
+}
+function makeCode(name){return String(name||"PRODUTO").toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^A-Z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,24)||"PRODUTO"}
+
+function calc(){
+  const weight=Math.max(0,+$("weight").value||0),rollPrice=Math.max(0,+$("rollPrice").value||0),rollWeight=Math.max(1,+$("rollWeight").value||1000);
+  const h=parseTime($("time").value)||Math.max(0,+$("hours").value||0),watts=Math.max(0,+$("watts").value||0),tariff=Math.max(0,+$("tariff").value||0),machine=Math.max(0,+$("machine").value||0),markup=Math.max(0,+$("markup").value||0),failure=Math.max(0,+$("failure").value||0),extras=Math.max(0,+$("extras").value||0),packaging=Math.max(0,+$("packaging").value||0);
+  if(h>0)$("hours").value=h.toFixed(4);
+  const material=weight*(rollPrice/rollWeight),energy=watts/1000*h*tariff,machineCost=h*machine,extraCost=extras+packaging,base=material+energy+machineCost+extraCost,failureCost=base*failure/100,total=base+failureCost;
+  const minimum=total*1.2,ideal=total*(1+markup/100),premium=ideal*1.25,profit=ideal-total,margin=ideal?profit/ideal*100:0;
+  $("material").textContent=money(material);$("energy").textContent=money(energy);$("machineCost").textContent=money(machineCost);$("extraCost").textContent=money(extraCost);$("failureCost").textContent=money(failureCost);$("total").textContent=money(total);$("minimum").textContent=money(minimum);$("ideal").textContent=money(ideal);$("premium").textContent=money(premium);$("idealProfit").textContent=money(profit);$("idealMargin").textContent=margin.toFixed(1)+"%";
+  if(document.activeElement!==$("priceResult"))$("priceResult").value=ideal.toFixed(2);
+  updatePriceInfo(total);
+  updateSimulator(total);
+  saveDraft();
+  return{weight,h,material,energy,machineCost,extraCost,failureCost,total,minimum,ideal,premium,profitIdeal:profit};
+}
+function updatePriceInfo(cost){
+  const p=Math.max(0,+$("priceResult").value||0),profit=p-cost,margin=p?profit/p*100:0;
+  $("priceInfo").textContent=`Preço ${money(p)} → lucro ${money(profit)} · margem ${margin.toFixed(1)}%`;
+}
+function updateSimulator(cost){
+  const target=Math.max(0,+$("simTarget").value||0),mode=$("simMode").value;
+  let price=cost;
+  if(mode==="profit"){$("simLabel").textContent="Lucro desejado (£)";price=cost+target}
+  else{$("simLabel").textContent="Margem desejada (%)";const m=Math.min(99.99,target);price=cost/(1-m/100)}
+  const profit=price-cost;$("simPrice").textContent=money(price);$("simProfit").textContent=money(profit);
+}
+function applySimPrice(){$("priceResult").value=$("simPrice").textContent.replace("£","").trim();updatePriceInfo(calc().total)}
+
+function saveDraft(){
+  const ids=["name","code","category","image","weight","time","hours","rollPrice","rollWeight","watts","tariff","machine","markup","failure","extras","packaging","priceResult","simMode","simTarget"];
+  const d={};ids.forEach(id=>d[id]=$(id).value);setLocal(KEY.draft,d)
+}
+function loadDraft(){
+  const d=getLocal(KEY.draft,{});
+  Object.entries(d).forEach(([k,v])=>$(k)&&( $(k).value=v ));
+}
+function clearCalc(){
+  editingId=null;currentFile=null;currentAnalysis=null;
+  ["name","code","category","image","weight","time","hours","priceResult"].forEach(id=>$(id).value="");
+  $("analysis").innerHTML="";$("fileName").textContent="";$("analysisStatus").textContent="Nenhum arquivo analisado.";$("fileBadge").textContent="Aguardando";$("statusBadge").textContent="Pronto";$("fileInput").value="";
+  calc();$("name").focus()
 }
 
-function extractFilament(s) {
-    for (const r of [/"filament_type"\s*:\s*\[\s*"([^"]+)/i, /filament_type\s*[:=]\s*["']?([^"',;\n\r}]+)/i, /material\s*[:=]\s*["']?([^"',;\n\r}]+)/i]) {
-        const m = String(s || "").match(r);
-        if (m) return m[1].trim().slice(0, 80);
-    }
-    return "";
+function initFilaments(){
+  filaments=getLocal(KEY.filaments,[{id:uid(),name:"PLA",price:18,weight:1000}]);
+  const s=$("filamentPreset");s.innerHTML='<option value="">Selecionar...</option>'+filaments.map(f=>`<option value="${esc(f.id)}">${esc(f.name)} — ${money(f.price)}/kg</option>`).join("")
+}
+$("filamentPreset").addEventListener("change",()=>{const f=filaments.find(x=>x.id===$("filamentPreset").value);if(!f)return;$("rollPrice").value=f.price;$("rollWeight").value=f.weight;calc()});
+$("saveFilament").addEventListener("click",()=>{const name=prompt("Nome do filamento:","PLA");if(!name)return;const f={id:uid(),name:name.trim(),price:+$("rollPrice").value||0,weight:+$("rollWeight").value||1000};filaments.push(f);setLocal(KEY.filaments,filaments);initFilaments();$("filamentPreset").value=f.id;toast("Preset guardado.")});
+
+const DB="BambuCalc3D_Files_v17",STORE="files";
+function idb(){if(dbPromise)return dbPromise;dbPromise=new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>r.result.createObjectStore(STORE,{keyPath:"id"});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});return dbPromise}
+async function filePut(o){const db=await idb();return new Promise((res,rej)=>{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).put(o);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}
+async function fileGet(id){if(!id)return null;const db=await idb();return new Promise((res,rej)=>{const r=db.transaction(STORE).objectStore(STORE).get(id);r.onsuccess=()=>res(r.result||null);r.onerror=()=>rej(r.error)})}
+async function fileDel(id){if(!id)return;const db=await idb();return new Promise((res,rej)=>{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).delete(id);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}
+
+async function saveProduct(){
+  const v=calc(),name=$("name").value.trim()||"Produto sem nome";
+  if(v.weight<=0&&v.h<=0){toast("Informe peso ou tempo antes de guardar.");return}
+  const id=editingId||uid();let fileId=editingId?(catalog.find(x=>x.id===editingId)?.fileId||null):null;
+  if(currentFile){fileId=uid();await filePut({id:fileId,name:currentFile.name,type:currentFile.type||"application/octet-stream",blob:currentFile,size:currentFile.size})}
+  const price=Math.max(0,+$("priceResult").value||v.ideal);
+  const item={id,name,code:$("code").value.trim()||makeCode(name),category:$("category").value.trim()||suggestCategory(name),image:$("image").value.trim(),weight:v.weight,hours:v.h,cost:v.total,price,profit:price-v.total,analysis:currentAnalysis,fileId,fileName:currentFile?.name||((editingId&&catalog.find(x=>x.id===editingId)?.fileName)||""),fileType:currentFile?.name?.split(".").pop()?.toUpperCase()||((editingId&&catalog.find(x=>x.id===editingId)?.fileType)||currentAnalysis?.type||""),updatedAt:new Date().toISOString(),createdAt:editingId?(catalog.find(x=>x.id===editingId)?.createdAt||new Date().toISOString()):new Date().toISOString()};
+  if(editingId)catalog=catalog.map(x=>x.id===id?item:x);else catalog=[item,...catalog];
+  setLocal(KEY.catalog,catalog);editingId=null;renderCatalog();toast("Produto guardado no catálogo.");openPage("catalogo")
+}
+function catalogText(p){const a=p.analysis||{};return[p.name,p.code,p.category,p.fileName,p.fileType,a.type,a.filament,a.printer].filter(Boolean).join(" ").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
+function formatDate(v){if(!v)return"";try{return new Intl.DateTimeFormat("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric"}).format(new Date(v))}catch{return""}}
+function formatType(p){return(p.fileType||p.analysis?.type||"").toUpperCase()||"3D"}
+function renderCatalog(){
+  catalog=getLocal(KEY.catalog,[]);
+  const q=$("search").value.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  const cat=$("filter").value,fmt=$("formatFilter").value,sort=$("sort").value;
+  const cats=[...new Set(catalog.map(p=>p.category).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  $("filter").innerHTML='<option value="">Todas as categorias</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");$("filter").value=cat;
+  let list=catalog.filter(p=>{const a=p.analysis||{},type=String(p.fileType||a.type||"").toUpperCase();return(!q||catalogText(p).includes(q))&&(!cat||p.category===cat)&&(!fmt||type===fmt.toUpperCase())});
+  if(sort==="name")list.sort((a,b)=>String(a.name).localeCompare(String(b.name)));if(sort==="price")list.sort((a,b)=>(b.price||0)-(a.price||0));if(sort==="profit")list.sort((a,b)=>(b.profit||0)-(a.profit||0));if(sort==="weight")list.sort((a,b)=>(b.weight||0)-(a.weight||0));if(sort==="time")list.sort((a,b)=>(b.hours||0)-(a.hours||0));if(sort==="new")list.sort((a,b)=>new Date(b.updatedAt||b.createdAt||0)-new Date(a.updatedAt||a.createdAt||0));
+  const totalValue=catalog.reduce((a,p)=>a+(+p.price||0),0),totalCost=catalog.reduce((a,p)=>a+(+p.cost||0),0),totalProfit=catalog.reduce((a,p)=>a+(+p.profit||0),0);
+  $("catalogCount").textContent=`${catalog.length} produto${catalog.length===1?"":"s"}`;$("statProducts").textContent=String(catalog.length);$("statValue").textContent=money(totalValue);$("statCost").textContent=money(totalCost);$("statProfit").textContent=money(totalProfit);$("catalogResult").textContent=`${list.length} resultado${list.length===1?"":"s"}${q?` para “${$("search").value.trim()}”`:""}`;$("searchClear").classList.toggle("show",!!$("search").value);
+  const grid=$("catalogGrid"),listMode=getLocal("bambucalc_catalog_view_v18","grid")==="list";grid.classList.toggle("list-view",listMode);$("gridView").classList.toggle("active",!listMode);$("listView").classList.toggle("active",listMode);
+  if(!list.length){grid.innerHTML=`<div class="empty"><strong>${catalog.length?"Nenhum produto corresponde à busca":"Seu catálogo ainda está vazio"}</strong><span>${catalog.length?"Tente outro nome, código, categoria, material ou formato.":"Guarde um produto pela Calculadora para ele aparecer aqui."}</span></div>`;return}
+  grid.innerHTML=list.map(p=>{const a=p.analysis||{},url=safeUrl(p.image),thumb=url?`<img src="${esc(url)}" alt="${esc(p.name)}" loading="lazy">`:'<div class="no-thumb">📦</div>',type=esc(formatType(p)),plates=Number(a.plateCount||p.plateCount||0),plateText=plates>1?`${plates} placas`:plates===1?"1 placa":"—",margin=(+p.price||0)?((+p.profit||0)/(+p.price||1)*100):0,profitClass=(+p.profit||0)>=0?"profit-good":"profit-bad",fileLabel=p.fileName?esc(p.fileName.length>22?p.fileName.slice(0,19)+"…":p.fileName):type;return `<article class="product"><div class="thumb">${thumb}<span class="thumb-badge">${type}</span><span class="thumb-file">${fileLabel}</span></div><div class="product-body"><div class="product-title"><div><h3>${esc(p.name||"Produto sem nome")}</h3><div class="product-code">${esc(p.code||"Sem código")}</div></div></div><span class="category-pill">${esc(p.category||"Diversos")}</span><div class="info"><div><small>⚖ Peso</small><strong>${(+p.weight||0).toFixed(2)} g</strong></div><div><small>⏱ Tempo</small><strong>${formatTime(p.hours)}</strong></div><div><small>💷 Custo</small><strong>${money(p.cost)}</strong></div><div><small>▣ Placas</small><strong>${plateText}</strong></div></div><div class="meta" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">${a.filament?`<span>🧵 ${esc(a.filament)}</span>`:""}${a.printer?`<span>🖨️ ${esc(a.printer)}</span>`:""}${p.updatedAt?`<span>📅 ${formatDate(p.updatedAt)}</span>`:""}</div><div class="product-finance"><div><div class="finance-label">PREÇO DE VENDA</div><div class="product-price">${money(p.price)}</div></div><div><div class="finance-label">LUCRO · MARGEM</div><div class="product-profit ${profitClass}">${money(p.profit)}</div><div class="finance-label">${margin.toFixed(1)}%</div></div></div><div class="product-actions"><button class="btn btn-blue" onclick="editProduct('${p.id}')">✏️ Editar</button><button class="btn btn-dark" onclick="downloadProduct('${p.id}')">⬇️ Arquivo</button><button class="btn btn-danger" onclick="deleteProduct('${p.id}')">🗑️</button></div></div></article>`}).join("");
+}
+async function editProduct(id){
+  const p=catalog.find(x=>x.id===id);if(!p)return;editingId=id;currentFile=null;currentAnalysis=p.analysis||null;
+  const map={name:p.name,code:p.code,category:p.category,image:p.image||"",weight:p.weight,time:formatTime(p.hours),hours:p.hours,priceResult:p.price};
+  Object.entries(map).forEach(([k,v])=>$(k).value=v??"");
+  if(p.analysis)renderAnalysis({...p.analysis,category:p.category});
+  $("fileName").textContent=p.analysis?.type?`Dados salvos do produto (${p.analysis.type})`:"";
+  calc();openPage("calc");toast("Produto carregado para edição.")
+}
+async function downloadProduct(id){
+  const p=catalog.find(x=>x.id===id);if(!p?.fileId){toast("Este produto não possui arquivo local.");return}
+  const f=await fileGet(p.fileId);if(!f){toast("Arquivo não encontrado.");return}downloadBlob(f.blob,f.name)
+}
+async function deleteProduct(id){
+  if(!confirm("Excluir este produto do catálogo?"))return;const p=catalog.find(x=>x.id===id);catalog=catalog.filter(x=>x.id!==id);setLocal(KEY.catalog,catalog);if(p?.fileId)await fileDel(p.fileId);renderCatalog();toast("Produto excluído.")
 }
 
-function extractPrinter(s) {
-    for (const r of [/"printer_model"\s*:\s*"([^"]+)/i, /printer_model\s*[:=]\s*["']?([^"',;\n\r}]+)/i]) {
-        const m = String(s || "").match(r);
-        if (m) return m[1].trim().slice(0, 100);
-    }
-    return "";
+function backup(){
+  downloadText(JSON.stringify({version:17,exportedAt:new Date().toISOString(),catalog,filaments},null,2),`bambucalc_backup_${new Date().toISOString().slice(0,10)}.json`,"application/json")
+}
+function importBackup(){
+  const i=document.createElement("input");i.type="file";i.accept=".json,application/json";i.onchange=async()=>{const f=i.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!Array.isArray(d.catalog))throw Error();catalog=d.catalog;filaments=Array.isArray(d.filaments)?d.filaments:filaments;setLocal(KEY.catalog,catalog);setLocal(KEY.filaments,filaments);initFilaments();renderCatalog();toast("Backup importado.")}catch{toast("Backup inválido.")}};i.click()
 }
 
-function limparNomeProduto(v) {
-    return String(v || "").replace(/\.[a-z0-9]{1,8}$/i, "").replace(/[._-]+/g, " ").replace(/\s+/g, " ").trim().replace(/^\d+[ _-]*/, "").slice(0, 120);
+function openPage(page){
+  document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id==="page-"+page));
+  document.querySelectorAll("[data-page]").forEach(x=>x.classList.toggle("active",x.dataset.page===page));
+  if(page==="catalogo")renderCatalog();window.scrollTo({top:0,behavior:"smooth"})
 }
-
-function sugerirNomeProduto(fileName, text = "") {
-    const candidates = [];
-    const source = String(text || "");
-    for (const r of [/project_name\s*[:=]\s*["']?([^"',;\n\r}]+)/i, /projectname\s*[:=]\s*["']?([^"',;\n\r}]+)/i, /model_name\s*[:=]\s*["']?([^"',;\n\r}]+)/i, /title\s*[:=]\s*["']?([^"',;\n\r}]+)/i]) {
-        const m = source.match(r);
-        if (m && m[1]) candidates.push(m[1]);
-    }
-    candidates.push(fileName);
-    for (const c of candidates) {
-        const n = limparNomeProduto(c);
-        if (n && n.length > 1) return n;
-    }
-    return "";
-}
-
-function preencherNomeAutomatico(nome, forcar = false) {
-    const el = $("nomeProduto");
-    if (!el || !nome) return false;
-    const atual = String(el.value || "").trim();
-    if (forcar || !atual || atual === "Produto sem nome") {
-        el.value = limparNomeProduto(nome);
-        return true;
-    }
-    return false;
-}
-
-function preencherCategoriaAutomatica(cat, forcar = false) {
-    const el = $("categoriaProduto");
-    if (!el || !cat) return false;
-    const atual = String(el.value || "").trim();
-    if (forcar || !atual) {
-        el.value = cat;
-        return true;
-    }
-    return false;
-}
-
-function sugerirCategoria(nome, text = "") {
-    const s = (String(nome || "") + " " + String(text || "")).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    const regras = [
-        ["Vasos e Plantas", /\b(vaso|vasos|planter|flower|flor|cachepot|pot)\b/],
-        ["Suportes", /\b(suporte|suportes|stand|holder|mount|dock|bracket)\b/],
-        ["Organização", /\b(organizador|organizadores|organizer|storage|caixa|box|case|estojo)\b/],
-        ["Decoração", /\b(decoracao|decor|enfeite|ornamento|ornament|natal|christmas|halloween|pascoa|coelho|abobora|snowflake|floco)\b/],
-        ["Cozinha", /\b(cozinha|kitchen|mug|caneca|copo|plate|prato|utensilio|spoon|colher)\b/],
-        ["Iluminação", /\b(luminaria|lamp|lampada|light|abajur)\b/],
-        ["Acessórios", /\b(chaveiro|keychain|key ring|badge|tag|porta[- ]?chave)\b/],
-        ["Brinquedos", /\b(brinquedo|toy|puzzle|jogo|game|fidget|dice|dado)\b/],
-        ["Miniaturas", /\b(miniatura|miniature|figure|figurine|diorama|statue)\b/],
-        ["Cosplay", /\b(cosplay|mascara|mask|helmet|capacete|armor|armadura)\b/],
-        ["Pets", /\b(pet|cachorro|dog|gato|cat|passaro|bird|animal)\b/],
-        ["Ferramentas", /\b(ferramenta|tool|wrench|chave|gabarito|jig)\b/]
-    ];
-    for (const [cat, re] of regras) if (re.test(s)) return cat;
-    return "Diversos";
-}
-
-async function parse3MF(file) {
-    if (window.JSZip) {
-        const zip = await JSZip.loadAsync(file);
-        const names = Object.keys(zip.files);
-        const get = async n => zip.files[n] ? zip.files[n].async("string") : "";
-        let weight = 0, hours = 0, filament = "", printer = "", source = "";
-        const sliceName = names.find(n => /metadata\/slice_info\.config$/i.test(n));
-        if (sliceName) {
-            source = "Metadata/slice_info.config";
-            const xml = await get(sliceName);
-            try {
-                const doc = new DOMParser().parseFromString(xml, "application/xml");
-                const nodes = [...doc.querySelectorAll("metadata")];
-                const weights = nodes.filter(n => /^(weight|total_weight|filament_weight)$/i.test(n.getAttribute("key") || "")).map(n => normalizarNumero(n.getAttribute("value"))).filter(n => n > 0);
-                const preds = nodes.filter(n => /^(prediction|print_time|estimated_time|printing_time|total_time)$/i.test(n.getAttribute("key") || "")).map(n => parseBambuTime(n.getAttribute("value"), n.getAttribute("key") || "")).filter(n => n > 0);
-                weight = weights.length ? Math.max(...weights) : 0;
-                hours = preds.length ? Math.max(...preds) : 0;
-                const used = [...doc.querySelectorAll("filament")].map(n => normalizarNumero(n.getAttribute("used_g"))).filter(n => n > 0);
-                if (!weight && used.length) weight = used.reduce((a, b) => a + b, 0);
-            } catch (e) { weight = extractWeight(xml); hours = extractTime(xml); }
-            if (!weight) weight = extractWeight(xml);
-            if (!hours) hours = extractTime(xml);
-            filament = extractFilament(xml);
-            printer = extractPrinter(xml);
-        }
-        const project = names.find(n => /project_settings\.config$/i.test(n));
-        if (project) {
-            const t = await get(project);
-            filament = filament || extractFilament(t);
-            printer = printer || extractPrinter(t);
-            weight = weight || extractWeight(t);
-            hours = hours || extractTime(t);
-        }
-        const gcodes = names.filter(n => /\.(gcode|gc|gco)$/i.test(n));
-        for (const n of gcodes) {
-            const t = await get(n);
-            const w = extractWeight(t), h = extractTime(t);
-            if (!weight && w) weight = w;
-            if (!hours && h) hours = h;
-            filament = filament || extractFilament(t);
-        }
-        return { type: "3MF", weight, hours, filament, printer, source: source || "3MF", embedded: gcodes.length, projectName: "" };
-    }
-    throw new Error("JSZip não carregado.");
-}
-
-async function parseGCode(file) {
-    const t = await file.text();
-    return { type: "G-code", weight: extractWeight(t), hours: extractTime(t), filament: extractFilament(t), printer: extractPrinter(t), source: "G-code", embedded: 1, projectName: sugerirNomeProduto(file.name, t) };
-}
-
-async function analyzeFile(file) {
-    currentFile = file; currentAnalysis = null;
-    $("arquivoTipoBadge").textContent = "A a analisar...";
-    $("analiseStatus").textContent = "⏳ A analisar ficheiro localmente...";
-    $("analiseGrid").innerHTML = "";
-    setAssistantStep(1);
-    const ext = file.name.toLowerCase().split('.').pop();
-    if (ext === 'stl') {
-        const autoName = sugerirNomeProduto(file.name);
-        preencherNomeAutomatico(autoName, true);
-        preencherCategoriaAutomatica(sugerirCategoria(autoName), true);
-        currentAnalysis = { type: 'STL', weight: 0, hours: 0, filament: '', printer: '', source: 'STL', embedded: 0, productName: $('nomeProduto').value || autoName, category: $('categoriaProduto').value || sugerirCategoria(autoName) };
-        renderAnalysis(currentAnalysis);
-        $('analiseStatus').textContent = 'ℹ️ STL não contém dados de peso/tempo. Nome e categoria sugeridos.';
-        saveDraft(); updateAssistant(); return;
-    }
-    try {
-        const d = ext === '3mf' ? await parse3MF(file) : await parseGCode(file);
-        const autoName = sugerirNomeProduto(file.name, d.projectName || '');
-        const autoCategory = sugerirCategoria(autoName, d.filament || '');
-        d.productName = autoName; d.category = autoCategory; currentAnalysis = d;
-        if (d.weight > 0) $('pesoPeca').value = d.weight.toFixed(2);
-        if (d.hours > 0) { $('horasPeca').value = d.hours.toFixed(4); $('tempoManual').value = formatTime(d.hours); }
-        preencherNomeAutomatico(autoName, true);
-        if (!$('codigoProduto').value && autoName) $('codigoProduto').value = autoName.toUpperCase().replace(/[^A-Z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 30);
-        preencherCategoriaAutomatica(autoCategory, true);
-        renderAnalysis(d); calc(); saveDraft();
-        const complete = d.weight > 0 && d.hours > 0;
-        $('analiseStatus').textContent = complete ? '✅ Dados detetados com sucesso!' : '⚠️ Dados parciais detetados. Confira se necessário.';
-        setAssistantStep(2); updateAssistant();
-        toast(complete ? 'Ficheiro analisado com sucesso!' : 'Nome e categoria sugeridos.');
-    } catch (e) {
-        console.error(e);
-        $('analiseStatus').textContent = '❌ Não foi possível analisar o ficheiro.';
-        $('analysisSource').textContent = 'Tente outro ficheiro ou preencha manualmente.';
-        updateAssistant(); toast('Falha na análise.');
-    }
-}
-
-function renderAnalysis(d) {
-    const rows = [
-        ["Formato", d.type || "-"],
-        ["Peso", d.weight > 0 ? d.weight.toFixed(2) + " g" : "Não encontrado"],
-        ["Tempo", d.hours > 0 ? formatTime(d.hours) : "Não encontrado"],
-        ["Material", d.filament || "Não detetado"],
-        ["Impressora", d.printer || "Não detetada"],
-        ["Nome sugerido", d.productName || "-"],
-        ["Categoria", d.category || "Diversos"]
-    ];
-    $("arquivoTipoBadge").textContent = d.weight > 0 && d.hours > 0 ? "Dados encontrados" : "Dados parciais";
-    $("analiseGrid").innerHTML = rows.map(r => `<div class="analysis-item"><div class="label">${esc(r[0])}</div><div class="value">${esc(r[1])}</div></div>`).join("");
-    $("analysisSource").textContent = "Fonte: " + (d.source || "-");
-}
-
-const dz = $("dropzone"), fi = $("arquivoProjeto");
-dz.addEventListener("click", () => fi.click());
-fi.addEventListener("change", e => e.target.files[0] && analyzeFile(e.target.files[0]));
-["dragenter", "dragover"].forEach(x => dz.addEventListener(x, e => { e.preventDefault(); dz.classList.add("dragover"); }));
-["dragleave", "drop"].forEach(x => dz.addEventListener(x, e => { e.preventDefault(); dz.classList.remove("dragover"); }));
-dz.addEventListener("drop", e => e.dataTransfer.files[0] && analyzeFile(e.dataTransfer.files[0]));
-
-function calc() {
-    const peso = +$('pesoPeca').value || 0, pr = +$('precoRolo').value || 0, gr = +$('pesoRolo').value || 1000, h = parseTime($('tempoManual').value) || (+$('horasPeca').value || 0), w = +$('potenciaWatts').value || 0, tar = +$('tarifaLuz').value || 0, mh = +$('custoHora').value || 0, mg = +$('margem').value || 0, fail = +$('taxaFalha').value || 0, extra = +$('custosExtras').value || 0, emb = +$('embalagem').value || 0;
-    const material = peso * (pr / gr), energy = w / 1000 * h * tar, machine = h * mh, extras = extra + emb, base = material + energy + machine + extras, failure = base * fail / 100, total = base + failure, min = total * 1.2, ideal = total * (1 + mg / 100), premium = ideal * 1.25;
-    const out = { peso, hours: h, precoRolo: pr, pesoRolo: gr, custoMaterial: material, custoEnergia: energy, custoMaquina: machine, custosExtras: extras, custoFalha: failure, total, minimum: min, ideal, premium, profitMinimum: min - total, profitIdeal: ideal - total, profitPremium: premium - total, marginMinimum: min ? (min - total) / min * 100 : 0, marginIdeal: ideal ? (ideal - total) / ideal * 100 : 0, marginPremium: premium ? (premium - total) / premium * 100 : 0 };
-    $('horasPeca').value = h.toFixed(4);$('custoMaterial').textContent = money(material);
-    $('custoEnergiaOut').textContent = money(energy);$('custoMaquinaOut').textContent = money(machine);
-    $('custoExtrasOut').textContent = money(extras);$('custoFalhaOut').textContent = money(failure);
-    $('custoTotal').textContent = money(total);$('precoMinimo').textContent = money(min);
-    $('precoIdeal').textContent = money(ideal);$('precoPremium').textContent = money(premium);
-    $('lucroMinimo').textContent = money(min - total);$('lucroIdeal').textContent = money(ideal - total);
-    $('lucroPremium').textContent = money(premium - total);$('margemMinima').textContent = out.marginMinimum.toFixed(1) + '%';
-    $('margemIdeal').textContent = out.marginIdeal.toFixed(1) + '%';$('margemPremium').textContent = out.marginPremium.toFixed(1) + '%';
-    updateProfitSimulator(out);
-    updateAssistant(out);
-    return out;
-}
-
-function updateProfitSimulator(v) {
-    const mode = $('simulatorMode');
-    const target = $('simulatorTarget');
-    if (!mode || !target) return;
-    v = v || calc();
-    const cost = Number(v.total) || 0;
-    const value = Math.max(0, Number(target.value) || 0);
-    let price = cost, profit = 0, margin = 0;
-    if (mode.value === 'margin') {
-        const m = Math.min(99.99, value);
-        price = m >= 100 ? cost : cost / Math.max(0.0001, 1 - m / 100);
-        profit = price - cost;
-        margin = price > 0 ? profit / price * 100 : 0;
-        $('simulatorLabel').textContent = 'Margem desejada (%)';
-        $('simulatorHelp').textContent = `Com custo de ${money(cost)}, uma margem de ${m.toFixed(1)}% exige um preço de ${money(price)}.`;
-    } else {
-        price = cost + value;
-        profit = value;
-        margin = price > 0 ? profit / price * 100 : 0;
-        $('simulatorLabel').textContent = 'Lucro desejado (£)';
-        $('simulatorHelp').textContent = `Com custo de ${money(cost)}, para ganhar ${money(value)} o preço necessário é ${money(price)}.`;
-    }
-    $('simulatorCost').textContent = money(cost);
-    $('simulatorPrice').textContent = money(price);
-    $('simulatorProfit').textContent = money(profit);
-    $('simulatorPriceInput').value = price.toFixed(2);
-    $('simulatorPriceInput').dataset.margin = ((price / Math.max(cost,0.0001) - 1) * 100).toFixed(4);
-    $('simulatorPriceInput').dataset.price = price.toFixed(2);
-    return { price, profit, margin, cost };
-}
-
-function updateSimulatorFromPrice() {
-    const input = $('simulatorPriceInput');
-    if (!input) return;
-
-    // Guardamos o valor digitado ANTES de recalcular, porque calc()
-    // atualiza o simulador e poderia sobrescrever o campo.
-    const typedValue = input.value;
-    const current = calc();
-    const cost = Number(current?.total) || 0;
-    const price = Math.max(0, Number(typedValue) || 0);
-    const profit = price - cost;
-    const margin = price > 0 ? (profit / price) * 100 : 0;
-    const markup = cost > 0 ? ((price / cost) - 1) * 100 : 0;
-
-    // Recoloca o valor que o utilizador acabou de digitar.
-    input.value = typedValue;
-    input.dataset.margin = margin.toFixed(4);
-    input.dataset.price = price.toFixed(2);
-
-    $('simulatorCost').textContent = money(cost);
-    $('simulatorPrice').textContent = money(price);
-    $('simulatorProfit').textContent = money(profit);
-
-    const help = $('simulatorHelp');
-    if (help) help.textContent = `Preço manual de ${money(price)} → lucro de ${money(profit)} e margem de ${margin.toFixed(1)}%.`;
-    return { price, profit, margin, markup, cost };
-}
-
-function aplicarPrecoSimulado() {
-    const sim = updateSimulatorFromPrice();
-    if (!sim || sim.cost <= 0) { toast('Calcule primeiro o custo do produto.'); return; }
-    $('margem').value = Math.max(0, sim.markup).toFixed(2);
-    calc();
-    $('precoIdeal')?.scrollIntoView({ behavior:'smooth', block:'center' });
-    toast(`Preço aplicado: ${money(sim.price)}.`);
-}
-
-function setAssistantStep(step) {
-    const els = [...document.querySelectorAll('#assistantSteps .assistant-step')];
-    els.forEach((el, i) => { el.classList.toggle('active', i === step - 1); el.classList.toggle('done', i < step - 1); });
-}
-
-function updateAssistant(v) {
-    const box = $('assistantResult');
-    if (!box) return;
-    v = v || calc();
-    const name = $('nomeProduto').value.trim() || 'Produto sem nome';
-    const missing = [];
-    if (v.peso <= 0) missing.push('peso');
-    if (v.hours <= 0) missing.push('tempo');
-    if (!name || name === 'Produto sem nome') missing.push('nome');
-    if (missing.length) {
-        box.innerHTML = `<strong>⚠️ Faltam ${missing.join(', ')}.</strong><span>Preencha os campos para gerar o preço ideal.</span>`;
-        setAssistantStep(2); return;
-    }
-    box.innerHTML = `<strong>✅ ${esc(name)}</strong><span>⚖️ ${v.peso.toFixed(2)} g · ⏱️ ${formatTime(v.hours)} · Custo ${money(v.total)}</span><span>💰 Preço ideal <strong>${money(v.ideal)}</strong> · Lucro <strong>${money(v.profitIdeal)}</strong></span>`;
-    setAssistantStep(3);
-}
-
-function executarAssistente() {
-    if (currentFile && !$('nomeProduto').value.trim()) {
-        const n = sugerirNomeProduto(currentFile.name, currentAnalysis?.projectName || '');
-        if (n) preencherNomeAutomatico(n, true);
-    }
-    const v = calc();
-    if (v.peso <= 0 || v.hours <= 0) {
-        toast('Informe o peso e o tempo para calcular.');
-        setAssistantStep(2); return;
-    }
-    if (!$('nomeProduto').value.trim())$('nomeProduto').value = 'Produto sem nome';
-    calc(); setAssistantStep(3);
-    $('precoIdeal')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    toast('Preço calculado!');
-}
-
-["pesoPeca", "precoRolo", "pesoRolo", "tempoManual", "potenciaWatts", "tarifaLuz", "custoHora", "margem", "taxaFalha", "custosExtras", "embalagem", "nomeProduto", "codigoProduto", "categoriaProduto", "vintedLink", "vintedData", "produtoImagem", "fileDownloadLink", "observacoes"].forEach(id => {
-    const e = $(id);
-    if (!e) return;
-    e.addEventListener("input", () => { calc(); saveDraft(); updateAssistant(); });
-});
-
-function saveDraft() {
-    const d = {};
-    ["nomeProduto", "codigoProduto", "categoriaProduto", "pesoPeca", "tempoManual", "precoRolo", "pesoRolo", "potenciaWatts", "tarifaLuz", "custoHora", "margem", "taxaFalha", "custosExtras", "embalagem", "vintedLink", "vintedData", "produtoImagem", "fileDownloadLink", "observacoes"].forEach(id => d[id] = $(id).value);
-    try { localStorage.setItem(KEY.draft, JSON.stringify(d)); } catch {}
-}
-
-function loadDraft() {
-    try {
-        const d = JSON.parse(localStorage.getItem(KEY.draft) || "{}");
-        Object.entries(d).forEach(([k, v]) => $(k) && ($(k).value = v));
-        calc();
-    } catch {}
-}
-
-function getLocal(key, def = []) {
-    try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(def)); } catch { return def; }
-}
-
-function setLocal(key, val) {
-    try { localStorage.setItem(key, JSON.stringify(val)); } catch { toast("Erro ao guardar localmente."); }
-}
-
-function initFilaments() {
-    filamentos = getLocal(KEY.filaments, [{ id: uid(), name: "PLA", price: 12.41, weight: 1000 }]);
-    const s = $("filamentoPreset");
-    s.innerHTML = '<option value="">Selecionar...</option>' + filamentos.map(f => `<option value="${esc(f.id)}">${esc(f.name)} — £${Number(f.price).toFixed(2)}/kg</option>`).join("");
-}
-
-function aplicarFilamentoPreset() {
-    const f = filamentos.find(x => x.id === $("filamentoPreset").value);
-    if (!f) return;
-    $("precoRolo").value = f.price; $("pesoRolo").value = f.weight;
-    calc(); saveDraft();
-}
-
-function salvarNovoFilamento() {
-    const name = prompt("Nome do filamento:", "PLA");
-    if (!name) return;
-    const f = { id: uid(), name: name.trim(), price: +$("precoRolo").value || 0, weight: +$("pesoRolo").value || 1000 };
-    filamentos.push(f); setLocal(KEY.filaments, filamentos); initFilaments(); $("filamentoPreset").value = f.id;
-    toast("Filamento guardado.");
-}
-
-function openPage(page) {
-    const target = $("page-" + page);
-    if (!target) return;
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-    target.classList.add("active");
-    document.querySelectorAll("[data-page]").forEach(b => b.classList.toggle("active", b.dataset.page === page));
-    if (page === "catalogo") renderCatalogo();
-    if (page === "vendas") renderVendas();
-    if (page === "vinted") renderVinted();
-    if (page === "historico") renderHistorico();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-}
-window.openPage = openPage;
-
-document.addEventListener("click", e => {
-    const btn = e.target.closest("[data-page]");
-    if (!btn) return;
-    e.preventDefault();
-    openPage(btn.dataset.page);
-});
-
-function initTheme() {
-    const t = localStorage.getItem(KEY.theme) || "dark";
-    document.documentElement.removeAttribute("data-theme");
-    if (t === "light") document.documentElement.setAttribute("data-theme", "light");
-    $("btnTheme").textContent = t === "light" ? "☀️ Tema" : "🌙 Tema";
-}
-
-function toggleTheme() {
-    const light = document.documentElement.getAttribute("data-theme") === "light";
-    if (light) {
-        document.documentElement.removeAttribute("data-theme");
-        localStorage.setItem(KEY.theme, "dark");
-        $("btnTheme").textContent = "🌙 Tema";
-    } else {
-        document.documentElement.setAttribute("data-theme", "light");
-        localStorage.setItem(KEY.theme, "light");
-        $("btnTheme").textContent = "☀️ Tema";
-    }
-}
-$("btnTheme").addEventListener("click", toggleTheme);
-
-const DB = "BambuCalc3D_Files", STORE = "files";
-function idb() {
-    if (dbPromise) return dbPromise;
-    dbPromise = new Promise((res, rej) => {
-        const r = indexedDB.open(DB, 1);
-        r.onupgradeneeded = () => r.result.createObjectStore(STORE, { keyPath: "id" });
-        r.onsuccess = () => res(r.result);
-        r.onerror = () => rej(r.error);
-    });
-    return dbPromise;
-}
-
-async function filePut(o) {
-    const db = await idb();
-    return new Promise((res, rej) => {
-        const tx = db.transaction(STORE, "readwrite");
-        tx.objectStore(STORE).put(o);
-        tx.oncomplete = () => res();
-        tx.onerror = () => rej(tx.error);
-    });
-}
-
-async function fileGet(id) {
-    if (!id) return null;
-    const db = await idb();
-    return new Promise((res, rej) => {
-        const r = db.transaction(STORE).objectStore(STORE).get(id);
-        r.onsuccess = () => res(r.result || null);
-        r.onerror = () => rej(r.error);
-    });
-}
-
-async function fileDel(id) {
-    if (!id) return;
-    const db = await idb();
-    return new Promise((res, rej) => {
-        const tx = db.transaction(STORE, "readwrite");
-        tx.objectStore(STORE).delete(id);
-        tx.oncomplete = () => res();
-        tx.onerror = () => rej(tx.error);
-    });
-}
-
-async function salvarProduto() {
-    const v = calc();
-    if (v.peso <= 0 && v.hours <= 0) {
-        toast("Informe o peso ou o tempo antes de guardar.");
-        return;
-    }
-    const id = editingProductId || uid();
-    let fileId = null;
-    if (currentFile) {
-        fileId = uid();
-        await filePut({ id: fileId, name: currentFile.name, type: currentFile.type || "application/octet-stream", blob: currentFile, size: currentFile.size });
-    } else if (editingProductId) {
-        const old = catalogo.find(x => x.id === editingProductId);
-        fileId = old?.fileId || null;
-    }
-    const item = {
-        id, name: $("nomeProduto").value.trim() || "Produto sem nome",
-        code: $("codigoProduto").value.trim() || "-",
-        category: $("categoriaProduto").value.trim() || "Sem categoria",
-        weight: v.peso, hours: v.hours, ideal: v.ideal, min: v.minimum, premium: v.premium, cost: v.total, profit: v.profitIdeal,
-        analysis: currentAnalysis, vintedLink: $("vintedLink").value.trim(), vintedData: $("vintedData").value,
-        produtoImagem: $("produtoImagem").value.trim(),
-        downloadLink: $("fileDownloadLink").value.trim(), observacoes: $("observacoes").value.trim(), fileId,
-        createdAt: editingProductId ? (catalogo.find(x => x.id === editingProductId)?.createdAt || new Date().toISOString()) : new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-    };
-    catalogo = editingProductId ? catalogo.map(x => x.id === id ? item : x) : [item, ...catalogo];
-    setLocal("bambu_catalog", catalogo);
-    toast(editingProductId ? "Produto atualizado." : "Produto guardado no catálogo.");
-    editingProductId = null; renderCatalogo(); setAssistantStep(4); updateAssistant();
-}
-
-function loadCatalog() { catalogo = getLocal("bambu_catalog", []); }
-
-async function renderCatalogo() {
-    loadCatalog();
-    const search = $("catalogSearch").value.toLowerCase(), cat = $("catalogCategory").value;
-    const cats = [...new Set(catalogo.map(x => x.category).filter(Boolean))];
-    $("catalogCategory").innerHTML = '<option value="">Todas as categorias</option>' + cats.map(c => `<option ${c === cat ? "selected" : ""}>${esc(c)}</option>`).join("");
-    const list = catalogo.filter(x => (!search || `${x.name} ${x.code}`.toLowerCase().includes(search)) && (!cat || x.category === cat));
-    $("catalogCount").textContent = `${catalogo.length} produto${catalogo.length === 1 ? "" : "s"}`;
-    const grid = $("catalogGrid");
-    if (!list.length) { grid.innerHTML = '<div class="empty">Nenhum produto encontrado.</div>'; return; }
-    grid.innerHTML = "";
-    for (const p of list) {
-        const card = document.createElement("article");
-        card.className = "product-card";
-        const imgUrl = safeUrl(p.produtoImagem);
-        let thumb = imgUrl ? `<img src="${esc(imgUrl)}" alt="${esc(p.name)}" loading="lazy">` : "<div class='no-thumb'>📦 Sem prévia</div>";
-        card.innerHTML = `<div class="product-thumb">${thumb}</div><div class="product-body"><h3>${esc(p.name)}</h3><div class="product-code">${esc(p.code)} · ${esc(p.category)}</div><div class="product-info"><div><small>Peso</small><strong>${Number(p.weight || 0).toFixed(2)} g</strong></div><div><small>Tempo</small><strong>${formatTime(p.hours)}</strong></div><div><small>Custo</small><strong>${money(p.cost)}</strong></div><div><small>Lucro ideal</small><strong>${money(p.profit)}</strong></div></div><div class="product-price">${money(p.ideal)}</div><div class="product-actions"><button type="button" class="btn btn-small btn-secondary" onclick="editarProduto('${p.id}')">Editar</button><button type="button" class="btn btn-small btn-dark" onclick="baixarArquivo('${p.id}')">Ficheiro</button><button type="button" class="btn btn-small btn-danger" onclick="excluirProduto('${p.id}')">Excluir</button></div></div>`;
-        grid.appendChild(card);
-    }
-}
-
-async function editarProduto(id) {
-    const p = catalogo.find(x => x.id === id);
-    if (!p) return;
-    editingProductId = id;
-    Object.entries({ nomeProduto: p.name, codigoProduto: p.code, categoriaProduto: p.category, pesoPeca: p.weight, tempoManual: formatTime(p.hours), horasPeca: p.hours, vintedLink: p.vintedLink, vintedData: p.vintedData, produtoImagem: p.produtoImagem, fileDownloadLink: p.downloadLink, observacoes: p.observacoes }).forEach(([k, v]) => $(k).value = v ?? "");
-    currentAnalysis = p.analysis || null; currentFile = null;
-    openPage("calc"); calc(); toast("Produto carregado para edição.");
-}
-
-async function baixarArquivo(id) {
-    const p = catalogo.find(x => x.id === id);
-    if (!p?.fileId) { toast("Este produto não possui ficheiro local."); return; }
-    const f = await fileGet(p.fileId);
-    if (!f) { toast("Ficheiro não encontrado."); return; }
-    downloadBlob(f.blob, f.name);
-}
-
-async function excluirProduto(id) {
-    if (!confirm("Pretende excluir este produto?")) return;
-    const p = catalogo.find(x => x.id === id);
-    catalogo = catalogo.filter(x => x.id !== id);
-    setLocal("bambu_catalog", catalogo);
-    if (p?.fileId) await fileDel(p.fileId);
-    renderCatalogo(); toast("Produto excluído.");
-}
-
-function novoProdutoRapido() { limparCalculadora(); openPage("calc"); $("nomeProduto").focus(); }
-function focarNovoPedido() { openPage("vendas"); setTimeout(() => $("pedidoCliente")?.focus(), 80); }
-
-function alterarStatusVenda(id) {
-    vendas = getLocal(KEY.sales, []);
-    const o = vendas.find(x => x.id === id);
-    if (!o) return;
-    const seq = ["pendente", "pago", "producao", "enviado", "concluido"];
-    let i = seq.indexOf(o.status);
-    o.status = seq[(i + 1) % seq.length];
-    setLocal(KEY.sales, vendas); renderVendas(); toast("Status atualizado: " + o.status);
-}
-
-function registrarHistorico() {
-    const v = calc();
-    const item = { id: uid(), date: new Date().toISOString(), name: $("nomeProduto").value.trim() || "Sem nome", weight: v.peso, hours: v.hours, cost: v.total, price: v.ideal, profit: v.profitIdeal };
-    historico = [item, ...historico]; setLocal(KEY.history, historico); toast("Cálculo registado.");
-}
-
-function renderHistorico() {
-    historico = getLocal(KEY.history, []);
-    const el = $("historicoLista");
-    if (!historico.length) { el.innerHTML = '<div class="empty">Nenhum cálculo registado.</div>'; return; }
-    el.innerHTML = historico.map(h => `<div class="list-item"><div class="list-item-header"><div class="list-item-title">${esc(h.name)}</div><strong>${money(h.price)}</strong></div><div class="list-item-meta">${new Date(h.date).toLocaleString("pt-PT")} · ${Number(h.weight).toFixed(2)} g · ${formatTime(h.hours)} · Custo ${money(h.cost)} · Lucro ${money(h.profit)}</div></div>`).join("");
-}
-
-function limparHistorico() {
-    if (!confirm("Pretende limpar o histórico?")) return;
-    historico = []; setLocal(KEY.history, historico); renderHistorico();
-}
-
-function exportarHistorico() {
-    historico = getLocal(KEY.history, []);
-    const rows = [["Data", "Produto", "Peso(g)", "Tempo(h)", "Custo", "Preço", "Lucro"], ...historico.map(x => [x.date, x.name, x.weight, x.hours, x.cost, x.price, x.profit])];
-    downloadText(rows.map(r => r.map(v => '"' + String(v ?? "").replace(/"/g, '""') + '"').join(",")).join("\n"), "bambucalc_historico.csv", "text/csv;charset=utf-8");
-}
-
-function exportarOrcamento() {
-    const v = calc(), name = $("nomeProduto").value.trim() || "Produto";
-    const lines = ["ORÇAMENTO DE IMPRESSÃO 3D", "================================", `Produto: ${name}`, `Peso: ${v.peso.toFixed(2)} g`, `Tempo: ${formatTime(v.hours)}`, `Material: ${money(v.custoMaterial)}`, `Energia: ${money(v.custoEnergia)}`, `Máquina: ${money(v.custoMaquina)}`, `Extras/embalagem: ${money(v.custosExtras)}`, `Falhas: ${money(v.custoFalha)}`, `Custo total: ${money(v.total)}`, "", `Preço mínimo: ${money(v.minimum)}`, `Preço ideal: ${money(v.ideal)}`, `Lucro ideal: ${money(v.profitIdeal)}`, `Preço premium: ${money(v.premium)}`, `Lucro premium: ${money(v.profitPremium)}`, "", `Observações: ${$("observacoes").value || "-"}`];
-    downloadText(lines.join("\n"), `orcamento_${name.replace(/[^a-z0-9_-]+/gi, "_")}.txt`);
-}
-
-function limparCalculadora() {
-    editingProductId = null; currentFile = null; currentAnalysis = null;
-    ["nomeProduto", "codigoProduto", "categoriaProduto", "tempoManual", "vintedLink", "vintedData", "produtoImagem", "fileDownloadLink", "observacoes"].forEach(id => $(id).value = "");
-    $("pesoPeca").value = 0; $("horasPeca").value = 0; $("arquivoProjeto").value = ""; $("arquivoTipoBadge").textContent = "Aguardando ficheiro"; $("analiseStatus").textContent = "Nenhum ficheiro analisado."; $("analiseGrid").innerHTML = ""; $("analysisSource").textContent = "";
-    calc(); toast("Calculadora limpa.");
-}
-
-function fillProductsSelect() {
-    loadCatalog();
-    const s = $("vendaProduto"), old = s.value;
-    s.innerHTML = '<option value="">Selecionar...</option>' + catalogo.map(p => `<option value="${esc(p.id)}">${esc(p.name)} — ${money(p.ideal)}</option>`).join("");
-    if (old) s.value = old;
-}
-
-function preencherPrecoVenda() {
-    const p = catalogo.find(x => x.id === $("vendaProduto").value);
-    if (p) $("vendaPreco").value = Number(p.ideal).toFixed(2);
-}
-
-function addOrderItem(p, q, price) {
-    pedidoItens.push({ id: uid(), productId: p.id, name: p.name, qty: q, price: price, cost: p.cost || 0 });
-    renderPedidoEditor();
-}
-
-function adicionarItemPedido() {
-    const p = catalogo.find(x => x.id === $("vendaProduto").value), q = Math.max(1, +$("vendaQtd").value || 1), price = Math.max(0, +$("vendaPreco").value || 0);
-    if (!p) { toast("Selecione um produto."); return; }
-    addOrderItem(p, q, price); $("vendaQtd").value = 1;
-}
-
-function renderPedidoEditor() {
-    const el = $("pedidoItens");
-    el.innerHTML = pedidoItens.length ? pedidoItens.map((x, i) => `<div class="order-item"><strong>${esc(x.name)}</strong><span>${x.qty}x</span><span>${money(x.price)}</span><strong>${money(x.qty * x.price)}</strong><button type="button" class="btn btn-small btn-danger" onclick="pedidoItens.splice(${i},1);renderPedidoEditor()">×</button></div>`).join("") : '<div class="empty">Nenhum item no pedido.</div>';
-    const sales = pedidoItens.reduce((a, x) => a + x.qty * x.price, 0), cost = pedidoItens.reduce((a, x) => a + x.qty * x.cost, 0), frete = +$("pedidoFrete").value || 0, cfrete = +$("pedidoCustoFrete").value || 0, desc = +$("pedidoDesconto").value || 0, tax = +$("pedidoTaxas").value || 0, emb = +$("pedidoEmbalagem").value || 0, revenue = sales + frete - desc, totalCost = cost + cfrete + tax + emb, profit = revenue - totalCost;
-    $("pedidoResumo").innerHTML = `<div class="order-summary-row"><span>Itens</span><strong>${money(sales)}</strong></div><div class="order-summary-row"><span>Frete cobrado</span><strong>${money(frete)}</strong></div><div class="order-summary-row"><span>Desconto</span><strong>- ${money(desc)}</strong></div><div class="order-summary-row"><span>Custo total</span><strong>${money(totalCost)}</strong></div><div class="order-summary-row total"><span>Faturamento</span><strong>${money(revenue)}</strong></div><div class="order-summary-row profit"><span>Lucro</span><strong>${money(profit)}</strong></div>`;
-    return { sales, cost, frete, cfrete, desc, tax, emb, revenue, totalCost, profit };
-}
-
-function limparPedidoEditor() {
-    pedidoItens = [];
-    ["pedidoCliente", "vendaPreco"].forEach(id => $(id).value = "");
-    $("vendaQtd").value = 1; $("pedidoFrete").value = 0; $("pedidoCustoFrete").value = 0; $("pedidoDesconto").value = 0; $("pedidoTaxas").value = 0; $("pedidoEmbalagem").value = 0; $("pedidoData").value = today();
-    renderPedidoEditor();
-}
-
-function salvarPedido() {
-    if (!pedidoItens.length) { toast("Adicione pelo menos um produto."); return; }
-    const r = renderPedidoEditor(), o = { id: uid(), client: $("pedidoCliente").value.trim() || "Cliente", channel: $("pedidoCanal").value, date: $("pedidoData").value || today(), status: $("pedidoStatus").value, items: pedidoItens.map(x => ({ ...x })), ...r };
-    vendas = [o, ...vendas]; setLocal(KEY.sales, vendas); toast("Pedido guardado."); limparPedidoEditor(); renderVendas();
-}
-
-function renderVendas() {
-    vendas = getLocal(KEY.sales, []);
-    fillProductsSelect();
-    const itens = vendas.reduce((a, o) => a + o.items.reduce((b, x) => b + x.qty, 0), 0), fat = vendas.filter(o => o.status !== "cancelado").reduce((a, o) => a + o.revenue, 0), luc = vendas.filter(o => o.status !== "cancelado").reduce((a, o) => a + o.profit, 0);
-    $("metricPedidos").textContent = vendas.length; $("metricVendas").textContent = itens; $("metricFaturamento").textContent = money(fat); $("metricLucro").textContent = money(luc);
-    const q = ($("vendaBusca")?.value || "").toLowerCase(), st = $("vendaFiltroStatus")?.value || "", lista = vendas.filter(o => (!q || (`${o.client} ${o.channel}`.toLowerCase().includes(q))) && (!st || o.status === st));
-    const el = $("vendasLista");
-    if (!lista.length) { el.innerHTML = '<div class="empty">Nenhum pedido encontrado.</div>'; return; }
-    el.innerHTML = lista.map(o => `<div class="list-item"><div class="list-item-header"><div><div class="list-item-title">${esc(o.client)} · ${o.items.length} item(s)</div><div class="list-item-meta">${esc(o.channel)} · ${esc(o.date)}</div></div><span class="status status-${esc(o.status)}">${esc(o.status)}</span></div><div class="list-item-meta" style="margin-top:6px">${o.items.map(x => esc(x.name) + " × " + x.qty).join(" · ")}</div><div class="list-item-meta">Faturamento: <strong>${money(o.revenue)}</strong> · Lucro: <strong>${money(o.profit)}</strong></div><div class="actions" style="margin-top:8px"><button type="button" class="btn btn-small btn-secondary" onclick="alterarStatusVenda('${o.id}')">↻ Próximo status</button><button type="button" class="btn btn-small btn-danger" onclick="excluirVenda('${o.id}')">Excluir</button></div></div>`).join("");
-}
-
-function excluirVenda(id) {
-    if (!confirm("Pretende excluir o pedido?")) return;
-    vendas = vendas.filter(x => x.id !== id);
-    setLocal(KEY.sales, vendas); renderVendas();
-}
-
-function renderVinted() {
-    loadCatalog();
-    const el = $("vintedLista"), items = catalogo.filter(p => safeUrl(p.vintedLink));
-    if (!items.length) { el.innerHTML = '<div class="empty">Nenhum produto com link da Vinted.</div>'; return; }
-    el.innerHTML = items.map(p => `<div class="list-item"><div class="list-item-header"><div><div class="list-item-title">${esc(p.name)}</div><div class="list-item-meta">${esc(p.code)} · ${esc(p.category)}</div></div><a class="btn btn-small btn-secondary" href="${esc(safeUrl(p.vintedLink))}" target="_blank" rel="noopener">Abrir anúncio</a></div><div class="list-item-meta">Preço sugerido: ${money(p.ideal)} · Data: ${esc(p.vintedData || "-")}</div></div>`).join("");
-}
-
-const scripts = {
-    saudacao: ["Olá! 👋 Obrigado pelo seu contacto. Como posso ajudar?", "Hello! 👋 Thank you for your message. How can I help you?"],
-    pedido: ["Olá! O seu pedido foi recebido e já está registado. Vou mantê-lo atualizado.", "Hello! Your order has been received and registered. I will keep you updated."],
-    producao: ["Olá! 🖨️ O seu pedido está em produção. Avisarei assim que estiver pronto.", "Hello! 🖨️ Your order is now in production. I will let you know when it is ready."],
-    envio: ["Olá! 🚚 O seu pedido foi enviado. Obrigado pela compra!", "Hello! 🚚 Your order has been shipped. Thank you for your purchase!"],
-    obrigado: ["Muito obrigado pela compra! ❤️ Espero que goste do produto.", "Thank you very much for your purchase! ❤️ I hope you enjoy your product."]
-};
-
-function selecionarScript(k) {
-    $("scriptPT").value = scripts[k][0];
-    $("scriptEN").value = scripts[k][1];
-}
-
-async function copiarScript() {
-    const text = $("scriptEN").value || $("scriptPT").value;
-    if (!text) return toast("Selecione uma mensagem.");
-    try { await navigator.clipboard.writeText(text); toast("Mensagem copiada."); } catch { toast("Não foi possível copiar."); }
-}
-
-function abrirWhatsAppScript() {
-    const text = $("scriptEN").value || $("scriptPT").value;
-    if (!text) return;
-    window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank", "noopener");
-}
-
-function exportarBackup() {
-    const data = { version: 1, exportedAt: new Date().toISOString(), catalogo, historico: getLocal(KEY.history, []), vendas: getLocal(KEY.sales, []), filamentos: getLocal(KEY.filaments, []), draft: getLocal(KEY.draft, {}) };
-    downloadText(JSON.stringify(data, null, 2), `bambucalc_backup_${today()}.json`, "application/json;charset=utf-8");
-}
-
-function importarBackup() {
-    const i = document.createElement("input");
-    i.type = "file"; i.accept = ".json,application/json";
-    i.onchange = async () => {
-        const f = i.files[0];
-        if (!f) return;
-        try {
-            const d = JSON.parse(await f.text());
-            if (!Array.isArray(d.catalogo)) throw new Error("Backup inválido");
-            catalogo = d.catalogo; historico = d.historico || []; vendas = d.vendas || []; filamentos = d.filamentos || filamentos;
-            setLocal("bambu_catalog", catalogo); setLocal(KEY.history, historico); setLocal(KEY.sales, vendas); setLocal(KEY.filamentos, filamentos);
-            initFilaments(); renderCatalogo(); toast("Backup importado com sucesso.");
-        } catch (e) { toast("Backup inválido ou corrompido."); }
-    };
-    i.click();
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    initTheme(); initFilaments(); loadDraft();
-    historico = getLocal(KEY.history, []); vendas = getLocal(KEY.sales, []);
-    $("pedidoData").value = today(); renderPedidoEditor(); calc();
-});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-page]");if(b)openPage(b.dataset.page)});
+
+function initTheme(){const t=localStorage.getItem(KEY.theme)||"dark";document.documentElement.toggleAttribute("data-theme",false);if(t==="light")document.documentElement.setAttribute("data-theme","light");$("themeBtn").textContent=t==="light"?"☀️ Tema":"🌙 Tema"}
+$("themeBtn").addEventListener("click",()=>{const light=document.documentElement.getAttribute("data-theme")==="light";if(light){document.documentElement.removeAttribute("data-theme");localStorage.setItem(KEY.theme,"dark");$("themeBtn").textContent="🌙 Tema"}else{document.documentElement.setAttribute("data-theme","light");localStorage.setItem(KEY.theme,"light");$("themeBtn").textContent="☀️ Tema"}});
+
+$("dropzone").addEventListener("click",()=>$("fileInput").click());
+$("fileInput").addEventListener("change",e=>e.target.files[0]&&analyze(e.target.files[0]));
+["dragenter","dragover"].forEach(ev=>$("dropzone").addEventListener(ev,e=>{e.preventDefault();$("dropzone").classList.add("drag")}));
+["dragleave","drop"].forEach(ev=>$("dropzone").addEventListener(ev,e=>{e.preventDefault();$("dropzone").classList.remove("drag")}));
+$("dropzone").addEventListener("drop",e=>e.dataTransfer.files[0]&&analyze(e.dataTransfer.files[0]));
+
+["weight","time","rollPrice","rollWeight","watts","tariff","machine","markup","failure","extras","packaging","name","code","category","image","priceResult"].forEach(id=>$(id).addEventListener("input",()=>{calc();saveDraft()}));
+$("simTarget").addEventListener("input",()=>updateSimulator(+calc().total||0));
+$("simMode").addEventListener("change",()=>updateSimulator(+calc().total||0));
+$("priceResult").addEventListener("input",()=>updatePriceInfo(+calc().total||0));
+$("saveProduct").addEventListener("click",saveProduct);
+$("newProduct").addEventListener("click",clearCalc);
+$("catalogNew").addEventListener("click",()=>{clearCalc();openPage("calc")});
+$("search").addEventListener("input",renderCatalog);$("searchClear").addEventListener("click",()=>{$("search").value="";renderCatalog();$("search").focus()});$("filter").addEventListener("change",renderCatalog);$("formatFilter").addEventListener("change",renderCatalog);$("sort").addEventListener("change",renderCatalog);$("gridView").addEventListener("click",()=>{setLocal("bambucalc_catalog_view_v18","grid");renderCatalog()});$("listView").addEventListener("click",()=>{setLocal("bambucalc_catalog_view_v18","list");renderCatalog()});
+$("backup").addEventListener("click",backup);$("catalogBackup").addEventListener("click",backup);
+$("import").addEventListener("click",importBackup);$("catalogImport").addEventListener("click",importBackup);
+["search","filter","sort"].forEach(id=>$(id).addEventListener("input",renderCatalog));
+$("simPrice").addEventListener("click",()=>{ $("priceResult").value=$("simPrice").textContent.replace("£","").trim();updatePriceInfo(calc().total) });
+
+loadDraft();initTheme();initFilaments();catalog=getLocal(KEY.catalog,[]);calc();renderCatalog();
 </script>
 </body>
 </html>
