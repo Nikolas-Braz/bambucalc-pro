@@ -206,7 +206,7 @@ function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show")
 function esc(v){return String(v ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function safeUrl(v){try{const u=new URL(v);return /^https?:$/.test(u.protocol)?u.href:""}catch{return""}}
 function getLocal(k,d){try{const r=localStorage.getItem(k);return r==null?d:JSON.parse(r)}catch{return d}}
-function setLocal(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch{toast("Não foi possível guardar localmente.");return false}}
+function setLocal(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch{toast("Memória do navegador cheia ou bloqueada. Faça um Backup e libere espaço.");return false}}
 function downloadBlob(blob,name){const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)}
 function downloadText(text,name,type="text/plain;charset=utf-8"){downloadBlob(new Blob([text],{type}),name)}
 
@@ -429,17 +429,38 @@ $("filamentPreset").addEventListener("change",()=>{const f=filaments.find(x=>x.i
 $("saveFilament").addEventListener("click",()=>{const name=prompt("Nome do filamento:","PLA");if(!name||!name.trim())return;const f={id:uid(),name:name.trim(),price:num("rollPrice"),weight:num("rollWeight",1,1000)};filaments.push(f);setLocal(KEY.filaments,filaments);initFilaments();$("filamentPreset").value=f.id;toast("Preset guardado.")});
 
 const DB="BambuCalc3D_Files_v21",STORE="files";
-function idb(){if(dbPromise)return dbPromise;dbPromise=new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>r.result.createObjectStore(STORE,{keyPath:"id"});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});return dbPromise}
-async function filePut(o){const db=await idb();return new Promise((res,rej)=>{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).put(o);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}
-async function fileGet(id){if(!id)return null;const db=await idb();return new Promise((res,rej)=>{const r=db.transaction(STORE).objectStore(STORE).get(id);r.onsuccess=()=>res(r.result||null);r.onerror=()=>rej(r.error)})}
-async function fileDel(id){if(!id)return;const db=await idb();return new Promise((res,rej)=>{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).delete(id);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}
+function idb(){
+  if(dbPromise)return dbPromise;
+  dbPromise=new Promise((res,rej)=>{
+    if(!window.indexedDB){rej(new Error("IndexedDB indisponível"));return}
+    const r=indexedDB.open(DB,1);
+    r.onupgradeneeded=()=>r.result.createObjectStore(STORE,{keyPath:"id"});
+    r.onsuccess=()=>res(r.result);
+    r.onerror=()=>rej(r.error||new Error("Erro ao abrir IndexedDB"));
+    r.onblocked=()=>rej(new Error("IndexedDB bloqueado por outra aba"));
+  }).catch(e=>{dbPromise=null;throw e});
+  return dbPromise;
+}
+function withTimeout(p,ms){return Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error("Tempo esgotado ao aceder ao armazenamento de arquivos")),ms))])}
+function idbRun(mode,fn){
+  return withTimeout(idb().then(db=>new Promise((res,rej)=>{
+    let tx,req;
+    try{tx=db.transaction(STORE,mode);req=fn(tx.objectStore(STORE))}catch(e){rej(e);return}
+    tx.oncomplete=()=>res(req&&req.result!==undefined?req.result:undefined);
+    tx.onerror=()=>rej(tx.error||new Error("Erro no armazenamento de arquivos"));
+    tx.onabort=()=>rej(tx.error||new Error("Sem espaço para guardar o arquivo"));
+  })),20000);
+}
+const filePut=o=>idbRun("readwrite",st=>st.put(o));
+const fileGet=id=>id?idbRun("readonly",st=>st.get(id)).then(r=>r||null):Promise.resolve(null);
+const fileDel=id=>id?idbRun("readwrite",st=>st.delete(id)):Promise.resolve();
 
 function perHour(p){return(+p.hours||0)>0?(+p.profit||0)/(+p.hours):0}
 
 async function saveProduct(){
   const v=calc(),name=$("name").value.trim()||"Produto sem nome";
   if(v.weight<=0&&v.h<=0){toast("Informe peso ou tempo antes de guardar.");return}
-  const old=editingId?catalog.find(x=>x.id===editingId):null;
+  let fileWarn="";const old=editingId?catalog.find(x=>x.id===editingId):null;
   const id=editingId||uid();let fileId=old?old.fileId||null:null;
   try{
     if(currentFile){
@@ -448,7 +469,7 @@ async function saveProduct(){
       if(fileId)await fileDel(fileId);
       fileId=newId;
     }
-  }catch(e){console.error(e);toast("Não foi possível guardar o arquivo; o produto será guardado sem ele.")}
+  }catch(e){console.error(e);fileWarn=(e&&e.message)||"erro";toast("Arquivo não guardado ("+fileWarn+"); o produto foi guardado sem ele.")}
   const price=num("priceResult")||v.ideal;
   const profit=price-v.total;
   const hours=v.h>0?v.h:0.01;
@@ -462,7 +483,7 @@ async function saveProduct(){
   if(editingId)catalog=catalog.map(x=>x.id===id?item:x);else catalog=[item,...catalog];
   if(!setLocal(KEY.catalog,catalog))return;
   editingId=null;currentFile=null;$("fileInput").value="";
-  renderCatalog();toast("Produto guardado no catálogo.");openPage("catalogo")
+  renderCatalog();openPage("catalogo");if(!fileWarn)toast("Produto guardado no catálogo.")
 }
 function catalogText(p){const a=p.analysis||{};return[p.name,p.code,p.category,p.fileName,p.fileType,a.type,a.filament,a.printer].filter(Boolean).join(" ").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
 function formatDate(v){if(!v)return"";try{return new Intl.DateTimeFormat("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric"}).format(new Date(v))}catch{return""}}
