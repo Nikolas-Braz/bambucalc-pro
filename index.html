@@ -58,11 +58,12 @@ input[type=number]{text-align:right;font-variant-numeric:tabular-nums}
 .hero-profit{color:var(--accent);font-weight:800;font-size:12px}
 .costs{margin-top:12px;display:grid;gap:5px}.cost{display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:6px;font-size:12px}.cost:last-child{border:0}.cost span{color:var(--muted)}.cost.total{font-size:14px;color:var(--accent);font-weight:850}
 .price-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}.price-box{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:9px}.price-box small{color:var(--muted);font-size:9px}.price-box strong{display:block;font-size:17px;margin-top:3px}
+.price-box em{display:block;font-style:normal;font-size:10px;font-weight:800;margin-top:4px;color:var(--accent)}.price-box em.neg{color:#ef4444}.price-box.sale{border-color:rgba(34,197,94,.45)}.price-box.sale input{margin-top:4px;font-size:17px;font-weight:800;padding:6px 8px}
 .sim{margin-top:10px}.sim-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.sim-result{margin-top:8px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:9px;display:flex;justify-content:space-between;gap:10px;align-items:center}.sim-result span{color:var(--muted);font-size:10px}.sim-result strong{font-size:18px}
 #simPrice{cursor:pointer;text-decoration:underline dotted}
 details{border:1px solid var(--border);border-radius:11px;background:var(--card);margin-top:10px}summary{padding:11px 12px;cursor:pointer;font-size:12px;font-weight:800}details>div{padding:0 12px 12px}
 .catalog-toolbar{display:grid;grid-template-columns:minmax(250px,2fr) 1.2fr 1fr 1.4fr auto auto;gap:7px;margin-bottom:9px}.catalog-toolbar .search-wrap{position:relative}.catalog-toolbar .search-wrap input{padding-right:34px}.search-clear{position:absolute;right:7px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:14px;display:none}.search-clear.show{display:block}.catalog-subbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:0 0 11px}.catalog-result{font-size:10px;color:var(--muted)}.view-toggle{display:flex;gap:4px}.view-toggle button{min-width:32px;padding:6px 8px;border:1px solid var(--border);border-radius:7px;background:var(--card2);color:var(--muted);cursor:pointer}.view-toggle button.active{border-color:rgba(34,197,94,.5);color:var(--accent);background:rgba(34,197,94,.08)}
-.catalog-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}.product{border:1px solid var(--border);border-radius:13px;background:var(--card);overflow:hidden;transition:.16s;min-width:0}.product:hover{transform:translateY(-2px);border-color:rgba(34,197,94,.35);box-shadow:0 8px 22px rgba(0,0,0,.08)}.product.top{border-color:rgba(245,158,11,.6)}.thumb{height:145px;background:var(--card2);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}.thumb img{width:100%;height:100%;object-fit:cover}.no-thumb{font-size:36px;opacity:.45}.thumb-badge{position:absolute;top:8px;left:8px;background:rgba(2,6,23,.78);color:#fff;padding:4px 7px;border-radius:6px;font-size:9px;font-weight:800}.thumb-badge.star{left:auto;right:8px;background:rgba(245,158,11,.92);color:#1f1300}.thumb-file{position:absolute;right:8px;bottom:8px;background:rgba(255,255,255,.88);color:#111827;padding:4px 7px;border-radius:6px;font-size:9px;font-weight:800;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.product-body{padding:11px}.product-title{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.product h3{font-size:14px;line-height:1.25;margin:0}.product-code{font-size:9px;color:var(--muted);margin-top:3px;word-break:break-all}.category-pill{display:inline-block;margin-top:6px;padding:3px 7px;border-radius:999px;background:rgba(14,165,233,.09);color:#0ea5e9;font-size:9px;font-weight:800}.meta{font-size:10px;color:var(--muted)}.info{display:grid;grid-template-columns:repeat(2,1fr);gap:5px;margin:9px 0}.info div{background:var(--card2);border-radius:8px;padding:7px}.info small{display:block;color:var(--muted);font-size:8px}.info strong{display:block;font-size:11px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.product-finance{display:grid;grid-template-columns:1fr 1fr;gap:7px;border-top:1px solid var(--border);padding-top:8px}.finance-label{font-size:8px;color:var(--muted)}.product-price{font-size:19px;font-weight:950;color:var(--accent);line-height:1.05}.product-profit{font-size:12px;font-weight:850}.profit-good{color:var(--accent)}.profit-bad{color:#ef4444}.product-actions{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:5px;margin-top:9px}.product-actions .btn{min-width:0;padding:7px 6px;font-size:10px}.catalog-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:10px}.catalog-stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:9px 10px}.catalog-stat small{display:block;color:var(--muted);font-size:9px}.catalog-stat strong{display:block;font-size:15px;margin-top:2px}.empty{text-align:center;color:var(--muted);padding:38px 20px;border:1px dashed var(--border);border-radius:11px;grid-column:1/-1;font-size:12px}.empty strong{display:block;color:var(--text);font-size:14px;margin-bottom:4px}.catalog-grid.list-view{grid-template-columns:1fr}.catalog-grid.list-view .product{display:grid;grid-template-columns:180px 1fr}.catalog-grid.list-view .thumb{height:100%;min-height:150px}.catalog-grid.list-view .info{grid-template-columns:repeat(4,1fr)}
+.catalog-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}.product{border:1px solid var(--border);border-radius:13px;background:var(--card);overflow:hidden;transition:.16s;min-width:0}.product:hover{transform:translateY(-2px);border-color:rgba(34,197,94,.35);box-shadow:0 8px 22px rgba(0,0,0,.08)}.product.top{border-color:rgba(245,158,11,.6)}.thumb{height:145px;background:var(--card2);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}.thumb img{width:100%;height:100%;object-fit:cover}.no-thumb{font-size:36px;opacity:.45}.thumb-badge{position:absolute;top:8px;left:8px;background:rgba(2,6,23,.78);color:#fff;padding:4px 7px;border-radius:6px;font-size:9px;font-weight:800}.thumb-badge.star{left:auto;right:8px;background:rgba(245,158,11,.92);color:#1f1300}.thumb-file{position:absolute;right:8px;bottom:8px;background:rgba(255,255,255,.88);color:#111827;padding:4px 7px;border-radius:6px;font-size:9px;font-weight:800;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.product-body{padding:11px}.product-title{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.product h3{font-size:14px;line-height:1.25;margin:0}.product-code{font-size:9px;color:var(--muted);margin-top:3px;word-break:break-all}.category-pill{display:inline-block;margin-top:6px;padding:3px 7px;border-radius:999px;background:rgba(14,165,233,.09);color:#0ea5e9;font-size:9px;font-weight:800}.meta{font-size:10px;color:var(--muted)}.info{display:grid;grid-template-columns:repeat(2,1fr);gap:5px;margin:9px 0}.info div{background:var(--card2);border-radius:8px;padding:7px}.info small{display:block;color:var(--muted);font-size:8px}.info strong{display:block;font-size:11px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.product-finance{display:grid;grid-template-columns:1fr 1fr;gap:7px;border-top:1px solid var(--border);padding-top:8px}.finance-label{font-size:8px;color:var(--muted)}.product-price{font-size:18px;font-weight:950;color:var(--accent);line-height:1.05}.product-price.ideal{color:var(--blue)}.product-profit{font-size:13px;line-height:1.2;font-weight:850}.profit-good{color:var(--accent)}.profit-bad{color:#ef4444}.product-actions{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:5px;margin-top:9px}.product-actions .btn{min-width:0;padding:7px 6px;font-size:10px}.catalog-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:10px}.catalog-stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:9px 10px}.catalog-stat small{display:block;color:var(--muted);font-size:9px}.catalog-stat strong{display:block;font-size:15px;margin-top:2px}.empty{text-align:center;color:var(--muted);padding:38px 20px;border:1px dashed var(--border);border-radius:11px;grid-column:1/-1;font-size:12px}.empty strong{display:block;color:var(--text);font-size:14px;margin-bottom:4px}.catalog-grid.list-view{grid-template-columns:1fr}.catalog-grid.list-view .product{display:grid;grid-template-columns:180px 1fr}.catalog-grid.list-view .thumb{height:100%;min-height:150px}.catalog-grid.list-view .info{grid-template-columns:repeat(4,1fr)}
 .mobile-nav{display:none}
 .toast{position:fixed;right:15px;bottom:15px;background:#020617;color:#fff;padding:10px 13px;border-radius:9px;opacity:0;pointer-events:none;transform:translateY(8px);transition:.2s;z-index:50;font-size:12px;max-width:360px}.toast.show{opacity:1;transform:none}
 @media(max-width:1200px){.catalog-grid{grid-template-columns:repeat(3,1fr)}.calc-layout{grid-template-columns:1fr}.sticky{position:static}.catalog-stats{grid-template-columns:repeat(2,1fr)}}
@@ -168,12 +169,11 @@ details{border:1px solid var(--border);border-radius:11px;background:var(--card)
           <div class="cost total"><span>CUSTO TOTAL</span><strong id="total">£ 0.00</strong></div>
         </div>
         <div class="price-grid">
-          <div class="price-box"><small>Preço Mínimo (£9)</small><strong id="minimum">£ 9.00</strong></div>
-          <div class="price-box"><small>Com Desconto (£8)</small><strong id="discountPrice">£ 8.00</strong></div>
+          <div class="price-box"><small>Preço Mínimo</small><strong id="minimum">£ 9.00</strong><em id="minimumInfo"></em></div>
+          <div class="price-box"><small>Com Desconto</small><strong id="discountPrice">£ 8.00</strong><em id="discountInfo"></em></div>
+          <div class="price-box"><small>Preço premium</small><strong id="premium">£ 0.00</strong><em id="premiumInfo"></em></div>
+          <div class="price-box sale"><small>Valor de venda (editável)</small><input id="priceResult" type="number" min="0" step=".01"><em id="priceInfo">Digite um preço para ver o lucro.</em></div>
         </div>
-        <div class="price-box" style="margin-top:7px"><small>Preço premium</small><strong id="premium">£ 0.00</strong></div>
-        <div style="margin-top:10px"><label>Preço calculado/editável (£)</label><input id="priceResult" type="number" min="0" step=".01"></div>
-        <div id="priceInfo" style="font-size:11px;color:var(--muted);margin-top:6px">Digite um preço para ver o lucro.</div>
       </div>
     </aside>
   </div>
@@ -182,7 +182,7 @@ details{border:1px solid var(--border);border-radius:11px;background:var(--card)
 <section id="page-catalogo" class="page">
   <div class="topbar"><div><h2>📦 Catálogo inteligente</h2><p>Encontre rapidamente qualquer produto e identifique as peças com maior potencial de lucro por hora e filamento.</p></div><div class="actions"><span class="badge" id="catalogCount">0 produtos</span><button class="btn btn-primary" id="catalogNew">＋ Novo</button></div></div>
   <div class="catalog-stats"><div class="catalog-stat"><small>Produtos</small><strong id="statProducts">0</strong></div><div class="catalog-stat"><small>Preço do catálogo</small><strong id="statValue">£ 0.00</strong></div><div class="catalog-stat"><small>Custo total</small><strong id="statCost">£ 0.00</strong></div><div class="catalog-stat"><small>Lucro potencial</small><strong id="statProfit">£ 0.00</strong></div></div>
-  <div class="card"><div class="catalog-toolbar"><div class="search-wrap"><input id="search" class="wide" type="search" placeholder="🔎 Nome, código, categoria, material ou impressora..." autocomplete="off"><button class="search-clear" id="searchClear" type="button">✕</button></div><select id="filter"><option value="">Todas as categorias</option></select><select id="formatFilter"><option value="">Todos os formatos</option><option value="3MF">3MF</option><option value="G-code">G-code</option><option value="STL">STL</option></select><select id="sort"><option value="potential">⭐ Maior Potencial de Lucro (Lucro/Hora)</option><option value="new">Mais recentes</option><option value="name">Nome A-Z</option><option value="price">Preço maior</option><option value="profit">Lucro maior</option><option value="weight">Peso maior</option><option value="time">Tempo maior</option></select><button class="btn btn-dark" id="catalogBackup">💾 Backup</button><button class="btn btn-dark" id="catalogImport">📥 Importar</button></div><div class="catalog-subbar"><span class="catalog-result" id="catalogResult">0 resultados</span><div class="view-toggle"><button id="gridView" class="active" type="button" title="Grade">▦</button><button id="listView" type="button" title="Lista">☷</button></div></div><div id="catalogGrid" class="catalog-grid"></div></div>
+  <div class="card"><div class="catalog-toolbar"><div class="search-wrap"><input id="search" class="wide" type="search" placeholder="🔎 Nome, código, categoria, material ou impressora..." autocomplete="off"><button class="search-clear" id="searchClear" type="button">✕</button></div><select id="filter"><option value="">Todas as categorias</option></select><select id="formatFilter"><option value="">Todos os formatos</option><option value="3MF">3MF</option><option value="G-code">G-code</option><option value="STL">STL</option></select><select id="sort"><option value="potential" selected>⭐ Maior Potencial de Lucro (Lucro/Hora)</option><option value="new">Mais recentes</option><option value="name">Nome A-Z</option><option value="price">Preço maior</option><option value="profit">Lucro maior</option><option value="weight">Peso maior</option><option value="time">Tempo maior</option></select><button class="btn btn-dark" id="catalogBackup">💾 Backup</button><button class="btn btn-dark" id="catalogImport">📥 Importar</button></div><div class="catalog-subbar"><span class="catalog-result" id="catalogResult">0 resultados</span><div class="view-toggle"><button id="gridView" class="active" type="button" title="Grade">▦</button><button id="listView" type="button" title="Lista">☷</button></div></div><div id="catalogGrid" class="catalog-grid"></div></div>
 </section>
 </main>
 </div>
@@ -200,7 +200,7 @@ const $ = id => document.getElementById(id);
 const money = v => "£ " + Number(v || 0).toFixed(2);
 const uid = () => crypto.randomUUID ? crypto.randomUUID() : Date.now() + "-" + Math.random();
 const KEY = {catalog:"bambucalc_catalog_v21", draft:"bambucalc_draft_v21", filaments:"bambucalc_filaments_v21", theme:"bambucalc_theme_v21"};
-let catalog = [], filaments = [], currentFile = null, currentAnalysis = null, editingId = null, dbPromise = null;
+let catalog = [], filaments = [], currentFile = null, currentAnalysis = null, editingId = null, dbPromise = null, priceLocked = false;
 
 function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove("show"),2800)}
 function esc(v){return String(v ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -258,9 +258,10 @@ function extractWeight(text){
   while((m=re.exec(s))){const n=normalizeNumber(m[2]);if(n>0&&n<100000)vals.push(n)}
   return vals.length?vals.reduce((a,b)=>a+b,0):0;
 }
-function extractFilament(s){for(const r of [/"filament_type"\s*:\s*\[\s*"([^"]+)/i,/filament_type\s*[:=]\s*["']?([^"',;\n\r}]+)/i,/material\s*[:=]\s*["']?([^"',;\n\r}]+)/i]){const m=String(s||"").match(r);if(m)return m[1].trim().slice(0,80)}return""}
+function cleanFilament(v){const t=String(v||"").trim();return /^[A-Za-z][A-Za-z0-9+\- ]{1,24}$/.test(t)&&!/^unknown$/i.test(t)?t:""}
+function extractFilament(s){for(const r of [/"filament_type"\s*:\s*\[\s*"([^"]+)/i,/filament_type\s*[:=]\s*["']?([^"',;\n\r}]+)/i,/;\s*material\s*[:=]\s*["']?([^"',;\n\r}]+)/i]){const m=String(s||"").match(r);const f=m&&cleanFilament(m[1]);if(f)return f}return""}
 function extractPrinter(s){for(const r of [/"printer_model"\s*:\s*"([^"]+)/i,/printer_model\s*[:=]\s*["']?([^"',;\n\r}]+)/i]){const m=String(s||"").match(r);if(m)return m[1].trim().slice(0,100)}return""}
-function cleanName(v){return String(v||"").replace(/\.[a-z0-9]{1,8}$/i,"").replace(/[._-]+/g," ").replace(/\s+/g," ").trim().replace(/^\d+[ _-]*/,"").slice(0,120)}
+function cleanName(v){return String(v||"").replace(/(\.(?:gcode|gc|gco|3mf|stl))+$/i,"").replace(/\.[a-z0-9]{1,8}$/i,"").replace(/[._-]+/g," ").replace(/\s+/g," ").trim().replace(/^\d+[ _-]*/,"").slice(0,120)}
 function suggestName(fileName,text=""){
   for(const r of [/project_name\s*[:=]\s*["']?([^"',;\n\r}]+)/i,/projectname\s*[:=]\s*["']?([^"',;\n\r}]+)/i,/model_name\s*[:=]\s*["']?([^"',;\n\r}]+)/i,/title\s*[:=]\s*["']?([^"',;\n\r}]+)/i]){
     const m=String(text||"").match(r);if(m&&cleanName(m[1]))return cleanName(m[1])
@@ -361,7 +362,7 @@ function renderAnalysis(d){
 }
 
 async function analyze(file){
-  currentFile=file;currentAnalysis=null;$("fileName").textContent=file.name;$("analysisStatus").textContent="⏳ A analisar localmente...";$("statusBadge").textContent="A analisar";$("fileBadge").textContent="A analisar";
+  currentFile=file;currentAnalysis=null;priceLocked=false;$("fileName").textContent=file.name;$("analysisStatus").textContent="⏳ A analisar localmente...";$("statusBadge").textContent="A analisar";$("fileBadge").textContent="A analisar";
   const ext=file.name.toLowerCase().split(".").pop();
   try{
     let d=ext==="3mf"?await parse3MF(file):ext==="stl"?{type:"STL",weight:0,hours:0,filament:"",printer:"",source:"STL",embedded:0,projectName:""}:await parseGCode(file);
@@ -393,21 +394,23 @@ function calc(){
   const minimum = Math.max(9.00, calculatedMin);
   const discountPrice = Math.max(8.00, Math.min(minimum, total * 1.1));
 
-  const ideal=total*(1+markup/100),premium=ideal*1.25,profit=ideal-total,margin=ideal?profit/ideal*100:0;
+  const ideal=total*(1+markup/100),premium=Math.max(ideal*1.25,minimum),profit=ideal-total,margin=ideal?profit/ideal*100:0;
   $("material").textContent=money(material);$("energy").textContent=money(energy);$("machineCost").textContent=money(machineCost);$("extraCost").textContent=money(extraCost);$("failureCost").textContent=money(failureCost);$("total").textContent=money(total);
   $("minimum").textContent=money(minimum);
   $("discountPrice").textContent=money(discountPrice);
   $("ideal").textContent=money(ideal);$("premium").textContent=money(premium);$("idealProfit").textContent=money(profit);$("idealMargin").textContent=margin.toFixed(1)+"%";
-  if(document.activeElement!==$("priceResult"))$("priceResult").value=ideal.toFixed(2);
+  if(!priceLocked&&document.activeElement!==$("priceResult"))$("priceResult").value=ideal.toFixed(2);
+  info("minimumInfo",minimum,total);info("discountInfo",discountPrice,total);info("premiumInfo",premium,total);
   updatePriceInfo(total);
   updateSimulator(total);
   saveDraft();
   return{weight,h,material,energy,machineCost,extraCost,failureCost,total,minimum,discountPrice,ideal,premium,profitIdeal:profit};
 }
-function updatePriceInfo(cost){
-  const p=num("priceResult"),profit=p-cost,margin=p?profit/p*100:0;
-  $("priceInfo").textContent=`Preço ${money(p)} → lucro ${money(profit)} · margem ${margin.toFixed(1)}%`;
+function info(id,price,cost){
+  const profit=price-cost,margin=price?profit/price*100:0,el=$(id);
+  el.textContent=`Lucro ${money(profit)} · ${margin.toFixed(1)}%`;el.classList.toggle("neg",profit<0);
 }
+function updatePriceInfo(cost){info("priceInfo",num("priceResult"),cost)}
 function updateSimulator(cost){
   const target=num("simTarget"),mode=$("simMode").value;
   let price=cost;
@@ -425,7 +428,7 @@ function loadDraft(){
   Object.entries(d).forEach(([k,v])=>{const el=$(k);if(el)el.value=v});
 }
 function clearCalc(){
-  editingId=null;currentFile=null;currentAnalysis=null;
+  editingId=null;currentFile=null;currentAnalysis=null;priceLocked=false;
   ["name","code","category","image","weight","time","hours","priceResult"].forEach(id=>$(id).value="");
   $("analysis").innerHTML="";$("fileName").textContent="";$("analysisStatus").textContent="Nenhum arquivo analisado.";$("fileBadge").textContent="Aguardando";$("statusBadge").textContent="Pronto";$("fileInput").value="";
   calc();$("name").focus()
@@ -468,7 +471,7 @@ async function saveProduct(){
   const profitPerGram=profit/weight;
   const potentialScore=profitPerHour*0.7+profitPerGram*30;
 
-  const item={id,name,code:$("code").value.trim()||makeCode(name),category:$("category").value.trim()||suggestCategory(name),image:$("image").value.trim(),weight:v.weight,hours:v.h,cost:v.total,price,profit,profitPerHour,profitPerGram,potentialScore,analysis:currentAnalysis,fileId,fileName:currentFile?.name||old?.fileName||"",fileType:currentFile?.name?.split(".").pop()?.toUpperCase()||old?.fileType||currentAnalysis?.type||"",updatedAt:new Date().toISOString(),createdAt:old?.createdAt||new Date().toISOString()};
+  const item={id,name,code:$("code").value.trim()||makeCode(name),category:$("category").value.trim()||suggestCategory(name),image:$("image").value.trim(),weight:v.weight,hours:v.h,cost:v.total,idealPrice:v.ideal,price,profit,profitPerHour,profitPerGram,potentialScore,analysis:currentAnalysis,fileId,fileName:currentFile?.name||old?.fileName||"",fileType:currentFile?.name?.split(".").pop()?.toUpperCase()||old?.fileType||currentAnalysis?.type||"",updatedAt:new Date().toISOString(),createdAt:old?.createdAt||new Date().toISOString()};
   catalog=getLocal(KEY.catalog,[]);
   if(editingId)catalog=catalog.map(x=>x.id===id?item:x);else catalog=[item,...catalog];
   if(!setLocal(KEY.catalog,catalog))return;
@@ -487,7 +490,7 @@ function renderCatalog(){
   $("filter").innerHTML='<option value="">Todas as categorias</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");$("filter").value=cat;
   let list=catalog.filter(p=>{const a=p.analysis||{},type=String(p.fileType||a.type||"").toUpperCase();return(!q||catalogText(p).includes(q))&&(!cat||p.category===cat)&&(!fmt||type===fmt.toUpperCase())});
 
-  const score=p=>p.potentialScore!=null?p.potentialScore:perHour(p);
+  const score=perHour;
   if(sort==="potential")list.sort((a,b)=>score(b)-score(a));
   if(sort==="name")list.sort((a,b)=>String(a.name).localeCompare(String(b.name)));
   if(sort==="price")list.sort((a,b)=>(b.price||0)-(a.price||0));
@@ -510,9 +513,10 @@ function renderCatalog(){
     const margin=(+p.price||0)?((+p.profit||0)/(+p.price||1)*100):0,profitClass=(+p.profit||0)>=0?"profit-good":"profit-bad";
     const fileLabel=p.fileName?esc(p.fileName.length>22?p.fileName.slice(0,19)+"…":p.fileName):type;
     const isTop=topIds.has(p.id);
+    const idealP=p.idealPrice!=null?+p.idealPrice:(+p.cost||0)*(1+num("markup")/100),idealM=idealP?(idealP-(+p.cost||0))/idealP*100:0;
     const pid=esc(p.id);
 
-    return `<article class="product${isTop?" top":""}"><div class="thumb">${thumb}<span class="thumb-badge">${type}</span>${isTop?'<span class="thumb-badge star">⭐ Top Lucro/Hora</span>':''}<span class="thumb-file">${fileLabel}</span></div><div class="product-body"><div class="product-title"><div><h3>${esc(p.name||"Produto sem nome")}</h3><div class="product-code">${esc(p.code||"Sem código")}</div></div></div><span class="category-pill">${esc(p.category||"Diversos")}</span><div class="info"><div><small>⚖ Peso</small><strong>${(+p.weight||0).toFixed(2)} g</strong></div><div><small>⏱ Tempo</small><strong>${formatTime(p.hours)}</strong></div><div><small>💷 Custo</small><strong>${money(p.cost)}</strong></div><div><small>⚡ Lucro/Hora</small><strong style="color:var(--accent)">${money(perHour(p))}/h</strong></div></div><div class="meta" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">${a.filament?`<span>🧵 ${esc(a.filament)}</span>`:""}${a.printer?`<span>🖨️ ${esc(a.printer)}</span>`:""}${p.updatedAt?`<span>📅 ${formatDate(p.updatedAt)}</span>`:""}</div><div class="product-finance"><div><div class="finance-label">PREÇO DE VENDA</div><div class="product-price">${money(p.price)}</div></div><div><div class="finance-label">LUCRO · MARGEM</div><div class="product-profit ${profitClass}">${money(p.profit)}</div><div class="finance-label">${margin.toFixed(1)}%</div></div></div><div class="product-actions"><button class="btn btn-blue" data-act="edit" data-id="${pid}">✏️ Editar</button><button class="btn btn-dark" data-act="file" data-id="${pid}">⬇️ Arquivo</button><button class="btn btn-danger" data-act="del" data-id="${pid}">🗑️</button></div></div></article>`
+    return `<article class="product${isTop?" top":""}"><div class="thumb">${thumb}<span class="thumb-badge">${type}</span>${isTop?'<span class="thumb-badge star">⭐ Top Lucro/Hora</span>':''}<span class="thumb-file">${fileLabel}</span></div><div class="product-body"><div class="product-title"><div><h3>${esc(p.name||"Produto sem nome")}</h3><div class="product-code">${esc(p.code||"Sem código")}</div></div></div><span class="category-pill">${esc(p.category||"Diversos")}</span><div class="info"><div><small>⚖ Peso</small><strong>${(+p.weight||0).toFixed(2)} g</strong></div><div><small>⏱ Tempo</small><strong>${formatTime(p.hours)}</strong></div><div><small>💷 Custo</small><strong>${money(p.cost)}</strong></div><div><small>⚡ Lucro/Hora</small><strong style="color:var(--accent)">${money(perHour(p))}/h</strong></div></div><div class="meta" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">${cleanFilament(a.filament)?`<span>🧵 ${esc(cleanFilament(a.filament))}</span>`:""}${a.printer?`<span>🖨️ ${esc(a.printer)}</span>`:""}${p.updatedAt?`<span>📅 ${formatDate(p.updatedAt)}</span>`:""}</div><div class="product-finance"><div><div class="finance-label">PREÇO IDEAL</div><div class="product-price ideal">${money(idealP)}</div><div class="product-profit ${idealP-(+p.cost||0)>=0?"profit-good":"profit-bad"}">Lucro ${money(idealP-(+p.cost||0))}</div><div class="finance-label">Margem ${idealM.toFixed(1)}%</div></div><div><div class="finance-label">VALOR DE VENDA</div><div class="product-price">${money(p.price)}</div><div class="product-profit ${profitClass}">Lucro ${money(p.profit)}</div><div class="finance-label">Margem ${margin.toFixed(1)}%</div></div></div><div class="product-actions"><button class="btn btn-blue" data-act="edit" data-id="${pid}">✏️ Editar</button><button class="btn btn-dark" data-act="file" data-id="${pid}">⬇️ Arquivo</button><button class="btn btn-danger" data-act="del" data-id="${pid}">🗑️</button></div></div></article>`
   }).join("");
 }
 $("catalogGrid").addEventListener("click",e=>{
@@ -528,7 +532,7 @@ function editProduct(id){
   Object.entries(map).forEach(([k,v])=>$(k).value=v??"");
   if(p.analysis)renderAnalysis({...p.analysis,category:p.category});else $("analysis").innerHTML="";
   $("fileName").textContent=p.analysis?.type?`Dados salvos do produto (${p.analysis.type})`:"";
-  const c=calc();$("priceResult").value=(+p.price||0).toFixed(2);updatePriceInfo(c.total);saveDraft();
+  priceLocked=true;const c=calc();$("priceResult").value=(+p.price||0).toFixed(2);updatePriceInfo(c.total);saveDraft();
   openPage("calc");toast("Produto carregado para edição.")
 }
 async function downloadProduct(id){
@@ -571,7 +575,7 @@ $("fileInput").addEventListener("change",e=>{const f=e.target.files[0];if(f)anal
 ["dragleave","drop"].forEach(ev=>$("dropzone").addEventListener(ev,e=>{e.preventDefault();$("dropzone").classList.remove("drag")}));
 $("dropzone").addEventListener("drop",e=>{const f=e.dataTransfer.files[0];if(f)analyze(f)});
 
-["weight","time","rollPrice","rollWeight","watts","tariff","machine","markup","failure","extras","packaging","name","code","category","image","priceResult"].forEach(id=>$(id).addEventListener("input",calc));
+["weight","time","rollPrice","rollWeight","watts","tariff","machine","markup","failure","extras","packaging","name","code","category","image","priceResult"].forEach(id=>$(id).addEventListener("input",()=>{if(id==="priceResult")priceLocked=$("priceResult").value!=="";calc()}));
 $("simTarget").addEventListener("input",calc);
 $("simMode").addEventListener("change",calc);
 $("saveProduct").addEventListener("click",saveProduct);
@@ -580,7 +584,7 @@ $("catalogNew").addEventListener("click",()=>{clearCalc();openPage("calc")});
 $("search").addEventListener("input",renderCatalog);$("searchClear").addEventListener("click",()=>{$("search").value="";renderCatalog();$("search").focus()});$("filter").addEventListener("change",renderCatalog);$("formatFilter").addEventListener("change",renderCatalog);$("sort").addEventListener("change",renderCatalog);$("gridView").addEventListener("click",()=>{setLocal("bambucalc_catalog_view_v18","grid");renderCatalog()});$("listView").addEventListener("click",()=>{setLocal("bambucalc_catalog_view_v18","list");renderCatalog()});
 $("backup").addEventListener("click",backup);$("catalogBackup").addEventListener("click",backup);
 $("import").addEventListener("click",importBackup);$("catalogImport").addEventListener("click",importBackup);
-$("simPrice").addEventListener("click",()=>{const c=calc();const v=parseFloat($("simPrice").textContent.replace("£","").trim());if(Number.isFinite(v)){$("priceResult").value=v.toFixed(2);updatePriceInfo(c.total);saveDraft();toast("Preço aplicado.")}});
+$("simPrice").addEventListener("click",()=>{const c=calc();const v=parseFloat($("simPrice").textContent.replace("£","").trim());if(Number.isFinite(v)){priceLocked=true;$("priceResult").value=v.toFixed(2);updatePriceInfo(c.total);saveDraft();toast("Preço aplicado.")}});
 
 loadDraft();initTheme();initFilaments();catalog=getLocal(KEY.catalog,[]);calc();renderCatalog();
 </script>
