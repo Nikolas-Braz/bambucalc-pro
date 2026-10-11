@@ -198,7 +198,7 @@ details{border:1px solid var(--border);border-radius:11px;background:var(--card)
 const $ = id => document.getElementById(id);
 const money = v => "£ " + Number(v || 0).toFixed(2);
 const uid = () => crypto.randomUUID ? crypto.randomUUID() : Date.now() + "-" + Math.random();
-const KEY = {catalog:"bambucalc_catalog_v21", draft:"bambucalc_draft_v21", filaments:"bambucalc_filaments_v21", theme:"bambucalc_theme_v21"};
+const KEY = {catalog:"bambucalc_catalog_v22", draft:"bambucalc_draft_v22", filaments:"bambucalc_filaments_v22", theme:"bambucalc_theme_v22"};
 let catalog = [], filaments = [], currentFile = null, currentAnalysis = null, editingId = null, dbPromise = null;
 
 function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove("show"),2800)}
@@ -433,7 +433,7 @@ function initFilaments(){
 $("filamentPreset").addEventListener("change",()=>{const f=filaments.find(x=>x.id===$("filamentPreset").value);if(!f)return;$("rollPrice").value=f.price;$("rollWeight").value=f.weight;calc()});
 $("saveFilament").addEventListener("click",()=>{const name=prompt("Nome do filamento:","PLA");if(!name)return;const f={id:uid(),name:name.trim(),price:+$("rollPrice").value||0,weight:+$("rollWeight").value\vert{}\vert{}1000};filaments.push(f);setLocal(KEY.filaments,filaments);initFilaments();$("filamentPreset").value=f.id;toast("Preset guardado.")});
 
-const DB="BambuCalc3D_Files_v21",STORE="files";
+const DB="BambuCalc3D_Files_v22",STORE="files";
 function idb(){if(dbPromise)return dbPromise;dbPromise=new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>r.result.createObjectStore(STORE,{keyPath:"id"});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});return dbPromise}
 async function filePut(o){const db=await idb();return new Promise((res,rej)=>{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).put(o);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}
 async function fileGet(id){if(!id)return null;const db=await idb();return new Promise((res,rej)=>{const r=db.transaction(STORE).objectStore(STORE).get(id);r.onsuccess=()=>res(r.result||null);r.onerror=()=>rej(r.error)})}
@@ -512,7 +512,7 @@ async function deleteProduct(id){
 }
 
 function backup(){
-  downloadText(JSON.stringify({version:21,exportedAt:new Date().toISOString(),catalog,filaments},null,2),`bambucalc_backup_${new Date().toISOString().slice(0,10)}.json`,"application/json")
+  downloadText(JSON.stringify({version:22,exportedAt:new Date().toISOString(),catalog,filaments},null,2),`bambucalc_backup_${new Date().toISOString().slice(0,10)}.json`,"application/json")
 }
 function importBackup(){
   const i=document.createElement("input");i.type="file";i.accept=".json,application/json";i.onchange=async()=>{const f=i.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!Array.isArray(d.catalog))throw Error();catalog=d.catalog;filaments=Array.isArray(d.filaments)?d.filaments:filaments;setLocal(KEY.catalog,catalog);setLocal(KEY.filaments,filaments);initFilaments();renderCatalog();toast("Backup importado.")}catch{toast("Backup inválido.")}};i.click()
