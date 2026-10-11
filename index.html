@@ -1,538 +1,824 @@
+
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="BambuCalc 3D PRO — calculadora e catálogo inteligente">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101827">
 <title>BambuCalc 3D PRO — uai 3D printing</title>
 <style>
-:root{
-  --bg:#0f172a;--panel:#020617;--card:#111827;--card2:#172033;
-  --text:#f8fafc;--muted:#94a3b8;--border:#263449;
-  --accent:#22c55e;--blue:#0ea5e9;--danger:#ef4444;--warn:#f59e0b;
-  --shadow:0 8px 24px rgba(0,0,0,.14);--radius:14px;
+:root {
+  --bg:#0b1220; --panel:#111c2e; --card:#172338;
+  --line:#2a3950; --text:#e8eef8; --muted:#9eacc1;
+  --accent:#22c55e; --blue:#38bdf8; --danger:#fb7185;
+  --input:#0b1525;
 }
-:root[data-theme="light"]{
-  --bg:#f1f5f9;--panel:#fff;--card:#fff;--card2:#f8fafc;
-  --text:#0f172a;--muted:#64748b;--border:#dbe3ec;--shadow:0 6px 18px rgba(15,23,42,.06);
+* { box-sizing:border-box }
+body {
+  margin:0; background:var(--bg); color:var(--text);
+  font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;
 }
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}
-button,input,select{font:inherit}button{cursor:pointer}
-.app{min-height:100vh}
-.sidebar{position:fixed;inset:0 auto 0 0;width:210px;background:var(--panel);border-right:1px solid var(--border);padding:18px 12px;z-index:10}
-.brand{padding:5px 8px 22px}.brand h1{font-size:18px;margin:0;font-weight:850}.brand p{margin:4px 0;color:var(--muted);font-size:11px}
-.nav{display:grid;gap:6px}.nav button{border:0;background:transparent;color:var(--muted);padding:11px 12px;border-radius:10px;text-align:left;font-size:14px}
-.nav button:hover,.nav button.active{background:rgba(34,197,94,.1);color:var(--accent);font-weight:750}
-.sidebar-footer{position:absolute;bottom:15px;left:12px;right:12px}
-.main{margin-left:210px;padding:22px;max-width:1450px}
-.page{display:none}.page.active{display:block}
-.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:14px}
-.topbar h2{margin:0;font-size:22px}.topbar p{margin:4px 0;color:var(--muted);font-size:12px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px;box-shadow:var(--shadow)}
-.grid{display:grid;gap:9px}.grid-2{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(4,1fr)}
-label{display:block;color:var(--muted);font-size:11px;font-weight:700;margin-bottom:5px}
-input,select{width:100%;border:1px solid var(--border);background:var(--card2);color:var(--text);border-radius:9px;padding:9px 10px;outline:0}
-input:focus,select:focus{border-color:var(--blue)}
-input[type=number]{text-align:right;font-variant-numeric:tabular-nums}
-.btn{border:0;border-radius:9px;padding:9px 13px;font-weight:750;font-size:12px}
-.btn-primary{background:var(--accent);color:#052e16}.btn-blue{background:var(--blue);color:#fff}.btn-dark{background:var(--card2);border:1px solid var(--border);color:var(--text)}
-.btn-danger{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:#f87171}
-.btn-warn{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:#fbbf24}
-.actions{display:flex;gap:7px;flex-wrap:wrap}
-.badge{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;background:rgba(34,197,94,.1);color:var(--accent);font-size:10px;font-weight:800}
-.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
-.section-head h3{margin:0;font-size:14px}.section-head span{font-size:10px;color:var(--muted)}
-.calc-layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(330px,.75fr);gap:12px;align-items:start}
-.sticky{position:sticky;top:12px}
-.dropzone{min-height:135px;border:2px dashed var(--border);background:var(--card2);border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;cursor:pointer}
-.dropzone.drag{border-color:var(--accent);background:rgba(34,197,94,.06)}
-.dropzone strong{display:block;font-size:15px;margin-bottom:4px}.dropzone span{font-size:11px;color:var(--muted)}
-.file-name{margin-top:8px;font-size:11px;color:var(--muted);word-break:break-word}
-.analysis{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:9px}
-.analysis div{background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:8px}
-.analysis small{display:block;color:var(--muted);font-size:9px}.analysis strong{display:block;margin-top:2px;font-size:12px}
-.hero{background:linear-gradient(135deg,rgba(34,197,94,.1),rgba(14,165,233,.06));border:1px solid rgba(34,197,94,.28);border-radius:14px;padding:15px}
-.hero-label{font-size:10px;color:var(--muted)}.hero-price{font-size:34px;font-weight:950;line-height:1.05;margin:4px 0}
-.hero-profit{color:var(--accent);font-weight:800;font-size:12px}
-.costs{margin-top:12px;display:grid;gap:5px}.cost{display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:6px;font-size:12px}.cost:last-child{border:0}.cost span{color:var(--muted)}.cost.total{font-size:14px;color:var(--accent);font-weight:850}
-.price-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:9px}.price-box{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:9px}.price-box small{color:var(--muted);font-size:9px}.price-box strong{display:block;font-size:17px;margin-top:3px}.price-box.promo{border-color:rgba(245,158,11,.45)}.price-box.promo strong{color:#f59e0b}.price-box small{line-height:1.35}
-.sim{margin-top:10px}.sim-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.sim-result{margin-top:8px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:9px;display:flex;justify-content:space-between;gap:10px;align-items:center}.sim-result span{color:var(--muted);font-size:10px}.sim-result strong{font-size:18px}
-details{border:1px solid var(--border);border-radius:11px;background:var(--card);margin-top:10px}summary{padding:11px 12px;cursor:pointer;font-size:12px;font-weight:800}details>div{padding:0 12px 12px}
-.catalog-toolbar{display:grid;grid-template-columns:minmax(220px,2fr) 1.1fr 1fr 1.1fr 1.2fr auto auto;gap:7px;margin-bottom:9px}.catalog-toolbar .search-wrap{position:relative}.catalog-toolbar .search-wrap input{padding-right:34px}.search-clear{position:absolute;right:7px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:14px;display:none}.search-clear.show{display:block}.catalog-subbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:0 0 11px}.catalog-result{font-size:10px;color:var(--muted)}.view-toggle{display:flex;gap:4px}.view-toggle button{min-width:32px;padding:6px 8px;border:1px solid var(--border);border-radius:7px;background:var(--card2);color:var(--muted);cursor:pointer}.view-toggle button.active{border-color:rgba(34,197,94,.5);color:var(--accent);background:rgba(34,197,94,.08)}
-.catalog-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}.product{border:1px solid var(--border);border-radius:13px;background:var(--card);overflow:hidden;transition:.16s;min-width:0}.product:hover{transform:translateY(-2px);border-color:rgba(34,197,94,.35);box-shadow:0 8px 22px rgba(0,0,0,.08)}.thumb{height:145px;background:var(--card2);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}.thumb img{width:100%;height:100%;object-fit:cover}.no-thumb{font-size:36px;opacity:.45}.thumb-badge{position:absolute;top:8px;left:8px;background:rgba(2,6,23,.78);color:#fff;padding:4px 7px;border-radius:6px;font-size:9px;font-weight:800}.thumb-file{position:absolute;right:8px;top:8px;background:rgba(255,255,255,.88);color:#111827;padding:4px 7px;border-radius:6px;font-size:9px;font-weight:800;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.product-body{padding:11px}.product-title{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.product h3{font-size:14px;line-height:1.25;margin:0}.product-code{font-size:9px;color:var(--muted);margin-top:3px;word-break:break-all}.category-pill{display:inline-block;margin-top:6px;padding:3px 7px;border-radius:999px;background:rgba(14,165,233,.09);color:#0ea5e9;font-size:9px;font-weight:800}.meta{font-size:10px;color:var(--muted)}.info{display:grid;grid-template-columns:repeat(2,1fr);gap:5px;margin:9px 0}.info div{background:var(--card2);border-radius:8px;padding:7px}.info small{display:block;color:var(--muted);font-size:8px}.info strong{display:block;font-size:11px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.product-finance{display:grid;grid-template-columns:1fr 1fr;gap:7px;border-top:1px solid var(--border);padding-top:8px}.finance-label{font-size:8px;color:var(--muted)}.product-price{font-size:19px;font-weight:950;color:var(--accent);line-height:1.05}.product-profit{font-size:12px;font-weight:850}.profit-good{color:var(--accent)}.profit-bad{color:#ef4444}.product-actions{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:5px;margin-top:9px}.product-actions .btn{min-width:0;padding:7px 6px;font-size:10px}.catalog-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:10px}.catalog-stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:9px 10px}.catalog-stat small{display:block;color:var(--muted);font-size:9px}.catalog-stat strong{display:block;font-size:15px;margin-top:2px}.empty{text-align:center;color:var(--muted);padding:38px 20px;border:1px dashed var(--border);border-radius:11px;grid-column:1/-1;font-size:12px}.empty strong{display:block;color:var(--text);font-size:14px;margin-bottom:4px}.catalog-grid.list-view{grid-template-columns:1fr}.catalog-grid.list-view .product{display:grid;grid-template-columns:180px 1fr}.catalog-grid.list-view .thumb{height:100%;min-height:150px}.catalog-grid.list-view .info{grid-template-columns:repeat(4,1fr)}
-.mobile-nav{display:none}
-.toast{position:fixed;right:15px;bottom:15px;background:#020617;color:#fff;padding:10px 13px;border-radius:9px;opacity:0;pointer-events:none;transform:translateY(8px);transition:.2s;z-index:50;font-size:12px;max-width:360px}.toast.show{opacity:1;transform:none}
-@media(max-width:1200px){.catalog-grid{grid-template-columns:repeat(3,1fr)}.calc-layout{grid-template-columns:1fr}.sticky{position:static}.catalog-stats{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:900px){.sidebar{display:none}.main{margin:0;padding:14px 14px 78px}.mobile-nav{display:flex;position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--border);padding:5px;gap:4px;z-index:20}.mobile-nav button{flex:1;border:0;background:transparent;color:var(--muted);padding:7px 2px;border-radius:8px;font-size:9px}.mobile-nav button.active{color:var(--accent);background:rgba(34,197,94,.08)}.catalog-grid{grid-template-columns:repeat(2,1fr)}.catalog-toolbar{grid-template-columns:1fr 1fr}.catalog-toolbar .search-wrap{grid-column:1/-1}.grid-4{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){.topbar{align-items:flex-start}.topbar h2{font-size:19px}.catalog-grid,.catalog-toolbar,.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.catalog-stats{grid-template-columns:1fr 1fr}.catalog-grid.list-view .product{display:block}.catalog-grid.list-view .thumb{height:145px}.catalog-grid.list-view .info{grid-template-columns:1fr 1fr}.analysis{grid-template-columns:1fr 1fr}.sim-grid{grid-template-columns:1fr}.price-grid{grid-template-columns:1fr 1fr}}
+button,input,select,textarea { font:inherit }
+button {
+  cursor:pointer; border:0; border-radius:10px; padding:10px 14px;
+  background:var(--accent); color:#06210f; font-weight:750;
+}
+button.secondary { background:#26364e;color:var(--text);border:1px solid var(--line) }
+button.danger { background:#5b2330;color:#ffe5e9 }
+header {
+  padding:18px 24px; border-bottom:1px solid var(--line);
+  display:flex; gap:16px; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; background:#0e1829;
+}
+.brand { display:flex;gap:12px;align-items:center }
+.logo {
+  width:44px;height:44px;border-radius:12px;
+  background:linear-gradient(135deg,var(--accent),var(--blue));
+  display:grid;place-items:center;color:#07131e;font-size:21px;font-weight:900
+}
+h1 { font-size:24px;margin:0 }
+header p { margin:3px 0 0;color:var(--muted);font-size:13px }
+nav { display:flex;gap:8px;flex-wrap:wrap }
+nav button { background:transparent;color:var(--muted);border:1px solid var(--line) }
+nav button.active { background:var(--accent);color:#06210f;border-color:var(--accent) }
+main { max-width:1400px;margin:auto;padding:24px 20px 50px }
+.view { display:none }
+.view.active { display:block }
+.layout { display:grid;grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);gap:18px }
+.panel { background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;min-width:0 }
+.panel h2 { font-size:18px;margin:0 0 14px }
+.panel h3 { font-size:15px;margin:18px 0 10px }
+.muted { color:var(--muted) }
+.small { font-size:12px }
+.grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px }
+.field { display:flex;flex-direction:column;gap:6px;min-width:0 }
+.field label { font-size:12px;color:var(--muted);font-weight:700 }
+.field input,.field select,.toolbar input,.toolbar select {
+  width:100%;min-width:0;background:var(--input);color:var(--text);
+  border:1px solid var(--line);border-radius:9px;padding:10px 11px;
+}
+.field input:focus,.toolbar input:focus { border-color:var(--accent);outline:none }
+.full { grid-column:1/-1 }
+.actions { display:flex;gap:8px;flex-wrap:wrap;margin-top:15px }
+.metrics { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px }
+.metric { padding:14px;border-radius:12px;background:var(--card);border:1px solid var(--line) }
+.metric span { display:block;color:var(--muted);font-size:12px }
+.metric strong { font-size:23px;display:block;margin-top:4px;overflow-wrap:anywhere }
+.metric.good strong { color:var(--accent) }
+.pricegrid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px }
+.price { background:#0d1929;border:1px solid var(--line);border-radius:12px;padding:13px }
+.price span { display:block;color:var(--muted);font-size:12px }
+.price strong { font-size:21px }
+.price.discount { border-color:#a16207 }
+.price.discount strong { color:#fbbf24 }
+.notice { padding:10px 12px;border-radius:10px;background:#102d23;color:#a7f3d0;margin:12px 0;font-size:13px }
+.drop { border:1px dashed #4c6685;border-radius:12px;padding:18px;text-align:center;background:#0c1727 }
+.drop.drag { border-color:var(--accent);background:#102d23 }
+.drop input { max-width:100%;margin-top:10px }
+.toolbar { display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px }
+.toolbar>* { flex:1 1 170px }
+.catalog-grid { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px }
+.product { border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:9px;min-width:0 }
+.product h3 { margin:0;font-size:16px;overflow-wrap:anywhere }
+.pill { display:inline-flex;align-self:flex-start;padding:3px 8px;border-radius:999px;background:#20364b;color:#c6e7ff;font-size:11px }
+.rank { color:#fbbf24;font-weight:800 }
+.stats { display:grid;grid-template-columns:1fr 1fr;gap:8px }
+.stats div { background:var(--card);border-radius:8px;padding:8px }
+.stats span { display:block;color:var(--muted);font-size:11px }
+.stats b { font-size:14px }
+.empty { padding:30px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px }
+.bar { height:7px;background:#26364e;border-radius:99px;overflow:hidden }
+.bar i { display:block;height:100%;background:var(--accent) }
+footer { text-align:center;color:var(--muted);padding:18px;font-size:12px }
+@media(max-width:900px) {
+  .layout { grid-template-columns:1fr }
+  .catalog-grid { grid-template-columns:repeat(2,minmax(0,1fr)) }
+}
+@media(max-width:560px) {
+  header { padding:14px }
+  h1 { font-size:20px }
+  .grid,.metrics,.pricegrid,.catalog-grid { grid-template-columns:1fr }
+  main { padding:14px 10px 35px }
+  .panel { padding:14px }
+}
 </style>
 </head>
 <body>
-<div class="app">
-<aside class="sidebar">
-  <div class="brand"><h1>uai 3D printing</h1><p>BambuCalc 3D PRO</p></div>
-  <nav class="nav">
-    <button class="active" data-page="calc">🧮 Calculadora</button>
-    <button data-page="catalogo">📦 Catálogo</button>
-  </nav>
-  <div class="sidebar-footer"><button class="btn btn-dark" style="width:100%" id="themeBtn">🌙 Tema</button></div>
-</aside>
-
-<main class="main">
-<section id="page-calc" class="page active">
-  <div class="topbar">
-    <div><h2>🧮 Calculadora</h2><p>Envie o arquivo. O sistema faz o resto.</p></div>
-    <span class="badge" id="statusBadge">Pronto</span>
-  </div>
-
-  <div class="calc-layout">
+<header>
+  <div class="brand">
+    <div class="logo">3D</div>
     <div>
-      <div class="card">
-        <div class="section-head"><div><h3>📁 Arquivo 3D</h3><span>3MF, G-code ou STL</span></div><span id="fileBadge" class="badge">Aguardando</span></div>
-        <div id="dropzone" class="dropzone">
-          <div><strong>Arraste o arquivo aqui</strong><span>ou clique para selecionar</span><input id="fileInput" type="file" accept=".3mf,.gcode,.gc,.gco,.stl" hidden></div>
-        </div>
-        <div id="fileName" class="file-name"></div>
-        <div id="analysisStatus" style="margin-top:8px;font-size:11px;color:var(--muted)">Nenhum arquivo analisado.</div>
-        <div id="analysis" class="analysis"></div>
-      </div>
-
-      <div class="card">
-        <div class="section-head"><div><h3>🤖 Dados automáticos</h3><span>Você pode corrigir qualquer campo.</span></div><span class="badge">Automático</span></div>
-        <div class="grid grid-4">
-          <div><label>Nome do produto</label><input id="name" placeholder="Ex.: Vaso espiral"></div>
-          <div><label>Código</label><input id="code" placeholder="Será gerado automaticamente"></div>
-          <div><label>Categoria</label><input id="category" placeholder="Será sugerida automaticamente"></div>
-          <div><label>Imagem URL (opcional)</label><input id="image" type="url" placeholder="https://..."></div>
-          <div><div><label>Peso (g)</label><input id="weight" type="number" min="0" step="0.01"></div></div>
-          <div><label>Tempo</label><input id="time" placeholder="3h18m ou 3:18"></div>
-          <div><label>Horas calculadas</label><input id="hours" type="number" readonly></div>
-          <div><label>Preço calculado (£)</label><input id="priceManual" type="number" min="0" step="0.01"></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="section-head"><div><h3>🧵 Filamento</h3><span>Preset para acelerar novos cálculos.</span></div></div>
-        <div class="grid grid-3">
-          <div><label>Preset</label><select id="filamentPreset"><option value="">Selecionar...</option></select></div>
-          <div><label>Preço do rolo (£)</label><input id="rollPrice" type="number" min="0" step=".01" value="18"></div>
-          <div><label>Peso do rolo (g)</label><input id="rollWeight" type="number" min="1" step="1" value="1000"></div>
-        </div>
-        <div class="actions" style="margin-top:8px"><button class="btn btn-blue" id="saveFilament">+ Guardar preset</button></div>
-      </div>
-
-      <details>
-        <summary>⚙️ Custos avançados</summary>
-        <div class="grid grid-4">
-          <div><label>Potência (W)</label><input id="watts" type="number" min="0" value="80"></div>
-          <div><label>Eletricidade (£/kWh)</label><input id="tariff" type="number" min="0" step=".01" value=".25"></div>
-          <div><label>Máquina (£/h)</label><input id="machine" type="number" min="0" step=".01" value=".50"></div>
-          <div><label>Margem ideal (%)</label><input id="markup" type="number" min="0" step="1" value="60"></div>
-          <div><label>Reserva falhas (%)</label><input id="failure" type="number" min="0" step=".5" value="5"></div>
-          <div><label>Extras (£)</label><input id="extras" type="number" min="0" step=".01" value="0"></div>
-          <div><label>Embalagem (£)</label><input id="packaging" type="number" min="0" step=".01" value="0"></div>
-        </div>
-      </details>
-
-      <div class="card sim">
-        <div class="section-head"><div><h3>🎯 Preço por objetivo</h3><span>O preço abaixo também é editável.</span></div><span class="badge">Lucro instantâneo</span></div>
-        <div class="sim-grid">
-          <div><label>Objetivo</label><select id="simMode"><option value="profit">Lucro desejado (£)</option><option value="margin">Margem desejada (%)</option></select></div>
-          <div><label id="simLabel">Lucro desejado (£)</label><input id="simTarget" type="number" min="0" step=".01" value="10"></div>
-        </div>
-        <div class="sim-result"><div><span>Preço sugerido</span><strong id="simPrice">£ 0.00</strong></div><div><span>Lucro</span><strong id="simProfit">£ 0.00</strong></div></div>
-      </div>
-
-      <div class="actions">
-        <button class="btn btn-primary" id="saveProduct">💾 Guardar no catálogo</button>
-        <button class="btn btn-blue" id="newProduct">＋ Novo cálculo</button>
-        <button class="btn btn-dark" id="backup">💾 Backup</button>
-        <button class="btn btn-dark" id="import">📥 Importar</button>
-      </div>
+      <h1>BambuCalc 3D PRO</h1>
+      <p>uai 3D printing · Calculadora e catálogo inteligente</p>
     </div>
-
-    <aside class="sticky">
-      <div class="hero">
-        <div class="hero-label">PREÇO IDEAL</div>
-        <div class="hero-price" id="ideal">£ 0.00</div>
-        <div class="hero-profit">Lucro: <span id="idealProfit">£ 0.00</span> · Margem <span id="idealMargin">0%</span></div>
-        <div class="costs">
-          <div class="cost"><span>Material</span><strong id="material">£ 0.00</strong></div>
-          <div class="cost"><span>Energia</span><strong id="energy">£ 0.00</strong></div>
-          <div class="cost"><span>Máquina</span><strong id="machineCost">£ 0.00</strong></div>
-          <div class="cost"><span>Extras + embalagem</span><strong id="extraCost">£ 0.00</strong></div>
-          <div class="cost"><span>Reserva de falhas</span><strong id="failureCost">£ 0.00</strong></div>
-          <div class="cost total"><span>CUSTO TOTAL</span><strong id="total">£ 0.00</strong></div>
-        </div>
-        <div class="price-grid">
-          <div class="price-box"><small>Preço mínimo</small><strong id="minimum">£ 0.00</strong></div>
-          <div class="price-box"><small>Preço premium</small><strong id="premium">£ 0.00</strong></div>
-        </div>
-        <div style="margin-top:10px"><label>Preço calculado/editável (£)</label><input id="priceResult" type="number" min="0" step=".01"></div>
-        <div id="priceInfo" style="font-size:11px;color:var(--muted);margin-top:6px">Digite um preço para ver o lucro.</div>
-      </div>
-    </aside>
   </div>
-</section>
+  <nav aria-label="Navegação principal">
+    <button class="active" data-view="calculator">Calculadora</button>
+    <button data-view="catalog">Catálogo <span id="catalogCount">0</span></button>
+    <button data-view="backup">Dados</button>
+  </nav>
+</header>
 
-<section id="page-catalogo" class="page">
-  <div class="topbar"><div><h2>📦 Catálogo inteligente</h2><p>Encontre rapidamente qualquer produto e veja custo, preço, lucro e dados da impressão.</p></div><div class="actions"><span class="badge" id="catalogCount">0 produtos</span><button class="btn btn-primary" id="catalogNew">＋ Novo</button></div></div>
-  <div class="catalog-stats"><div class="catalog-stat"><small>Produtos</small><strong id="statProducts">0</strong></div><div class="catalog-stat"><small>Preço do catálogo</small><strong id="statValue">£ 0.00</strong></div><div class="catalog-stat"><small>Custo total</small><strong id="statCost">£ 0.00</strong></div><div class="catalog-stat"><small>Lucro potencial</small><strong id="statProfit">£ 0.00</strong></div></div>
-  <div class="card"><div class="catalog-toolbar"><div class="search-wrap"><input id="search" class="wide" type="search" placeholder="🔎 Nome, código, categoria, material ou impressora..." autocomplete="off"><button class="search-clear" id="searchClear" type="button">✕</button></div><select id="filter"><option value="">Todas as categorias</option></select><select id="formatFilter"><option value="">Todos os formatos</option><option value="3MF">3MF</option><option value="G-code">G-code</option><option value="STL">STL</option></select><select id="sort"><option value="rank" selected>🏆 Ranking: lucro potencial</option><option value="profit">Mais lucrativas</option><option value="margin">Maior margem (%)</option><option value="new">Mais recentes</option><option value="name">Nome A-Z</option><option value="price">Preço maior</option><option value="weight">Peso maior</option><option value="time">Tempo maior</option></select><select id="profitFilter" title="Filtrar por rentabilidade"><option value="">Toda a rentabilidade</option><option value="top">⭐ Mais lucrativas</option><option value="positive">Lucro positivo</option><option value="low">Lucro baixo (até £3)</option><option value="loss">Sem lucro / prejuízo</option><option value="promo">Rentáveis a £8</option></select><button class="btn btn-dark" id="catalogBackup">💾 Backup</button><button class="btn btn-dark" id="catalogImport">📥 Importar</button></div><div class="catalog-subbar"><span class="catalog-result" id="catalogResult">0 resultados</span><div class="view-toggle"><button id="gridView" class="active" type="button" title="Grade">▦</button><button id="listView" type="button" title="Lista">☷</button></div></div><div id="catalogGrid" class="catalog-grid"></div></div>
-</section>
-</main>
+<main>
+<section id="calculator" class="view active">
+<div class="layout">
+<div class="panel">
+  <h2>Calculadora de custos e preços</h2>
+  <p class="muted small">Carregue um G-code para tentar extrair peso e tempo. STL normalmente não contém estes dados. O processamento é feito localmente.</p>
+  <div class="drop" id="dropZone">
+    <strong>Solte aqui um G-code, 3MF ou STL</strong><br>
+    <span class="muted small">G-code: leitura de comentários de peso e tempo. STL: preenchimento manual.</span><br>
+    <input id="fileInput" type="file" accept=".3mf,.gcode,.gc,.gco,.stl,.txt">
+  </div>
+  <p id="fileStatus" class="muted small" aria-live="polite">Nenhum arquivo selecionado.</p>
+
+  <div class="grid">
+    <div class="field full">
+      <label for="productName">Nome do produto</label>
+      <input id="productName" placeholder="Ex.: Suporte para auscultadores">
+    </div>
+    <div class="field">
+      <label for="category">Categoria</label>
+      <select id="category">
+        <option>Decoração & Casa</option>
+        <option>Acessórios & Suportes</option>
+        <option>Miniaturas</option>
+        <option>Peças Técnicas</option>
+        <option>Outros</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="weight">Filamento usado (g)</label>
+      <input id="weight" type="number" min="0" step="0.1" value="0">
+    </div>
+    <div class="field">
+      <label for="time">Tempo (ex.: 3h18m ou 03:18:00)</label>
+      <input id="time" placeholder="3h18m">
+    </div>
+    <div class="field">
+      <label for="hours">Horas de impressão</label>
+      <input id="hours" type="number" min="0" step="0.01" value="0">
+    </div>
+    <div class="field">
+      <label for="filamentPrice">Preço do rolo (£)</label>
+      <input id="filamentPrice" type="number" min="0" step="0.01" value="18">
+    </div>
+    <div class="field">
+      <label for="rollWeight">Peso do rolo (g)</label>
+      <input id="rollWeight" type="number" min="1" step="1" value="1000">
+    </div>
+    <div class="field">
+      <label for="power">Consumo da impressora (W)</label>
+      <input id="power" type="number" min="0" step="1" value="80">
+    </div>
+    <div class="field">
+      <label for="tariff">Tarifa elétrica (£/kWh)</label>
+      <input id="tariff" type="number" min="0" step="0.001" value="0.25">
+    </div>
+    <div class="field">
+      <label for="machineCost">Máquina/manutenção (£/h)</label>
+      <input id="machineCost" type="number" min="0" step="0.01" value="0.50">
+    </div>
+    <div class="field">
+      <label for="extras">Extras (£)</label>
+      <input id="extras" type="number" min="0" step="0.01" value="0">
+    </div>
+    <div class="field">
+      <label for="packaging">Embalagem (£)</label>
+      <input id="packaging" type="number" min="0" step="0.01" value="0">
+    </div>
+    <div class="field">
+      <label for="failure">Reserva para falhas (%)</label>
+      <input id="failure" type="number" min="0" max="100" step="1" value="5">
+    </div>
+    <div class="field">
+      <label for="manualPrice">Preço de venda (£)</label>
+      <input id="manualPrice" type="number" min="0" step="0.01" value="9">
+    </div>
+    <div class="field full">
+      <label for="notes">Notas do produto</label>
+      <input id="notes" placeholder="Cor, material, acabamento…">
+    </div>
+  </div>
+  <div class="actions">
+    <button id="calculateBtn">Calcular</button>
+    <button class="secondary" id="saveBtn">Guardar no catálogo</button>
+    <button class="secondary" id="clearBtn">Limpar produto</button>
+  </div>
+  <p id="calcStatus" class="muted small" aria-live="polite"></p>
 </div>
 
-<nav class="mobile-nav">
-  <button class="active" data-page="calc">🧮<br>Calc</button>
-  <button data-page="catalogo">📦<br>Catálogo</button>
-</nav>
-<div id="toast" class="toast"></div>
+<div class="panel">
+  <h2>Resumo financeiro</h2>
+  <div class="metrics">
+    <div class="metric"><span>Custo do material</span><strong id="materialOut">£0.00</strong></div>
+    <div class="metric"><span>Energia</span><strong id="energyOut">£0.00</strong></div>
+    <div class="metric"><span>Máquina</span><strong id="machineOut">£0.00</strong></div>
+    <div class="metric"><span>Reserva para falhas</span><strong id="failureOut">£0.00</strong></div>
+    <div class="metric"><span>Custo total</span><strong id="totalOut">£0.00</strong></div>
+    <div class="metric good"><span>Lucro no preço escolhido</span><strong id="profitOut">£0.00</strong></div>
+  </div>
+  <div class="pricegrid">
+    <div class="price"><span>Preço mínimo normal</span><strong id="minimumOut">£9.00</strong></div>
+    <div class="price discount"><span>Preço promocional</span><strong id="discountPrice">£8.00</strong><small id="discountInfo" class="muted">Desconto de £1.00</small></div>
+    <div class="price"><span>Preço ideal sugerido</span><strong id="idealOut">£9.00</strong></div>
+    <div class="price"><span>Preço premium sugerido</span><strong id="premiumOut">£9.00</strong></div>
+  </div>
+  <div class="notice" id="pricingNotice">Preço normal mínimo: £9.00. Promoção: £8.00.</div>
+  <h3>Composição do custo</h3>
+  <div id="costBreakdown" class="muted small">Preencha os dados para calcular.</div>
+</div>
+</div>
+</section>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<section id="catalog" class="view">
+<div class="panel">
+  <h2>Catálogo inteligente</h2>
+  <p class="muted small">O ranking por lucro potencial é o padrão. A estimativa usa o preço ideal ou £9, o que for maior, menos o custo total.</p>
+  <div class="toolbar">
+    <input id="search" placeholder="Buscar por nome, categoria ou notas…">
+    <select id="sort">
+      <option value="profit">Ranking: lucro potencial</option>
+      <option value="margin">Maior margem (%)</option>
+      <option value="price">Maior preço ideal</option>
+      <option value="cost">Menor custo</option>
+      <option value="name">Nome (A–Z)</option>
+      <option value="recent">Mais recentes</option>
+    </select>
+    <select id="categoryFilter">
+      <option value="">Todas as categorias</option>
+      <option>Decoração & Casa</option>
+      <option>Acessórios & Suportes</option>
+      <option>Miniaturas</option>
+      <option>Peças Técnicas</option>
+      <option>Outros</option>
+    </select>
+    <button class="secondary" id="exportCsvBtn">Exportar CSV</button>
+  </div>
+  <div id="catalogSummary" class="muted small"></div>
+  <div id="catalogGrid" class="catalog-grid"></div>
+</div>
+</section>
+
+<section id="backup" class="view">
+<div class="panel">
+  <h2>Backup e dados locais</h2>
+  <p class="muted">O catálogo é guardado neste navegador. Exporte um backup regularmente.</p>
+  <div class="actions">
+    <button id="exportJsonBtn">Exportar backup JSON</button>
+    <button class="secondary" id="importBtn">Importar backup JSON</button>
+    <input id="importFile" type="file" accept=".json,application/json" hidden>
+    <button class="danger" id="deleteAllBtn">Apagar catálogo</button>
+  </div>
+  <p id="backupStatus" class="muted small" aria-live="polite"></p>
+  <h3>Limitações importantes</h3>
+  <ul class="muted">
+    <li>O catálogo fica no navegador e não sincroniza automaticamente entre dispositivos.</li>
+    <li>O backup JSON não inclui os arquivos originais de impressão.</li>
+    <li>STL normalmente não inclui peso nem duração de impressão.</li>
+    <li>O suporte a metadados varia entre versões de slicers e formatos de G-code.</li>
+  </ul>
+</div>
+</section>
+</main>
+<footer>BambuCalc 3D PRO · Valores estimativos. Confirme os custos reais antes de definir o preço.</footer>
+
 <script>
 "use strict";
-const $=id=>document.getElementById(id);
-const money=v=>"£ "+Number(v||0).toFixed(2);
-const uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random();
-const KEY={catalog:"bambucalc_catalog_v17",draft:"bambucalc_draft_v17",filaments:"bambucalc_filaments_v17",theme:"bambucalc_theme_v17"};
-const MIN_SELL_PRICE=9, DISCOUNT_PRICE=8;
-let catalog=[],filaments=[],currentFile=null,currentAnalysis=null,editingId=null,dbPromise=null;
 
-function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove("show"),2800)}
-function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function safeUrl(v){try{const u=new URL(v);return /^https?:$/.test(u.protocol)?u.href:""}catch{return""}}
-function getLocal(k,d){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch{return d}}
-function setLocal(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{toast("Não foi possível guardar localmente.")}}
-function downloadBlob(blob,name){const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)}
-function downloadText(text,name,type="text/plain;charset=utf-8"){downloadBlob(new Blob([text],{type}),name)}
+const $ = id => document.getElementById(id);
+const STORE_KEY = "bambucalc3dpro_products_v1";
+let catalog = loadCatalog();
+let currentFile = null;
+let editingId = null;
 
-function normalizeNumber(v){
-  if(v==null)return NaN;let s=String(v).trim().replace(/\s/g,"");
-  if(/^-?\d+,\d+$/.test(s))s=s.replace(",",".");
-  else if(/^-?\d{1,3}(?:\.\d{3})+$/.test(s))s=s.replace(/\./g,"");
-  const n=Number(s);return Number.isFinite(n)?n:NaN;
-}
-function timeUnits(s){
-  s=String(s||"").trim().toLowerCase().replace(/,/g,".");if(!s)return 0;
-  let h=0,m=0,sec=0,found=false,x;
-  x=s.match(/(\d+(?:\.\d+)?)\s*(?:hours?|hrs?|h)\b/);if(x){h=+x[1];found=true}
-  x=s.match(/(\d+(?:\.\d+)?)\s*(?:minutes?|mins?|m)\b/);if(x){m=+x[1];found=true}
-  x=s.match(/(\d+(?:\.\d+)?)\s*(?:seconds?|secs?|s)\b/);if(x){sec=+x[1];found=true}
-  if(found)return h+m/60+sec/3600;
-  x=s.match(/^(\d+)\s*:\s*(\d{1,2})(?::(\d{1,2}))?$/);
-  return x?(x[3]?+x[1]+(+x[2])/60+(+x[3])/3600:+x[1]+(+x[2])/60):0;
-}
-function parseBambuTime(v,key=""){
-  const s=String(v??"").trim(),u=timeUnits(s);if(u>0)return u;
-  const n=normalizeNumber(s);if(!Number.isFinite(n)||n<0)return 0;
-  return /prediction|print_time|estimated|duration|seconds?|time/i.test(key)?n/3600:n;
-}
-function parseTime(v){if(v==null)return 0;if(typeof v==="number")return v>100?v/3600:v;return timeUnits(v)||(+String(v).replace(",","." )||0)}
-function extractTime(text){
-  const s=String(text||""),patterns=[
-    /prediction\s*["']?\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)/i,
-    /total\s+estimated\s+printing\s+time[^:=]*[:=]\s*([^\n\r;}]+)/i,
-    /estimated\s+printing\s+time[^:=]*[:=]\s*([^\n\r;}]+)/i,
-    /estimated\s+print(?:ing)?\s+time[^:=]*[:=]\s*([^\n\r;}]+)/i,
-    /total\s+print(?:ing)?\s+time[^:=]*[:=]\s*([^\n\r;}]+)/i,
-    /print(?:ing)?\s+time[^:=]*[:=]\s*([^\n\r;}]+)/i,
-    /(?:total_time|print_time|estimated_time|printing_time|printTime|totalPrintTime)\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)/i
-  ];
-  for(const r of patterns){const m=s.match(r);if(m){const h=parseBambuTime(m[1],r.source);if(h>0&&h<100000)return h}}
-  let m,re=/(?:["']?)([A-Za-z0-9_ -]*(?:print|printing|estimated|total)[A-Za-z0-9_ -]*(?:time|duration))(?:["']?)\s*[:=]\s*["']?([^"',;\n\r}]+)/gi;
-  while((m=re.exec(s))){const h=parseBambuTime(m[2],m[1]);if(h>0&&h<100000)return h}
-  return 0;
-}
-function extractWeight(text){
-  const s=String(text||""),patterns=[
-    /filament\s+used\s*\[\s*g\s*\]\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)/i,
-    /filament\s+used\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)\s*g/i,
-    /(?:total[_\s-]*filament[_\s-]*(?:weight|used)|filament[_\s-]*(?:weight|used)|total[_\s-]*weight|filament_weight)\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)/i
-  ];
-  for(const r of patterns){const m=s.match(r),n=m&&normalizeNumber(m[1]);if(n>0&&n<100000)return n}
-  const vals=[];let m,re=/(?:["']?)(filament[_\s-]*used[_\s-]*g|used_g|filament[_\s-]*weight|total_weight)(?:["']?)\s*[:=]\s*["']?([0-9]+(?:[.,][0-9]+)?)/gi;
-  while((m=re.exec(s))){const n=normalizeNumber(m[2]);if(n>0&&n<100000)vals.push(n)}
-  return vals.length?vals.reduce((a,b)=>a+b,0):0;
-}
-function extractFilament(s){for(const r of [/"filament_type"\s*:\s*\[\s*"([^"]+)/i,/filament_type\s*[:=]\s*["']?([^"',;\n\r}]+)/i,/material\s*[:=]\s*["']?([^"',;\n\r}]+)/i]){const m=String(s||"").match(r);if(m)return m[1].trim().slice(0,80)}return""}
-function extractPrinter(s){for(const r of [/"printer_model"\s*:\s*"([^"]+)/i,/printer_model\s*[:=]\s*["']?([^"',;\n\r}]+)/i]){const m=String(s||"").match(r);if(m)return m[1].trim().slice(0,100)}return""}
-function cleanName(v){return String(v||"").replace(/\.[a-z0-9]{1,8}$/i,"").replace(/[._-]+/g," ").replace(/\s+/g," ").trim().replace(/^\d+[ _-]*/,"").slice(0,120)}
-function suggestName(fileName,text=""){
-  for(const r of [/project_name\s*[:=]\s*["']?([^"',;\n\r}]+)/i,/projectname\s*[:=]\s*["']?([^"',;\n\r}]+)/i,/model_name\s*[:=]\s*["']?([^"',;\n\r}]+)/i,/title\s*[:=]\s*["']?([^"',;\n\r}]+)/i]){
-    const m=String(text||"").match(r);if(m&&cleanName(m[1]))return cleanName(m[1])
+const money = n => new Intl.NumberFormat("en-GB", {
+  style:"currency", currency:"GBP"
+}).format(Number.isFinite(Number(n)) ? Number(n) : 0);
+
+const num = id => {
+  const n = parseFloat($(id).value);
+  return Number.isFinite(n) ? n : 0;
+};
+
+const clamp = (n,min,max) => Math.min(max,Math.max(min,n));
+
+function loadCatalog() {
+  try {
+    const data = JSON.parse(localStorage.getItem(STORE_KEY) || "[]");
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
   }
-  return cleanName(fileName)
 }
-function suggestCategory(name,text=""){
-  const s=(String(name)+" "+String(text)).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
-  const rules=[
-    ["Vasos e Plantas",/\b(vaso|vasos|planter|flower|flor|cachepot|pot)\b/],
-    ["Suportes",/\b(suporte|stand|holder|mount|dock|bracket)\b/],
-    ["Organização",/\b(organizador|organizer|storage|caixa|box|case|estojo)\b/],
-    ["Decoração",/\b(decoracao|decor|enfeite|ornamento|ornament|natal|christmas|halloween|pascoa|coelho|abobora|snowflake|floco)\b/],
-    ["Cozinha",/\b(cozinha|kitchen|mug|caneca|copo|plate|prato|utensilio|spoon|colher)\b/],
-    ["Iluminação",/\b(luminaria|lamp|lampada|light|abajur)\b/],
-    ["Acessórios",/\b(chaveiro|keychain|badge|tag|porta[- ]?chave)\b/],
-    ["Brinquedos",/\b(brinquedo|toy|puzzle|jogo|game|fidget|dice|dado)\b/],
-    ["Miniaturas",/\b(miniatura|miniature|figure|figurine|diorama|statue)\b/],
-    ["Cosplay",/\b(cosplay|mascara|mask|helmet|capacete|armor|armadura)\b/],
-    ["Pets",/\b(pet|cachorro|dog|gato|cat|passaro|bird|animal)\b/],
-    ["Ferramentas",/\b(ferramenta|tool|wrench|gabarito|jig)\b/]
-  ];
-  for(const [cat,re] of rules)if(re.test(s))return cat;
-  return "Diversos";
-}
-function formatTime(h){let m=Math.round((+h||0)*60),hh=Math.floor(m/60);m%=60;return hh?`${hh}h ${String(m).padStart(2,"0")}m`:`${m}min`}
 
-async function parse3MF(file){
-  if(!window.JSZip)throw Error("JSZip não carregado");
-  const zip=await JSZip.loadAsync(file),names=Object.keys(zip.files),get=async n=>zip.files[n]?zip.files[n].async("string"):"";
-  let weight=0,hours=0,filament="",printer="",source="",plates=[];
-  const slice=names.find(n=>/metadata\/slice_info\.config$/i.test(n));
-  if(slice){
-    source="Metadata/slice_info.config";const xml=await get(slice);
-    try{
-      const doc=new DOMParser().parseFromString(xml,"application/xml");
-      // Bambu Studio grava os dados de cada placa dentro de <plate>.
-      // Nunca usamos MAX() entre as placas: para um projeto multi-placas
-      // o peso e o tempo corretos são a soma das placas exportadas.
-      const plateNodes=[...doc.querySelectorAll("plate")];
-      const readMeta=(plate,keyRegex)=>{
-        const n=[...plate.querySelectorAll(":scope > metadata")].find(x=>keyRegex.test(x.getAttribute("key")||""));
-        return n?n.getAttribute("value"):"";
-      };
-      for(let i=0;i<plateNodes.length;i++){
-        const plate=plateNodes[i];
-        const index=normalizeNumber(readMeta(plate,/^index$/i))||i+1;
-        let pw=parseBambuTime(readMeta(plate,/^(?:weight|total_weight|filament_weight)$/i),"weight");
-        // weight é em gramas; parseBambuTime não é apropriado para peso,
-        // portanto lemos novamente como número simples.
-        const weightValue=readMeta(plate,/^(?:weight|total_weight|filament_weight)$/i);
-        pw=normalizeNumber(weightValue);
-        let ph=parseBambuTime(readMeta(plate,/^(?:prediction|print_time|estimated_time|printing_time|total_time)$/i),"prediction");
-        const filaments=[...plate.querySelectorAll(":scope > filament")]
-          .map(n=>normalizeNumber(n.getAttribute("used_g")))
-          .filter(n=>n>0);
-        if(!(pw>0) && filaments.length)pw=filaments.reduce((a,b)=>a+b,0);
-        if(pw>0 || ph>0)plates.push({index,weight:pw>0?pw:0,hours:ph>0?ph:0});
-      }
-      // Compatibilidade com exports em que os metadados não estão diretamente
-      // no elemento <plate> ou em versões que usam uma estrutura diferente.
-      if(!plates.length){
-        const nodes=[...doc.querySelectorAll("metadata")];
-        const weights=nodes.filter(n=>/^(weight|total_weight|filament_weight)$/i.test(n.getAttribute("key")||"")).map(n=>normalizeNumber(n.getAttribute("value"))).filter(n=>n>0);
-        const preds=nodes.filter(n=>/^(prediction|print_time|estimated_time|printing_time|total_time)$/i.test(n.getAttribute("key")||"")).map(n=>parseBambuTime(n.getAttribute("value"),n.getAttribute("key")||"")).filter(n=>n>0);
-        if(weights.length || preds.length)plates=[{index:1,weight:weights.length?Math.max(...weights):0,hours:preds.length?Math.max(...preds):0}];
-        const used=[...doc.querySelectorAll("filament")].map(n=>normalizeNumber(n.getAttribute("used_g"))).filter(n=>n>0);
-        if(plates.length && !(plates[0].weight>0) && used.length)plates[0].weight=used.reduce((a,b)=>a+b,0);
-      }
-      if(plates.length){
-        weight=plates.reduce((sum,p)=>sum+(p.weight||0),0);
-        hours=plates.reduce((sum,p)=>sum+(p.hours||0),0);
-      }
-      filament=extractFilament(xml);printer=extractPrinter(xml);
-    }catch{weight=extractWeight(xml);hours=extractTime(xml)}
-    if(!weight)weight=extractWeight(xml);if(!hours)hours=extractTime(xml);filament=filament||extractFilament(xml);printer=printer||extractPrinter(xml);
+function persist() {
+  try {
+    localStorage.setItem(STORE_KEY,JSON.stringify(catalog));
+    updateCount();
+    return true;
+  } catch (err) {
+    alert("Não foi possível guardar os dados. Exporte o catálogo e verifique o espaço disponível no navegador.");
+    return false;
   }
-  // Se slice_info não trouxe todas as placas, procura plate_N.gcode e usa
-  // o G-code como fallback. Não substitui os valores já encontrados.
-  const plateGcodes=names.filter(n=>/metadata\/plate_\d+\.(?:gcode|gc|gco)$/i.test(n));
-  if(plateGcodes.length){
-    const byPlate=new Map(plates.map(p=>[Number(p.index),p]));
-    for(const n of plateGcodes){
-      const m=n.match(/plate_(\d+)\./i),idx=m?Number(m[1]):byPlate.size+1,t=await get(n),w=extractWeight(t),h=extractTime(t);
-      let p=byPlate.get(idx);
-      if(!p){p={index:idx,weight:0,hours:0};byPlate.set(idx,p)}
-      if(!(p.weight>0)&&w>0)p.weight=w;
-      if(!(p.hours>0)&&h>0)p.hours=h;
-      filament=filament||extractFilament(t);
-      printer=printer||extractPrinter(t);
+}
+
+function updateCount() {
+  $("catalogCount").textContent = catalog.length;
+}
+
+/* Aceita 3h18m, 3:18, 03:18:00 e horas decimais. */
+function parseTime(value) {
+  const s = String(value || "").trim().toLowerCase();
+  if (!s) return 0;
+
+  let m = s.match(/^(?:(\d+(?:[.,]\d+)?)\s*h)?\s*(?:(\d+(?:[.,]\d+)?)\s*m)?\s*(?:(\d+(?:[.,]\d+)?)\s*s)?$/);
+  if (m && (m[1] || m[2] || m[3])) {
+    const h = parseFloat((m[1] || "0").replace(",","."));
+    const min = parseFloat((m[2] || "0").replace(",","."));
+    const sec = parseFloat((m[3] || "0").replace(",","."));
+    return h + min/60 + sec/3600;
+  }
+
+  m = s.match(/^(\d+):(\d{1,2})(?::(\d{1,2}))?$/);
+  if (m) {
+    return m[3] !== undefined
+      ? Number(m[1]) + Number(m[2])/60 + Number(m[3])/3600
+      : Number(m[1]) + Number(m[2])/60;
+  }
+
+  const n = Number(s.replace(",","."));
+  return Number.isFinite(n) && n > 0 ? n : 0;
+}
+
+function fmtHours(h) {
+  if (!h || h < 0) return "0h";
+  let whole = Math.floor(h);
+  let mins = Math.round((h-whole)*60);
+  if (mins === 60) { whole++; mins=0; }
+  return `${whole}h${String(mins).padStart(2,"0")}m`;
+}
+
+function readForm() {
+  const parsedTime = parseTime($("time").value);
+  const manualHours = num("hours");
+  const hours = manualHours > 0 ? manualHours : parsedTime;
+
+  return {
+    name:$("productName").value.trim(),
+    category:$("category").value,
+    weight:Math.max(0,num("weight")),
+    hours:Math.max(0,hours),
+    filamentPrice:Math.max(0,num("filamentPrice")),
+    rollWeight:Math.max(1,num("rollWeight")),
+    power:Math.max(0,num("power")),
+    tariff:Math.max(0,num("tariff")),
+    machineRate:Math.max(0,num("machineCost")),
+    extras:Math.max(0,num("extras")),
+    packaging:Math.max(0,num("packaging")),
+    failureRate:clamp(num("failure"),0,100),
+    salePrice:Math.max(0,num("manualPrice")),
+    notes:$("notes").value.trim(),
+    fileName:currentFile ? currentFile.name : ""
+  };
+}
+
+function calculate() {
+  const v = readForm();
+
+  const material = v.weight * v.filamentPrice / v.rollWeight;
+  const energy = (v.power/1000) * v.hours * v.tariff;
+  const machine = v.machineRate * v.hours;
+  const beforeFailure = material + energy + machine + v.extras + v.packaging;
+  const failure = beforeFailure * v.failureRate / 100;
+  const total = beforeFailure + failure;
+
+  /*
+    Preço ideal: margem-alvo de 40% sobre o preço de venda.
+    Preço premium: margem-alvo de 60% sobre o preço de venda.
+    Os dois respeitam o mínimo normal de £9.
+  */
+  const minimum = 9;
+  const discount = 8;
+  const ideal = Math.max(minimum,total/(1-0.40));
+  const premium = Math.max(minimum,total/(1-0.60));
+  const profit = v.salePrice-total;
+  const margin = v.salePrice > 0 ? profit/v.salePrice*100 : 0;
+
+  const c = {
+    ...v,material,energy,machine,beforeFailure,failure,total,
+    minimum,discount,ideal,premium,profit,margin
+  };
+
+  $("materialOut").textContent = money(material);
+  $("energyOut").textContent = money(energy);
+  $("machineOut").textContent = money(machine);
+  $("failureOut").textContent = money(failure);
+  $("totalOut").textContent = money(total);
+  $("profitOut").textContent = money(profit);
+  $("minimumOut").textContent = money(minimum);
+  $("discountPrice").textContent = money(discount);
+  $("discountInfo").textContent = `£1.00 abaixo do mínimo normal`;
+  $("idealOut").textContent = money(ideal);
+  $("premiumOut").textContent = money(premium);
+
+  if (v.salePrice < 8) {
+    $("pricingNotice").textContent = "Atenção: o preço escolhido está abaixo da promoção de £8.00.";
+  } else if (v.salePrice < 9) {
+    $("pricingNotice").textContent = "O preço escolhido está na faixa promocional. Preço normal mínimo: £9.00.";
+  } else {
+    $("pricingNotice").textContent = "Preço normal mínimo: £9.00. Preço promocional sugerido: £8.00.";
+  }
+
+  $("costBreakdown").textContent =
+    `Material ${money(material)} + energia ${money(energy)} + máquina ${money(machine)} + extras e embalagem ${money(v.extras+v.packaging)} + reserva de falhas ${money(failure)} = ${money(total)}. ` +
+    `Lucro ao vender por ${money(v.salePrice)}: ${money(profit)} (${margin.toFixed(1)}% de margem).`;
+
+  if (v.hours > 0) $("hours").value = String(Math.round(v.hours*10000)/10000);
+  $("calcStatus").textContent = `Cálculo atualizado · tempo: ${fmtHours(v.hours)}.`;
+  return c;
+}
+
+function showView(id) {
+  document.querySelectorAll(".view").forEach(el => el.classList.toggle("active",el.id===id));
+  document.querySelectorAll("nav button").forEach(el => el.classList.toggle("active",el.dataset.view===id));
+  if (id==="catalog") renderCatalog();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function saveProduct() {
+  const c = calculate();
+  const v = readForm();
+
+  if (!v.name) {
+    $("calcStatus").textContent = "Introduza um nome antes de guardar.";
+    $("productName").focus();
+    return;
+  }
+
+  const id = editingId || ("p_"+Date.now()+"_"+Math.random().toString(36).slice(2,7));
+  const product = {
+    id,...v,
+    material:c.material,energy:c.energy,machine:c.machine,
+    failure:c.failure,total:c.total,ideal:c.ideal,premium:c.premium,
+    potentialProfit:Math.max(9,c.ideal)-c.total,
+    updatedAt:new Date().toISOString()
+  };
+
+  const index = catalog.findIndex(p => p.id===id);
+  if (index>=0) catalog[index]=product;
+  else catalog.push(product);
+
+  if (!persist()) return;
+  editingId=id;
+  renderCatalog();
+  $("calcStatus").textContent = "Produto guardado no catálogo.";
+}
+
+function fillForm(p) {
+  editingId=p.id;
+  currentFile=null;
+
+  const values = {
+    productName:p.name || "",
+    category:p.category || "Outros",
+    weight:p.weight || 0,
+    time:p.hours ? fmtHours(p.hours) : "",
+    hours:p.hours || 0,
+    filamentPrice:p.filamentPrice ?? 18,
+    rollWeight:p.rollWeight ?? 1000,
+    power:p.power ?? 80,
+    tariff:p.tariff ?? 0.25,
+    machineCost:p.machineRate ?? 0.50,
+    extras:p.extras ?? 0,
+    packaging:p.packaging ?? 0,
+    failure:p.failureRate ?? 5,
+    manualPrice:p.salePrice ?? 9,
+    notes:p.notes || ""
+  };
+
+  Object.entries(values).forEach(([id,value]) => $(id).value=value);
+  $("fileStatus").textContent = p.fileName
+    ? `Arquivo original: ${p.fileName}. Se precisar analisá-lo novamente, selecione-o outra vez.`
+    : "Produto carregado do catálogo.";
+
+  showView("calculator");
+  calculate();
+}
+
+function clearForm() {
+  editingId=null;
+  currentFile=null;
+  $("productName").value="";
+  $("weight").value=0;
+  $("time").value="";
+  $("hours").value=0;
+  $("extras").value=0;
+  $("packaging").value=0;
+  $("notes").value="";
+  $("manualPrice").value=9;
+  $("fileInput").value="";
+  $("fileStatus").textContent="Nenhum arquivo selecionado.";
+  calculate();
+}
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g,ch=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[ch]);
+}
+
+function marginOf(p) {
+  const price=Math.max(9,Number(p.ideal||0));
+  return price>0?(price-Number(p.total||0))/price*100:0;
+}
+
+function renderCatalog() {
+  const query=$("search").value.trim().toLowerCase();
+  const category=$("categoryFilter").value;
+  const sort=$("sort").value;
+
+  const list=catalog.filter(p=>{
+    const text=[p.name,p.category,p.notes,p.fileName].join(" ").toLowerCase();
+    return (!category || p.category===category) && (!query || text.includes(query));
+  });
+
+  const potential=p=>Number(p.potentialProfit ?? (Math.max(9,p.ideal||0)-(p.total||0)));
+
+  list.sort((a,b)=>{
+    switch(sort) {
+      case "margin": return marginOf(b)-marginOf(a);
+      case "price": return (b.ideal||0)-(a.ideal||0);
+      case "cost": return (a.total||0)-(b.total||0);
+      case "name": return (a.name||"").localeCompare(b.name||"");
+      case "recent": return (b.updatedAt||"").localeCompare(a.updatedAt||"");
+      default: return potential(b)-potential(a);
     }
-    plates=[...byPlate.values()].sort((a,b)=>a.index-b.index);
-    const hasPlateValues=plates.some(p=>p.weight>0||p.hours>0);
-    if(hasPlateValues){weight=plates.reduce((sum,p)=>sum+(p.weight||0),0);hours=plates.reduce((sum,p)=>sum+(p.hours||0),0)}
+  });
+
+  $("catalogSummary").textContent =
+    `${list.length} produto(s) · Ordenação: ${$("sort").selectedOptions[0].text}`;
+
+  const grid=$("catalogGrid");
+  if (!list.length) {
+    grid.innerHTML='<div class="empty" style="grid-column:1/-1">Nenhum produto encontrado. Calcule e guarde um produto para começar.</div>';
+    return;
   }
-  const project=names.find(n=>/project_settings\.config$/i.test(n));
-  if(project){const t=await get(project);filament=filament||extractFilament(t);printer=printer||extractPrinter(t);weight=weight||extractWeight(t);hours=hours||extractTime(t)}
-  return{type:"3MF",weight,hours,filament,printer,source:source||"3MF",embedded:plateGcodes.length||names.filter(n=>/\.(gcode|gc|gco)$/i.test(n)).length,plates,plateCount:plates.length,projectName:""}
-}
-async function parseGCode(file){const t=await file.text();return{type:"G-code",weight:extractWeight(t),hours:extractTime(t),filament:extractFilament(t),printer:extractPrinter(t),source:"G-code",embedded:1,projectName:suggestName(file.name,t)}}
 
-function renderAnalysis(d){
-  const rows=[["Formato",d.type||"-"],["Peso",d.weight>0?d.weight.toFixed(2)+" g":"Não encontrado"],["Tempo",d.hours>0?formatTime(d.hours):"Não encontrado"],["Placas",d.plateCount>0?String(d.plateCount):"1"],["Material",d.filament||"Não detetado"],["Impressora",d.printer||"Não detetada"],["Categoria",d.category||"Diversos"]];
-  $("analysis").innerHTML=rows.map(r=>`<div><small>${esc(r[0])}</small><strong>${esc(r[1])}</strong></div>`).join("");
-  if(d.plateCount>1){
-    const details=d.plates.map(p=>`Placa ${esc(p.index)}: ${p.weight>0?p.weight.toFixed(2)+" g":"—"} · ${p.hours>0?formatTime(p.hours):"—"}`).join("<br>");
-    $("analysis").insertAdjacentHTML("beforeend",`<div style="grid-column:1/-1"><small>Leitura do slicer</small><strong style="font-size:11px;line-height:1.5">${details}<br><b>Total: ${d.weight.toFixed(2)} g · ${formatTime(d.hours)}</b></strong></div>`);
+  grid.innerHTML=list.map((p,index)=>{
+    const profit=potential(p);
+    const actualProfit=Number(p.salePrice||0)-Number(p.total||0);
+    const margin=marginOf(p);
+
+    return `<article class="product">
+      <span class="pill">${escapeHTML(p.category||"Outros")}</span>
+      <h3>${escapeHTML(p.name||"Produto sem nome")}</h3>
+      <div class="rank">${sort==="profit" ? "#"+(index+1)+" · " : ""}${money(profit)} lucro potencial</div>
+      <div class="stats">
+        <div><span>Custo total</span><b>${money(p.total||0)}</b></div>
+        <div><span>Preço ideal</span><b>${money(Math.max(9,p.ideal||0))}</b></div>
+        <div><span>Peso</span><b>${Number(p.weight||0).toFixed(1)} g</b></div>
+        <div><span>Tempo</span><b>${fmtHours(Number(p.hours||0))}</b></div>
+        <div><span>Lucro no preço escolhido</span><b>${money(actualProfit)}</b></div>
+        <div><span>Margem ideal</span><b>${margin.toFixed(1)}%</b></div>
+      </div>
+      <div class="bar"><i style="width:${clamp(margin,0,100)}%"></i></div>
+      ${p.notes ? `<div class="muted small">${escapeHTML(p.notes)}</div>` : ""}
+      ${p.fileName ? `<div class="muted small">Arquivo de origem: ${escapeHTML(p.fileName)}</div>` : ""}
+      <div class="actions">
+        <button class="secondary" data-edit="${escapeHTML(p.id)}">Editar</button>
+        <button class="secondary" data-duplicate="${escapeHTML(p.id)}">Duplicar</button>
+        <button class="danger" data-delete="${escapeHTML(p.id)}">Excluir</button>
+      </div>
+    </article>`;
+  }).join("");
+}
+
+async function readFile(file) {
+  currentFile=file;
+  $("fileStatus").textContent=`A ler ${file.name}…`;
+
+  if (!$("productName").value.trim()) {
+    $("productName").value=file.name.replace(/\.[^.]+$/,"").replace(/[_-]+/g," ").trim();
+  }
+
+  const ext=(file.name.split(".").pop()||"").toLowerCase();
+
+  try {
+    if (["gcode","gc","gco","txt"].includes(ext)) {
+      const text=await file.slice(0,20*1024*1024).text();
+      parseGcode(text);
+    } else if (ext==="3mf") {
+      $("fileStatus").textContent=
+        "O 3MF foi selecionado, mas esta versão não inclui um descompactador ZIP. Exporte o G-code no slicer ou preencha peso e tempo manualmente.";
+    } else if (ext==="stl") {
+      $("fileStatus").textContent=
+        `STL selecionado (${(file.size/1024/1024).toFixed(2)} MB). STL não guarda normalmente o peso nem o tempo de impressão.`;
+    } else {
+      $("fileStatus").textContent="Formato não reconhecido. Use G-code, 3MF ou STL.";
+    }
+    calculate();
+  } catch (error) {
+    $("fileStatus").textContent="Erro ao analisar arquivo. Preencha peso e tempo manualmente.";
   }
 }
 
-async function analyze(file){
-  currentFile=file;currentAnalysis=null;$("fileName").textContent=file.name;$("analysisStatus").textContent="⏳ A analisar localmente...";$("statusBadge").textContent="A analisar";$("fileBadge").textContent="A analisar";
-  const ext=file.name.toLowerCase().split(".").pop();
-  try{
-    let d=ext==="3mf"?await parse3MF(file):ext==="stl"?{type:"STL",weight:0,hours:0,filament:"",printer:"",source:"STL",embedded:0,projectName:""}:await parseGCode(file);
-    const name=suggestName(file.name,d.projectName||"");d.productName=name;d.category=suggestCategory(name,d.filament||"");currentAnalysis=d;
-    $("name").value=name;
-    $("category").value=d.category;
-    $("code").value=makeCode(name);
-    if(d.weight>0)$("weight").value=d.weight.toFixed(2);
-    if(d.hours>0){$("hours").value=d.hours.toFixed(4);$("time").value=formatTime(d.hours)}
-    renderAnalysis(d);calc();
-    const ok=d.weight>0&&d.hours>0;
-    $("analysisStatus").textContent=ext==="stl"?"ℹ️ STL não guarda peso/tempo. Nome e categoria foram sugeridos.":ok?"✅ Peso e tempo encontrados automaticamente.":"⚠️ Dados parciais encontrados. Confira os campos.";
-    $("statusBadge").textContent=ok?"Calculado":"Revisar";
-    $("fileBadge").textContent=ok?"Dados encontrados":"Dados parciais";
-    saveDraft();toast(ok?"Arquivo analisado e preço calculado.":"Arquivo analisado; revise os dados.");
-  }catch(e){console.error(e);$("analysisStatus").textContent="❌ Falha ao analisar o arquivo.";toast("Não foi possível analisar o arquivo.")}
-}
-function makeCode(name){return String(name||"PRODUTO").toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^A-Z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,24)||"PRODUTO"}
+/*
+  Parser básico de G-code. Os comentários variam entre slicers;
+  por isso o resultado deve ser confirmado antes de guardar.
+*/
+function parseGcode(text) {
+  let grams=null;
+  let hours=null;
 
-function calc(){
-  const weight=Math.max(0,+$("weight").value||0),rollPrice=Math.max(0,+$("rollPrice").value||0),rollWeight=Math.max(1,+$("rollWeight").value||1000);
-  const h=parseTime($("time").value)||Math.max(0,+$("hours").value||0),watts=Math.max(0,+$("watts").value||0),tariff=Math.max(0,+$("tariff").value||0),machine=Math.max(0,+$("machine").value||0),markup=Math.max(0,+$("markup").value||0),failure=Math.max(0,+$("failure").value||0),extras=Math.max(0,+$("extras").value||0),packaging=Math.max(0,+$("packaging").value||0);
-  if(h>0)$("hours").value=h.toFixed(4);
-  const material=weight*(rollPrice/rollWeight),energy=watts/1000*h*tariff,machineCost=h*machine,extraCost=extras+packaging,base=material+energy+machineCost+extraCost,failureCost=base*failure/100,total=base+failureCost;
-  // Política comercial: preço normal nunca recomendado abaixo de £9; oferta fixa de £8.
-  // Se o custo ultrapassar estes valores, a interface mostra explicitamente o prejuízo.
-  const minimum=MIN_SELL_PRICE,discount=DISCOUNT_PRICE;
-  const ideal=Math.max(MIN_SELL_PRICE,total*(1+markup/100));
-  const premium=Math.max(MIN_SELL_PRICE,ideal*1.25),profit=ideal-total,margin=ideal?profit/ideal*100:0;
-  $("material").textContent=money(material);$("energy").textContent=money(energy);$("machineCost").textContent=money(machineCost);$("extraCost").textContent=money(extraCost);$("failureCost").textContent=money(failureCost);$("total").textContent=money(total);$("minimum").textContent=money(minimum);$("discountPrice").textContent=money(discount);$("ideal").textContent=money(ideal);$("premium").textContent=money(premium);$("idealProfit").textContent=money(profit);$("idealMargin").textContent=margin.toFixed(1)+"%";
-  const discountProfit=discount-total;
-  $("discountInfo").textContent=`A £8.00: ${discountProfit>=0?"lucro":"prejuízo"} de ${money(Math.abs(discountProfit))}${discountProfit<0?" — não recomendado com estes custos.":"."}`;
-  $("discountInfo").style.color=discountProfit<0?"var(--danger)":"var(--muted)";
-  if(document.activeElement!==$("priceResult"))$("priceResult").value=ideal.toFixed(2);
-  updatePriceInfo(total);
-  updateSimulator(total);
-  saveDraft();
-  return{weight,h,material,energy,machineCost,extraCost,failureCost,total,minimum,discount,ideal,premium,profitIdeal:profit,profitAtDiscount:discount-total};
-}
-function updatePriceInfo(cost){
-  const p=Math.max(0,+$("priceResult").value||0),profit=p-cost,margin=p?profit/p*100:0;
-  $("priceInfo").textContent=`Preço ${money(p)} → lucro ${money(profit)} · margem ${margin.toFixed(1)}%`;
-}
-function updateSimulator(cost){
-  const target=Math.max(0,+$("simTarget").value||0),mode=$("simMode").value;
-  let price=cost;
-  if(mode==="profit"){$("simLabel").textContent="Lucro desejado (£)";price=cost+target}
-  else{$("simLabel").textContent="Margem desejada (%)";const m=Math.min(99.99,target);price=cost/(1-m/100)}
-  price=Math.max(MIN_SELL_PRICE,price);
-  const profit=price-cost;$("simPrice").textContent=money(price);$("simProfit").textContent=money(profit);
-}
-function applySimPrice(){$("priceResult").value=$("simPrice").textContent.replace("£","").trim();updatePriceInfo(calc().total)}
+  const weightPatterns=[
+    /;\s*total filament used\s*\[g\]\s*[:=]\s*([\d.]+)/i,
+    /;\s*filament used\s*\[g\]\s*[:=]\s*([\d.]+)/i,
+    /;\s*total filament weight\s*\[g\]\s*[:=]\s*([\d.]+)/i,
+    /;\s*filament weight\s*[:=]\s*([\d.]+)/i
+  ];
 
-function saveDraft(){
-  const ids=["name","code","category","image","weight","time","hours","rollPrice","rollWeight","watts","tariff","machine","markup","failure","extras","packaging","priceResult","simMode","simTarget"];
-  const d={};ids.forEach(id=>d[id]=$(id).value);setLocal(KEY.draft,d)
-}
-function loadDraft(){
-  const d=getLocal(KEY.draft,{});
-  Object.entries(d).forEach(([k,v])=>$(k)&&( $(k).value=v ));
-}
-function clearCalc(){
-  editingId=null;currentFile=null;currentAnalysis=null;
-  ["name","code","category","image","weight","time","hours","priceResult"].forEach(id=>$(id).value="");
-  $("analysis").innerHTML="";$("fileName").textContent="";$("analysisStatus").textContent="Nenhum arquivo analisado.";$("fileBadge").textContent="Aguardando";$("statusBadge").textContent="Pronto";$("fileInput").value="";
-  calc();$("name").focus()
+  const timePatterns=[
+    /;\s*estimated printing time\s*[:=]\s*([^\r\n]+)/i,
+    /;\s*total estimated time\s*[:=]\s*([^\r\n]+)/i,
+    /;\s*print time\s*[:=]\s*([^\r\n]+)/i
+  ];
+
+  for (const pattern of weightPatterns) {
+    const match=text.match(pattern);
+    if (match) { grams=Number(match[1]); break; }
+  }
+
+  for (const pattern of timePatterns) {
+    const match=text.match(pattern);
+    if (match) {
+      hours=parseTime(match[1].replace(/;.*$/,"").trim());
+      if (hours>0) break;
+    }
+  }
+
+  if (grams!==null && Number.isFinite(grams) && grams>=0) {
+    $("weight").value=grams;
+  }
+
+  if (hours!==null && Number.isFinite(hours) && hours>0) {
+    $("hours").value=Math.round(hours*10000)/10000;
+    $("time").value=fmtHours(hours);
+  }
+
+  $("fileStatus").textContent=
+    `G-code analisado: ${grams!==null ? "possível peso encontrado" : "peso não encontrado"}; ${hours!==null && hours>0 ? "possível tempo encontrado" : "tempo não encontrado"}. Confirme os valores.`;
 }
 
-function initFilaments(){
-  filaments=getLocal(KEY.filaments,[{id:uid(),name:"PLA",price:18,weight:1000}]);
-  const s=$("filamentPreset");s.innerHTML='<option value="">Selecionar...</option>'+filaments.map(f=>`<option value="${esc(f.id)}">${esc(f.name)} — ${money(f.price)}/kg</option>`).join("")
-}
-$("filamentPreset").addEventListener("change",()=>{const f=filaments.find(x=>x.id===$("filamentPreset").value);if(!f)return;$("rollPrice").value=f.price;$("rollWeight").value=f.weight;calc()});
-$("saveFilament").addEventListener("click",()=>{const name=prompt("Nome do filamento:","PLA");if(!name)return;const f={id:uid(),name:name.trim(),price:+$("rollPrice").value||0,weight:+$("rollWeight").value||1000};filaments.push(f);setLocal(KEY.filaments,filaments);initFilaments();$("filamentPreset").value=f.id;toast("Preset guardado.")});
-
-const DB="BambuCalc3D_Files_v17",STORE="files";
-function idb(){if(dbPromise)return dbPromise;dbPromise=new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>r.result.createObjectStore(STORE,{keyPath:"id"});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});return dbPromise}
-async function filePut(o){const db=await idb();return new Promise((res,rej)=>{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).put(o);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}
-async function fileGet(id){if(!id)return null;const db=await idb();return new Promise((res,rej)=>{const r=db.transaction(STORE).objectStore(STORE).get(id);r.onsuccess=()=>res(r.result||null);r.onerror=()=>rej(r.error)})}
-async function fileDel(id){if(!id)return;const db=await idb();return new Promise((res,rej)=>{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).delete(id);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}
-
-async function saveProduct(){
-  const v=calc(),name=$("name").value.trim()||"Produto sem nome";
-  if(v.weight<=0&&v.h<=0){toast("Informe peso ou tempo antes de guardar.");return}
-  const id=editingId||uid();let fileId=editingId?(catalog.find(x=>x.id===editingId)?.fileId||null):null;
-  if(currentFile){fileId=uid();await filePut({id:fileId,name:currentFile.name,type:currentFile.type||"application/octet-stream",blob:currentFile,size:currentFile.size})}
-  const price=Math.max(0,+$("priceResult").value||v.ideal);
-  const item={id,name,code:$("code").value.trim()||makeCode(name),category:$("category").value.trim()||suggestCategory(name),image:$("image").value.trim(),weight:v.weight,hours:v.h,cost:v.total,price,profit:price-v.total,discountPrice:DISCOUNT_PRICE,discountProfit:DISCOUNT_PRICE-v.total,analysis:currentAnalysis,fileId,fileName:currentFile?.name||((editingId&&catalog.find(x=>x.id===editingId)?.fileName)||""),fileType:currentFile?.name?.split(".").pop()?.toUpperCase()||((editingId&&catalog.find(x=>x.id===editingId)?.fileType)||currentAnalysis?.type||""),updatedAt:new Date().toISOString(),createdAt:editingId?(catalog.find(x=>x.id===editingId)?.createdAt||new Date().toISOString()):new Date().toISOString()};
-  if(editingId)catalog=catalog.map(x=>x.id===id?item:x);else catalog=[item,...catalog];
-  setLocal(KEY.catalog,catalog);editingId=null;renderCatalog();toast("Produto guardado no catálogo.");openPage("catalogo")
-}
-function catalogText(p){const a=p.analysis||{};return[p.name,p.code,p.category,p.fileName,p.fileType,a.type,a.filament,a.printer].filter(Boolean).join(" ").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
-function formatDate(v){if(!v)return"";try{return new Intl.DateTimeFormat("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric"}).format(new Date(v))}catch{return""}}
-function formatType(p){return(p.fileType||p.analysis?.type||"").toUpperCase()||"3D"}
-function renderCatalog(){
-  catalog=getLocal(KEY.catalog,[]);
-  const q=$("search").value.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
-  const cat=$("filter").value,fmt=$("formatFilter").value,sort=$("sort").value,profitFilter=$("profitFilter").value;
-  const cats=[...new Set(catalog.map(p=>p.category).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
-  $("filter").innerHTML='<option value="">Todas as categorias</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");$("filter").value=cat;
-  let list=catalog.filter(p=>{const a=p.analysis||{},type=String(p.fileType||a.type||"").toUpperCase(),profit=Number.isFinite(+p.profit)?+p.profit:(+p.price||0)-(+p.cost||0),discountProfit=Number.isFinite(+p.discountProfit)?+p.discountProfit:DISCOUNT_PRICE-(+p.cost||0);const passProfit=!profitFilter||(profitFilter==="top"&&profit>3)||(profitFilter==="positive"&&profit>0)||(profitFilter==="low"&&profit>0&&profit<=3)||(profitFilter==="loss"&&profit<=0)||(profitFilter==="promo"&&discountProfit>0);return passProfit&&(!q||catalogText(p).includes(q))&&(!cat||p.category===cat)&&(!fmt||type===fmt.toUpperCase())});
-  if(sort==="name")list.sort((a,b)=>String(a.name).localeCompare(String(b.name)));if(sort==="price")list.sort((a,b)=>(b.price||0)-(a.price||0));if(sort==="profit"||sort==="rank")list.sort((a,b)=>((Number.isFinite(+b.profit)?+b.profit:(+b.price||0)-(+b.cost||0))-(Number.isFinite(+a.profit)?+a.profit:(+a.price||0)-(+a.cost||0))));if(sort==="margin")list.sort((a,b)=>{const pa=Number.isFinite(+a.profit)?+a.profit:(+a.price||0)-(+a.cost||0),pb=Number.isFinite(+b.profit)?+b.profit:(+b.price||0)-(+b.cost||0);return ((+b.price||0)?pb/(+b.price):0)-((+a.price||0)?pa/(+a.price):0)});if(sort==="weight")list.sort((a,b)=>(b.weight||0)-(a.weight||0));if(sort==="time")list.sort((a,b)=>(b.hours||0)-(a.hours||0));if(sort==="new")list.sort((a,b)=>new Date(b.updatedAt||b.createdAt||0)-new Date(a.updatedAt||a.createdAt||0));
-  const totalValue=catalog.reduce((a,p)=>a+(+p.price||0),0),totalCost=catalog.reduce((a,p)=>a+(+p.cost||0),0),totalProfit=catalog.reduce((a,p)=>a+(+p.profit||0),0);
-  $("catalogCount").textContent=`${catalog.length} produto${catalog.length===1?"":"s"}`;$("statProducts").textContent=String(catalog.length);$("statValue").textContent=money(totalValue);$("statCost").textContent=money(totalCost);$("statProfit").textContent=money(totalProfit);$("catalogResult").textContent=`${list.length} resultado${list.length===1?"":"s"}${q?` para “${$("search").value.trim()}”`:""}`;$("searchClear").classList.toggle("show",!!$("search").value);
-  const grid=$("catalogGrid"),listMode=getLocal("bambucalc_catalog_view_v18","grid")==="list";grid.classList.toggle("list-view",listMode);$("gridView").classList.toggle("active",!listMode);$("listView").classList.toggle("active",listMode);
-  if(!list.length){grid.innerHTML=`<div class="empty"><strong>${catalog.length?"Nenhum produto corresponde à busca":"Seu catálogo ainda está vazio"}</strong><span>${catalog.length?"Tente outro nome, código, categoria, material ou formato.":"Guarde um produto pela Calculadora para ele aparecer aqui."}</span></div>`;return}
-  const maxProfit=Math.max(0,...list.map(p=>Number.isFinite(+p.profit)?+p.profit:(+p.price||0)-(+p.cost||0)));
-  grid.innerHTML=list.map((p,index)=>{const a=p.analysis||{},url=safeUrl(p.image),thumb=url?`<img src="${esc(url)}" alt="${esc(p.name)}" loading="lazy">`:'<div class="no-thumb">📦</div>',type=esc(formatType(p)),plates=Number(a.plateCount||p.plateCount||0),plateText=plates>1?`${plates} placas`:plates===1?"1 placa":"—",profit=Number.isFinite(+p.profit)?+p.profit:(+p.price||0)-(+p.cost||0),discountProfit=Number.isFinite(+p.discountProfit)?+p.discountProfit:DISCOUNT_PRICE-(+p.cost||0),margin=(+p.price||0)?(profit/(+p.price||1)*100):0,profitClass=profit>0?"profit-good":"profit-bad",topProfit=profit>0&&profit===maxProfit,rankBadge=(sort==="rank"&&profit>0)?`🏆 #${index+1} · ${money(profit)} potencial`:topProfit?"⭐ MAIS LUCRATIVO":type,fileLabel=p.fileName?esc(p.fileName.length>22?p.fileName.slice(0,19)+"…":p.fileName):type;return `<article class="product"><div class="thumb">${thumb}<span class="thumb-badge">${rankBadge}</span><span class="thumb-file">${fileLabel}</span></div><div class="product-body"><div class="product-title"><div><h3>${esc(p.name||"Produto sem nome")}</h3><div class="product-code">${esc(p.code||"Sem código")}</div></div></div><span class="category-pill">${esc(p.category||"Diversos")}</span><div class="info"><div><small>⚖ Peso</small><strong>${(+p.weight||0).toFixed(2)} g</strong></div><div><small>⏱ Tempo</small><strong>${formatTime(p.hours)}</strong></div><div><small>💷 Custo</small><strong>${money(p.cost)}</strong></div><div><small>▣ Placas</small><strong>${plateText}</strong></div></div><div class="meta" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">${a.filament?`<span>🧵 ${esc(a.filament)}</span>`:""}${a.printer?`<span>🖨️ ${esc(a.printer)}</span>`:""}${p.updatedAt?`<span>📅 ${formatDate(p.updatedAt)}</span>`:""}</div><div class="product-finance"><div><div class="finance-label">PREÇO DE VENDA</div><div class="product-price">${money(p.price)}</div></div><div><div class="finance-label">LUCRO · MARGEM</div><div class="product-profit ${profitClass}">${money(profit)}</div><div class="finance-label">${margin.toFixed(1)}% · lucro a £8: <span class="${discountProfit>0?"profit-good":"profit-bad"}">${money(discountProfit)}</span></div></div></div><div class="product-actions"><button class="btn btn-blue" onclick="editProduct('${p.id}')">✏️ Editar</button><button class="btn btn-dark" onclick="downloadProduct('${p.id}')">⬇️ Arquivo</button><button class="btn btn-danger" onclick="deleteProduct('${p.id}')">🗑️</button></div></div></article>`}).join("");
-}
-async function editProduct(id){
-  const p=catalog.find(x=>x.id===id);if(!p)return;editingId=id;currentFile=null;currentAnalysis=p.analysis||null;
-  const map={name:p.name,code:p.code,category:p.category,image:p.image||"",weight:p.weight,time:formatTime(p.hours),hours:p.hours,priceResult:p.price};
-  Object.entries(map).forEach(([k,v])=>$(k).value=v??"");
-  if(p.analysis)renderAnalysis({...p.analysis,category:p.category});
-  $("fileName").textContent=p.analysis?.type?`Dados salvos do produto (${p.analysis.type})`:"";
-  calc();openPage("calc");toast("Produto carregado para edição.")
-}
-async function downloadProduct(id){
-  const p=catalog.find(x=>x.id===id);if(!p?.fileId){toast("Este produto não possui arquivo local.");return}
-  const f=await fileGet(p.fileId);if(!f){toast("Arquivo não encontrado.");return}downloadBlob(f.blob,f.name)
-}
-async function deleteProduct(id){
-  if(!confirm("Excluir este produto do catálogo?"))return;const p=catalog.find(x=>x.id===id);catalog=catalog.filter(x=>x.id!==id);setLocal(KEY.catalog,catalog);if(p?.fileId)await fileDel(p.fileId);renderCatalog();toast("Produto excluído.")
+function downloadFile(name,content,type) {
+  const blob=new Blob([content],{type});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;a.download=name;
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
-function backup(){
-  downloadText(JSON.stringify({version:17,exportedAt:new Date().toISOString(),catalog,filaments},null,2),`bambucalc_backup_${new Date().toISOString().slice(0,10)}.json`,"application/json")
+function exportJSON() {
+  downloadFile(
+    "bambucalc-backup.json",
+    JSON.stringify({
+      app:"BambuCalc 3D PRO",
+      version:1,
+      exportedAt:new Date().toISOString(),
+      products:catalog
+    },null,2),
+    "application/json"
+  );
 }
-function importBackup(){
-  const i=document.createElement("input");i.type="file";i.accept=".json,application/json";i.onchange=async()=>{const f=i.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!Array.isArray(d.catalog))throw Error();catalog=d.catalog;filaments=Array.isArray(d.filaments)?d.filaments:filaments;setLocal(KEY.catalog,catalog);setLocal(KEY.filaments,filaments);initFilaments();renderCatalog();toast("Backup importado.")}catch{toast("Backup inválido.")}};i.click()
+
+function exportCSV() {
+  const cols=["name","category","weight","hours","total","ideal","premium","potentialProfit","salePrice","notes"];
+  const rows=[cols.join(",")];
+
+  catalog.forEach(p=>{
+    rows.push(cols.map(key=>{
+      return `"${String(p[key]??"").replace(/"/g,'""')}"`;
+    }).join(","));
+  });
+
+  downloadFile("bambucalc-catalogo.csv","\ufeff"+rows.join("\r\n"),"text/csv;charset=utf-8");
 }
 
-function openPage(page){
-  document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id==="page-"+page));
-  document.querySelectorAll("[data-page]").forEach(x=>x.classList.toggle("active",x.dataset.page===page));
-  if(page==="catalogo")renderCatalog();window.scrollTo({top:0,behavior:"smooth"})
-}
-document.addEventListener("click",e=>{const b=e.target.closest("[data-page]");if(b)openPage(b.dataset.page)});
+/* Navegação */
+document.querySelectorAll("nav button").forEach(button=>{
+  button.addEventListener("click",()=>showView(button.dataset.view));
+});
 
-function initTheme(){const t=localStorage.getItem(KEY.theme)||"dark";document.documentElement.toggleAttribute("data-theme",false);if(t==="light")document.documentElement.setAttribute("data-theme","light");$("themeBtn").textContent=t==="light"?"☀️ Tema":"🌙 Tema"}
-$("themeBtn").addEventListener("click",()=>{const light=document.documentElement.getAttribute("data-theme")==="light";if(light){document.documentElement.removeAttribute("data-theme");localStorage.setItem(KEY.theme,"dark");$("themeBtn").textContent="🌙 Tema"}else{document.documentElement.setAttribute("data-theme","light");localStorage.setItem(KEY.theme,"light");$("themeBtn").textContent="☀️ Tema"}});
+/* Atualização da calculadora */
+[
+  "weight","time","hours","filamentPrice","rollWeight","power",
+  "tariff","machineCost","extras","packaging","failure","manualPrice"
+].forEach(id=>{
+  $(id).addEventListener("input",calculate);
+});
 
-$("dropzone").addEventListener("click",()=>$("fileInput").click());
-$("fileInput").addEventListener("change",e=>e.target.files[0]&&analyze(e.target.files[0]));
-["dragenter","dragover"].forEach(ev=>$("dropzone").addEventListener(ev,e=>{e.preventDefault();$("dropzone").classList.add("drag")}));
-["dragleave","drop"].forEach(ev=>$("dropzone").addEventListener(ev,e=>{e.preventDefault();$("dropzone").classList.remove("drag")}));
-$("dropzone").addEventListener("drop",e=>e.dataTransfer.files[0]&&analyze(e.dataTransfer.files[0]));
+$("calculateBtn").addEventListener("click",calculate);
+$("saveBtn").addEventListener("click",saveProduct);
+$("clearBtn").addEventListener("click",clearForm);
 
-["weight","time","rollPrice","rollWeight","watts","tariff","machine","markup","failure","extras","packaging","name","code","category","image","priceResult"].forEach(id=>$(id).addEventListener("input",()=>{calc();saveDraft()}));
-$("simTarget").addEventListener("input",()=>updateSimulator(+calc().total||0));
-$("simMode").addEventListener("change",()=>updateSimulator(+calc().total||0));
-$("priceResult").addEventListener("input",()=>updatePriceInfo(+calc().total||0));
-$("saveProduct").addEventListener("click",saveProduct);
-$("newProduct").addEventListener("click",clearCalc);
-$("catalogNew").addEventListener("click",()=>{clearCalc();openPage("calc")});
-$("search").addEventListener("input",renderCatalog);$("searchClear").addEventListener("click",()=>{$("search").value="";renderCatalog();$("search").focus()});$("filter").addEventListener("change",renderCatalog);$("formatFilter").addEventListener("change",renderCatalog);$("sort").addEventListener("change",renderCatalog);$("profitFilter").addEventListener("change",renderCatalog);$("gridView").addEventListener("click",()=>{setLocal("bambucalc_catalog_view_v18","grid");renderCatalog()});$("listView").addEventListener("click",()=>{setLocal("bambucalc_catalog_view_v18","list");renderCatalog()});
-$("backup").addEventListener("click",backup);$("catalogBackup").addEventListener("click",backup);
-$("import").addEventListener("click",importBackup);$("catalogImport").addEventListener("click",importBackup);
-["search","filter","sort","profitFilter"].forEach(id=>$(id).addEventListener("input",renderCatalog));
-$("simPrice").addEventListener("click",()=>{ $("priceResult").value=$("simPrice").textContent.replace("£","").trim();updatePriceInfo(calc().total) });
+/* Carregamento de arquivos */
+$("fileInput").addEventListener("change",event=>{
+  const file=event.target.files && event.target.files[0];
+  if (file) readFile(file);
+});
 
-loadDraft();initTheme();initFilaments();catalog=getLocal(KEY.catalog,[]);$("sort").value="rank";calc();renderCatalog();
+const drop=$("dropZone");
+drop.addEventListener("dragover",event=>{
+  event.preventDefault();drop.classList.add("drag");
+});
+drop.addEventListener("dragleave",()=>drop.classList.remove("drag"));
+drop.addEventListener("drop",event=>{
+  event.preventDefault();drop.classList.remove("drag");
+  const file=event.dataTransfer.files && event.dataTransfer.files[0];
+  if (file) readFile(file);
+});
+
+/* Pesquisa, ordenação e filtros */
+$("search").addEventListener("input",renderCatalog);
+$("sort").addEventListener("change",renderCatalog);
+$("categoryFilter").addEventListener("change",renderCatalog);
+
+/* Ações dos cards */
+$("catalogGrid").addEventListener("click",event=>{
+  const edit=event.target.closest("[data-edit]");
+  const duplicate=event.target.closest("[data-duplicate]");
+  const remove=event.target.closest("[data-delete]");
+
+  if (edit) {
+    const p=catalog.find(item=>item.id===edit.dataset.edit);
+    if (p) fillForm(p);
+  }
+
+  if (duplicate) {
+    const p=catalog.find(item=>item.id===duplicate.dataset.duplicate);
+    if (p) {
+      fillForm({...p,id:null,name:p.name+" (cópia)"});
+      editingId=null;
+      $("calcStatus").textContent="Cópia pronta. Guarde para criar um novo produto.";
+    }
+  }
+
+  if (remove) {
+    const p=catalog.find(item=>item.id===remove.dataset.delete);
+    if (p && confirm(`Excluir "${p.name}" do catálogo?`)) {
+      catalog=catalog.filter(item=>item.id!==p.id);
+      if (persist()) renderCatalog();
+    }
+  }
+});
+
+/* Backup */
+$("exportJsonBtn").addEventListener("click",exportJSON);
+$("exportCsvBtn").addEventListener("click",exportCSV);
+$("importBtn").addEventListener("click",()=>$("importFile").click());
+
+$("importFile").addEventListener("change",async event=>{
+  const file=event.target.files && event.target.files[0];
+  if (!file) return;
+
+  try {
+    const object=JSON.parse(await file.text());
+    const items=Array.isArray(object) ? object : object.products;
+    if (!Array.isArray(items)) throw new Error("O ficheiro não contém uma lista de produtos.");
+
+    const map=new Map(catalog.map(p=>[p.id,p]));
+    items.forEach((p,index)=>{
+      const item={...p,id:p.id||("import_"+Date.now()+"_"+index)};
+      map.set(item.id,item);
+    });
+
+    catalog=[...map.values()];
+    if (persist()) {
+      renderCatalog();
+      $("backupStatus").textContent=`Importação concluída: ${items.length} produto(s).`;
+    }
+  } catch (error) {
+    $("backupStatus").textContent="Erro ao importar backup: "+error.message;
+  }
+
+  event.target.value="";
+});
+
+$("deleteAllBtn").addEventListener("click",()=>{
+  if (confirm("Tem a certeza de que deseja apagar todo o catálogo deste navegador?")) {
+    catalog=[];
+    if (persist()) {
+      renderCatalog();
+      $("backupStatus").textContent="Catálogo apagado.";
+    }
+  }
+});
+
+/* Arranque */
+updateCount();
+calculate();
+renderCatalog();
 </script>
 </body>
 </html>
