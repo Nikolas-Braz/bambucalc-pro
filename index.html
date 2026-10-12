@@ -73,6 +73,7 @@ details{border:1px solid var(--border);border-radius:11px;background:var(--card)
 .rank-val{text-align:right}.rank-val strong{display:block;font-size:13px;color:var(--accent)}.rank-val.neg strong{color:#ef4444}.rank-val small{font-size:9px;color:var(--muted)}
 .product.flash{outline:3px solid var(--accent);outline-offset:2px}
 @media(max-width:1200px){.catalog-layout{grid-template-columns:1fr}.rank-panel{position:static;max-height:none;order:-1}}
+.backup-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;margin-bottom:10px}.backup-bar.ok{border-color:rgba(34,197,94,.4)}.backup-bar.warn{border-color:rgba(245,158,11,.65)}.backup-bar.bad{border-color:rgba(239,68,68,.7)}.backup-bar strong{font-size:12px}.backup-bar small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
 .mobile-nav{display:none}
 .toast{position:fixed;right:15px;bottom:15px;background:#020617;color:#fff;padding:10px 13px;border-radius:9px;opacity:0;pointer-events:none;transform:translateY(8px);transition:.2s;z-index:50;font-size:12px;max-width:360px}.toast.show{opacity:1;transform:none}
 @media(max-width:1200px){.catalog-grid{grid-template-columns:repeat(3,1fr)}.calc-layout{grid-template-columns:1fr}.sticky{position:static}.catalog-stats{grid-template-columns:repeat(2,1fr)}}
@@ -191,6 +192,7 @@ details{border:1px solid var(--border);border-radius:11px;background:var(--card)
 <section id="page-catalogo" class="page">
   <div class="topbar"><div><h2>📦 Catálogo inteligente</h2><p>Encontre rapidamente qualquer produto e identifique as peças com maior potencial de lucro por hora e filamento.</p></div><div class="actions"><span class="badge" id="catalogCount">0 produtos</span><button class="btn btn-primary" id="catalogNew">＋ Novo</button></div></div>
   <div class="catalog-layout"><div class="catalog-main">
+  <div class="card backup-bar" id="backupBar"><div><strong id="backupTitle"></strong><small id="backupSub"></small></div><div class="actions"><button class="btn btn-primary" id="autoBackupBtn" type="button">🔒 Ativar backup automático</button><button class="btn btn-dark" id="restoreAutoBtn" type="button" style="display:none">♻️ Restaurar do backup</button></div></div>
   <div class="catalog-stats"><div class="catalog-stat"><small>Produtos</small><strong id="statProducts">0</strong></div><div class="catalog-stat"><small>Preço do catálogo</small><strong id="statValue">£ 0.00</strong></div><div class="catalog-stat"><small>Custo total</small><strong id="statCost">£ 0.00</strong></div><div class="catalog-stat"><small>Lucro potencial</small><strong id="statProfit">£ 0.00</strong></div></div>
   <div class="card"><div class="catalog-toolbar"><div class="search-wrap"><input id="search" class="wide" type="search" placeholder="🔎 Nome, código, categoria, material ou impressora..." autocomplete="off"><button class="search-clear" id="searchClear" type="button">✕</button></div><select id="filter"><option value="">Todas as categorias</option></select><select id="formatFilter"><option value="">Todos os formatos</option><option value="3MF">3MF</option><option value="G-code">G-code</option><option value="STL">STL</option></select><select id="sort"><option value="potential" selected>⭐ Maior Potencial de Lucro (Lucro/Hora)</option><option value="new">Mais recentes</option><option value="name">Nome A-Z</option><option value="price">Preço maior</option><option value="profit">Lucro maior</option><option value="weight">Peso maior</option><option value="time">Tempo maior</option></select><button class="btn btn-dark" id="catalogBackup">💾 Backup</button><button class="btn btn-dark" id="catalogImport">📥 Importar</button></div><div class="catalog-subbar"><span class="catalog-result" id="catalogResult">0 resultados</span><div class="view-toggle"><button id="gridView" class="active" type="button" title="Grade">▦</button><button id="listView" type="button" title="Lista">☷</button></div></div><div id="catalogGrid" class="catalog-grid"></div></div>
   </div>
@@ -496,7 +498,7 @@ async function saveProduct(){
   if(editingId)catalog=catalog.map(x=>x.id===id?item:x);else catalog=[item,...catalog];
   if(!setLocal(KEY.catalog,catalog))return;
   editingId=null;currentFile=null;$("fileInput").value="";
-  renderCatalog();openPage("catalogo");if(!fileWarn)toast("Produto guardado no catálogo.")
+  markChanged();requestPersist();renderCatalog();openPage("catalogo");if(!fileWarn)toast("Produto guardado no catálogo.")
 }
 function catalogText(p){const a=p.analysis||{};return[p.name,p.code,p.category,p.fileName,p.fileType,a.type,a.filament,a.printer].filter(Boolean).join(" ").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
 function formatDate(v){if(!v)return"";try{return new Intl.DateTimeFormat("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric"}).format(new Date(v))}catch{return""}}
@@ -520,7 +522,7 @@ function renderCatalog(){
   if(sort==="new")list.sort((a,b)=>new Date(b.updatedAt||b.createdAt||0)-new Date(a.updatedAt||a.createdAt||0));
 
   const totalValue=catalog.reduce((a,p)=>a+(+p.price||0),0),totalCost=catalog.reduce((a,p)=>a+(+p.cost||0),0),totalProfit=catalog.reduce((a,p)=>a+(+p.profit||0),0);
-  renderRanking();
+  renderRanking();renderBackupBar();
   $("catalogCount").textContent=`${catalog.length} produto${catalog.length===1?"":"s"}`;$("statProducts").textContent=String(catalog.length);$("statValue").textContent=money(totalValue);$("statCost").textContent=money(totalCost);$("statProfit").textContent=money(totalProfit);$("catalogResult").textContent=`${list.length} resultado${list.length===1?"":"s"}${q?` para “${$("search").value.trim()}”`:""}`;$("searchClear").classList.toggle("show",!!$("search").value);
   const grid=$("catalogGrid"),listMode=getLocal("bambucalc_catalog_view_v18","grid")==="list";grid.classList.toggle("list-view",listMode);$("gridView").classList.toggle("active",!listMode);$("listView").classList.toggle("active",listMode);
 
@@ -585,16 +587,80 @@ async function deleteProduct(id){
   if(!confirm("Excluir este produto do catálogo?"))return;
   catalog=getLocal(KEY.catalog,[]);const p=catalog.find(x=>x.id===id);catalog=catalog.filter(x=>x.id!==id);setLocal(KEY.catalog,catalog);
   try{if(p?.fileId)await fileDel(p.fileId)}catch{}
-  renderCatalog();toast("Produto excluído.")
+  markChanged();renderCatalog();toast("Produto excluído.")
 }
 
+const LS_BK="bambucalc_backup_meta_v1";
+let backupHandle=null,persisted=false;
+function bkMeta(){return Object.assign({lastAt:null,pending:0},getLocal(LS_BK,{}))}
+function setBkMeta(m){setLocal(LS_BK,m)}
+function backupPayload(){return{version:21,exportedAt:new Date().toISOString(),catalog:getLocal(KEY.catalog,[]),filaments:getLocal(KEY.filaments,filaments)}}
+function fmtDT(v){if(!v)return"nunca";try{return new Intl.DateTimeFormat("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}).format(new Date(v))}catch{return"—"}}
 function backup(){
-  catalog=getLocal(KEY.catalog,[]);
-  downloadText(JSON.stringify({version:21,exportedAt:new Date().toISOString(),catalog,filaments},null,2),`bambucalc_backup_${new Date().toISOString().slice(0,10)}.json`,"application/json")
+  downloadText(JSON.stringify(backupPayload(),null,2),`bambucalc_backup_${new Date().toISOString().slice(0,10)}.json`,"application/json");
+  const m=bkMeta();m.lastAt=new Date().toISOString();m.pending=0;setBkMeta(m);renderBackupBar();
+}
+function applyBackup(d){
+  if(!d||!Array.isArray(d.catalog))throw Error("inválido");
+  catalog=d.catalog;filaments=Array.isArray(d.filaments)&&d.filaments.length?d.filaments:filaments;
+  setLocal(KEY.catalog,catalog);setLocal(KEY.filaments,filaments);initFilaments();renderCatalog();markChanged();
 }
 function importBackup(){
-  const i=document.createElement("input");i.type="file";i.accept=".json,application/json";i.onchange=async()=>{const f=i.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!Array.isArray(d.catalog))throw Error();catalog=d.catalog;filaments=Array.isArray(d.filaments)&&d.filaments.length?d.filaments:filaments;setLocal(KEY.catalog,catalog);setLocal(KEY.filaments,filaments);initFilaments();renderCatalog();toast("Backup importado.")}catch{toast("Backup inválido.")}};i.click()
+  const i=document.createElement("input");i.type="file";i.accept=".json,application/json";
+  i.onchange=async()=>{const f=i.files[0];if(!f)return;try{applyBackup(JSON.parse(await f.text()));toast("Backup importado.")}catch{toast("Backup inválido.")}};i.click()
 }
+async function hasPerm(){if(!backupHandle)return false;try{return(await backupHandle.queryPermission({mode:"readwrite"}))==="granted"}catch{return false}}
+async function autoBackupWrite(){
+  if(!backupHandle)return false;
+  try{
+    if(!(await hasPerm())){renderBackupBar();return false}
+    const w=await backupHandle.createWritable();await w.write(JSON.stringify(backupPayload(),null,2));await w.close();
+    const m=bkMeta();m.lastAt=new Date().toISOString();m.pending=0;setBkMeta(m);renderBackupBar();return true;
+  }catch(e){console.error(e);renderBackupBar();return false}
+}
+function markChanged(){const m=bkMeta();m.pending=(m.pending||0)+1;setBkMeta(m);autoBackupWrite().then(()=>renderBackupBar())}
+async function enableAutoBackup(){
+  if(!window.showSaveFilePicker){toast("Este navegador não suporta backup automático. Use Chrome ou Edge no computador; nos outros use o botão Backup.");return}
+  try{
+    backupHandle=await window.showSaveFilePicker({suggestedName:"bambucalc_catalogo.json",types:[{description:"Backup BambuCalc",accept:{"application/json":[".json"]}}]});
+    try{await filePut({id:"__backup_handle__",handle:backupHandle})}catch(e){console.warn("handle não guardado",e)}
+    const ok=await autoBackupWrite();toast(ok?"Backup automático ativado.":"Não foi possível escrever no arquivo de backup.");
+  }catch(e){if(!e||e.name!=="AbortError")toast("Backup automático não permitido.")}
+  renderBackupBar();
+}
+async function loadBackupHandle(){try{const r=await fileGet("__backup_handle__");if(r&&r.handle)backupHandle=r.handle}catch{}}
+async function restoreFromHandle(){
+  if(!backupHandle)return;
+  try{
+    if(!(await hasPerm())&&(await backupHandle.requestPermission({mode:"readwrite"}))!=="granted"){toast("Permissão negada.");return}
+    const d=JSON.parse(await(await backupHandle.getFile()).text());
+    if(getLocal(KEY.catalog,[]).length&&!confirm("Substituir o catálogo atual pelo conteúdo do backup?"))return;
+    applyBackup(d);toast("Catálogo restaurado do backup.");
+  }catch(e){console.error(e);toast("Não foi possível ler o backup.")}
+}
+async function autoBtnClick(){
+  if(!backupHandle){await enableAutoBackup();return}
+  if(!(await hasPerm())){try{if((await backupHandle.requestPermission({mode:"readwrite"}))!=="granted"){toast("Permissão negada.");return}}catch{toast("Não foi possível reautorizar.");return}}
+  const ok=await autoBackupWrite();toast(ok?"Backup guardado.":"Falha ao guardar o backup.");renderBackupBar();
+}
+async function renderBackupBar(){
+  const bar=$("backupBar");if(!bar)return;
+  const m=bkMeta(),empty=getLocal(KEY.catalog,[]).length===0,granted=await hasPerm(),supported=!!window.showSaveFilePicker;
+  let cls="warn",title="",sub="",btn="🔒 Ativar backup automático",restore=false;
+  if(backupHandle&&granted){cls="ok";title="✅ Backup automático ativo";sub=`Guardado em «${backupHandle.name||"arquivo"}» · último: ${fmtDT(m.lastAt)}`;btn="💾 Backup agora"}
+  else if(backupHandle){cls="warn";title="🔑 Reautorize o backup automático";sub="Depois de reiniciar o navegador é preciso um clique para continuar a guardar no arquivo de backup.";btn="🔑 Reautorizar"}
+  else if(empty){cls="bad";title="⚠️ O catálogo está vazio";sub="Se você já tinha produtos, use Importar e escolha o seu arquivo de backup (.json).";if(!supported)btn=""}
+  else if(m.pending>0||!m.lastAt){cls="warn";title=`⚠️ ${m.pending||"Várias"} alteração(ões) sem backup`;sub=`Último backup: ${fmtDT(m.lastAt)}. Os dados estão só neste navegador.`;if(!supported)btn=""}
+  else{cls="ok";title="Sem alterações pendentes";sub=`Último backup: ${fmtDT(m.lastAt)}`;if(!supported)btn=""}
+  if(backupHandle&&empty)restore=true;
+  if(empty&&backupHandle){cls="bad";title="⚠️ O catálogo está vazio, mas existe um backup";sub="Clique em Restaurar para recuperar os seus produtos."}
+  if(persisted&&cls==="ok")sub+=" · armazenamento protegido";
+  bar.className="card backup-bar "+cls;$("backupTitle").textContent=title;$("backupSub").textContent=sub;
+  $("autoBackupBtn").style.display=btn?"":"none";$("autoBackupBtn").textContent=btn;$("restoreAutoBtn").style.display=restore?"":"none";
+}
+function requestPersist(){try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().then(ok=>{persisted=!!ok;renderBackupBar()}).catch(()=>{})}catch{}}
+$("autoBackupBtn").addEventListener("click",autoBtnClick);
+$("restoreAutoBtn").addEventListener("click",restoreFromHandle);
 
 function openPage(page){
   document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id==="page-"+page));
@@ -628,7 +694,7 @@ $("backup").addEventListener("click",backup);$("catalogBackup").addEventListener
 $("import").addEventListener("click",importBackup);$("catalogImport").addEventListener("click",importBackup);
 $("simPrice").addEventListener("click",()=>{const c=calc();const v=parseFloat($("simPrice").textContent.replace("£","").trim());if(Number.isFinite(v)){priceLocked=true;$("priceResult").value=v.toFixed(2);updatePriceInfo(c.total);saveDraft();toast("Preço aplicado.")}});
 
-loadDraft();initTheme();initFilaments();catalog=getLocal(KEY.catalog,[]);calc();renderCatalog();
+loadDraft();initTheme();initFilaments();catalog=getLocal(KEY.catalog,[]);calc();renderCatalog();requestPersist();loadBackupHandle().then(renderBackupBar);
 </script>
 </body>
 </html>
