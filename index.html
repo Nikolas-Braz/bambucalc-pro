@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
@@ -144,16 +145,17 @@ hr{border:0;border-top:1px solid var(--line);margin:18px 0}
      <label>Código / SKU</label>
      <input id="sku" placeholder="Código automático">
     </div>
+
+    <!-- CATEGORIAS ATUALIZADAS -->
     <div class="field">
      <label>Categoria</label>
      <select id="category">
-      <option>Decoração & Casa</option>
-      <option>Acessórios & Suportes</option>
-      <option>Miniaturas</option>
-      <option>Peças Técnicas</option>
-      <option>Outros</option>
+      <option value="Busto">Busto</option>
+      <option value="Miniatura">Miniatura</option>
+      <option value="Placas">Placas</option>
      </select>
     </div>
+
     <div class="field">
      <label>Peso total (gramas)</label>
      <input id="weight" type="number" min="0" step="0.01" placeholder="Ex.: 44.68">
@@ -322,11 +324,6 @@ hr{border:0;border-top:1px solid var(--line);margin:18px 0}
 </div>
 
 <script>
-/* =========================================================
-   BAMBUCALC 3D PRO
-   Armazenamento IndexedDB + análise 3MF/G-code
-========================================================= */
-
 const $ = id => document.getElementById(id);
 const money = n => '£' + (Number(n)||0).toFixed(2);
 const num = v => Number(v)||0;
@@ -393,12 +390,6 @@ async function loadData(){
 }
 function fillSettings(){
  Object.keys(DEFAULTS).forEach(k=>$(k).value=settings[k]);
-}
-async function saveSettings(){
- Object.keys(DEFAULTS).forEach(k=>settings[k]=num($(k).value));
- await dbPut('settings',{key:'main',value:settings});
- calculate();
- alert('Configurações guardadas.');
 }
 
 /* NAVEGAÇÃO */
@@ -502,7 +493,7 @@ function getXmlMeta(plate){
 function parseSliceInfo(xmlText){
  const xml=new DOMParser().parseFromString(xmlText,'application/xml');
  if(xml.querySelector('parsererror'))throw new Error('slice_info.config inválido.');
- const plates=[...xml.querySelectorAll('plate')].map((plate,index)=>{
+ return [...xml.querySelectorAll('plate')].map((plate,index)=>{
   const meta=getXmlMeta(plate);
   const filaments=[...plate.querySelectorAll('filament')];
   const filamentWeight=filaments.reduce((sum,f)=>{
@@ -511,18 +502,18 @@ function parseSliceInfo(xmlText){
   const metadataWeight=Number(meta.weight||0);
   const weight=filamentWeight>0?filamentWeight:metadataWeight;
   const seconds=Number(meta.prediction||0);
-  const object=plate.querySelector('object');
   const material=[...new Set(filaments.map(f=>f.getAttribute('type')).filter(Boolean))].join(' + ');
+  const layerText=plate.querySelector('layer_filament_list')?.getAttribute('layer_ranges')||'';
+  const layerNums=layerText.match(/\d+/g)||[];
   return {
    index:Number(meta.index||index+1),
    weight:weight||null,
    seconds:seconds||null,
    material:material||null,
-   object:object?.getAttribute('name')||null,
-   layers:Number((plate.querySelector('layer_filament_list')?.getAttribute('layer_ranges')||'').trim().split(/\s+/).pop())+1||null
+   object:plate.querySelector('object')?.getAttribute('name')||null,
+   layers:layerNums.length?Number(layerNums[layerNums.length-1])+1:null
   };
  });
- return plates;
 }
 async function parse3MF(file){
  if(typeof JSZip==='undefined')throw new Error('A biblioteca de leitura 3MF não carregou. Verifica a ligação à internet.');
@@ -543,7 +534,6 @@ async function parse3MF(file){
    result.printer=Array.isArray(p)?p[0]:p;
    const f=cfg.filament_type;
    result.material=Array.isArray(f)?[...new Set(f)].join(' + '):f;
-   result.printer=result.printer||cfg.printer_model;
   }catch(e){}
  }
  const modelName=findName('3D/3dmodel.model');
@@ -559,7 +549,6 @@ async function parse3MF(file){
   const blob=await zip.file(preferred).async('blob');
   result.thumbnail=await blobToDataURL(blob);
  }
- // Tenta G-code interno apenas se não existirem dados completos na placa.
  const gcodeNames=names.filter(n=>/\.(gcode|gc|gco)$/i.test(n));
  if(gcodeNames.length){
   const gcode=await zip.file(gcodeNames[0]).async('text');
@@ -584,7 +573,6 @@ async function analyseFile(file){
    const r=await parse3MF(file);
    const plates=r.plates||[];
    if(plates.length){
-    // Cada placa é contabilizada uma única vez.
     data.weight=plates.every(p=>p.weight!==null)
       ?plates.reduce((s,p)=>s+p.weight,0):null;
     data.seconds=plates.every(p=>p.seconds!==null)
@@ -639,7 +627,7 @@ async function analyseFile(file){
  }
 }
 
-/* IMAGEM MANUAL */
+/* IMAGEM */
 $('image').addEventListener('change',async e=>{
  const f=e.target.files[0];
  if(f)currentImage=await blobToDataURL(f);
@@ -653,14 +641,14 @@ function hoursFromInput(){
 function calculate(){
  const weight=num($('weight').value);
  const hours=hoursFromInput();
- const material=weight/settings.rollWeight*settings.filamentPrice;
+ const material=settings.rollWeight>0?weight/settings.rollWeight*settings.filamentPrice:0;
  const energy=hours*(settings.power/1000)*settings.electricity;
  const machine=hours*settings.machineRate;
  const extras=settings.extras;
  const base=material+energy+machine+extras;
  const failure=base*settings.failureRate/100;
  const total=base+failure;
- const desired=total/(1-settings.targetMargin/100);
+ const desired=settings.targetMargin<100?total/(1-settings.targetMargin/100):total;
  const recommended=Math.max(9,desired);
  const price=$('price').value===''?recommended:num($('price').value);
  const discount=$('discount').value===''?8:num($('discount').value);
@@ -671,9 +659,8 @@ function calculate(){
  let goalPrice=0;
  if(goalType==='profit')goalPrice=total+goalValue;
  else if(goalValue<100)goalPrice=total/(1-goalValue/100);
- const goalProfit=goalPrice-total;
  lastCalculation={material,energy,machine,extras,failure,total,recommended,
-  price,discount,profit,margin,goalPrice,goalProfit};
+  price,discount,profit,margin,goalPrice,goalProfit:goalPrice-total};
  $('totalCost').textContent=money(total);
  $('recommended').textContent=money(recommended);
  $('profit').textContent=money(profit);
@@ -686,7 +673,7 @@ function calculate(){
  $('normalProfit').textContent=money(profit);
  $('discountProfit').textContent=money(discount-total);
  $('goalPrice').textContent=money(goalPrice);
- $('goalProfit').textContent=money(goalProfit);
+ $('goalProfit').textContent=money(goalPrice-total);
  if(!$('price').dataset.manual){
   $('price').value=recommended.toFixed(2);
   lastCalculation.price=recommended;
@@ -710,7 +697,7 @@ $('goalValue').addEventListener('input',calculate);
 
 $('clear').addEventListener('click',()=>{
  ['name','sku','weight','time','material','printer'].forEach(id=>$(id).value='');
- $('plates').value=1;$('category').selectedIndex=0;
+ $('plates').value=1;$('category').value='Busto';
  $('price').value='9';$('price').dataset.manual='';
  $('discount').value='8';currentImage='';currentFileData=null;
  $('file').value='';$('image').value='';
@@ -776,10 +763,10 @@ function renderCatalog(){
  list.forEach((p,index)=>{
   const card=document.createElement('article');
   card.className='product';
-  const img=document.createElement('img');
-  img.src=p.image||'';
-  img.alt=p.name;
-  if(!p.image)img.style.display='none';
+  if(p.image){
+   const img=document.createElement('img');
+   img.src=p.image;img.alt=p.name;card.append(img);
+  }
   const body=document.createElement('div');
   body.className='productBody';
   const rank=document.createElement('span');
@@ -787,7 +774,7 @@ function renderCatalog(){
   rank.textContent='#'+(index+1)+' · '+(index===0?'Maior lucro potencial':'Ranking de lucro');
   const title=document.createElement('h3');title.textContent=p.name;
   const info=document.createElement('p');
-  info.textContent=(p.sku||'Sem SKU')+' · '+(p.category||'Outros');
+  info.textContent=(p.sku||'Sem SKU')+' · '+(p.category||'Busto');
   const details=document.createElement('p');
   details.textContent='Peso: '+(p.weight||0)+' g · Tempo: '+(p.time||'Não indicado')+' · Placas: '+(p.plates||1);
   const price=document.createElement('p');
@@ -806,14 +793,14 @@ function renderCatalog(){
   del.onclick=()=>deleteProduct(p.id);
   actions.append(edit,del);
   body.append(rank,title,info,details,price,profit,margin,actions);
-  card.append(img,body);root.append(card);
+  card.append(body);root.append(card);
  });
 }
 async function editProduct(id){
  const p=products.find(x=>x.id===id);if(!p)return;
  editingId=p.id;
  $('name').value=p.name;$('sku').value=p.sku||'';
- $('category').value=p.category||'Outros';
+ $('category').value=['Busto','Miniatura','Placas'].includes(p.category)?p.category:'Busto';
  $('weight').value=p.weight||'';
  $('time').value=p.time||'';
  $('material').value=p.material||'';
@@ -835,7 +822,7 @@ async function deleteProduct(id){
 $('search').addEventListener('input',renderCatalog);
 $('sort').addEventListener('change',renderCatalog);
 
-/* BACKUP */
+/* BACKUP E RESTAURO */
 $('export').addEventListener('click',()=>{
  const data={app:'BambuCalc 3D PRO',version:1,createdAt:new Date().toISOString(),settings,products};
  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
@@ -868,6 +855,12 @@ $('importFile').addEventListener('change',async e=>{
 });
 
 /* CONFIGURAÇÕES */
+async function saveSettings(){
+ Object.keys(DEFAULTS).forEach(k=>settings[k]=num($(k).value));
+ await dbPut('settings',{key:'main',value:settings});
+ calculate();
+ alert('Configurações guardadas.');
+}
 $('saveSettings').addEventListener('click',saveSettings);
 $('resetSettings').addEventListener('click',()=>{
  if(!confirm('Repor todos os custos iniciais?'))return;
